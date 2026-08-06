@@ -1,0 +1,11 @@
+{
+  "run_date": "2026-07-01",
+  "chargers_deployed": 5,
+  "active_chargers": 3,
+  "inactive_chargers": 2,
+  "sessions_count": 6,
+  "energy_delivered_kwh": 80.0,
+  "est_uptime_pct": 80.5,
+  "data_completeness_pct": 85.0,
+  "anomalies_total": 5
+}

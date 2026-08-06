@@ -1,0 +1,10 @@
+{
+  "stages": {
+    "ingestion": {"records_in": 124, "records_out": 121, "duration_s": 3.2, "llm_calls": 24, "llm_tokens": 48210, "exit_code": 0},
+    "validation": {"records_in": 121, "records_out": 98, "duration_s": 1.1, "llm_calls": 0, "llm_tokens": 0, "exit_code": 0},
+    "reconciliation": {"records_in": 98, "records_out": 18, "duration_s": 0.9, "llm_calls": 0, "llm_tokens": 0, "exit_code": 0},
+    "reporting": {"records_in": 18, "records_out": 18, "duration_s": 0.4, "llm_calls": 0, "llm_tokens": 0, "exit_code": 0}
+  },
+  "run_started": "2026-08-06T09:00:00",
+  "run_finished": "2026-08-06T09:00:06"
+}
