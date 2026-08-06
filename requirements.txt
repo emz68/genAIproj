@@ -1,0 +1,9 @@
+# Frozen on main (PRODUCT_DEVELOPMENT_MANAGER.md §2.3).
+# Branches declare additional packages in src/<module>/requirements.txt;
+# the Integration Manager unions them here at merge time (§8 step 3).
+pandas
+pydantic
+pytest
+pyyaml
+anthropic
+requests

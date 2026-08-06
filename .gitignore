@@ -1,0 +1,16 @@
+# Data and pipeline outputs — never committed (see PRODUCT_DEVELOPMENT_MANAGER.md §2.3)
+data/raw/
+artifacts/
+
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# OS
+.DS_Store
