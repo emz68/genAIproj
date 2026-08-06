@@ -1,0 +1,5 @@
+*** AUTOMATED FAULT DIGEST (fwd by priya (subcontr.)) ***
+period ending Aug 26, 2021
+TOWN OF CARY / DT DECK P2 (1) :: comms dropout to network :: count=1 :: sev=safety!!
+TOWN OF CARY / TOWNOFCARY1 :: connector latch broken :: count=1 :: sev=minor
+NOTE units in W not kW on this feed

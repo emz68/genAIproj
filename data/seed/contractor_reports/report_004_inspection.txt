@@ -1,0 +1,8 @@
+QUARTERLY INSPECTION FORM (rev 3b)
+insp.date : 27.11.2022
+site/station.... TOWN OF CARY / OPS CENTER
+technician:R. Singh - ChargeRight LLC
+charger rating   7.2
+findings -> connector latch broken; cosmetic scratches
+severity code [urgent-safety]
+followup req'd: N

@@ -1,0 +1,5 @@
+*** AUTOMATED FAULT DIGEST (fwd by T. Okafor) ***
+period ending 24.01.2023
+TOWN OF CARY / P6_DTCARYDECKE :: display flicker, unit resets :: count=9 :: sev=fyi
+
+NOTE units in W not kW on this feed

@@ -1,0 +1,4 @@
+customer complaint via 311, logged 15.03.2022
+location given: "TOWN OF CARY / TOWNHALLEAST"
+says screen dead
+routed to: J. Alvarez  priority: routine

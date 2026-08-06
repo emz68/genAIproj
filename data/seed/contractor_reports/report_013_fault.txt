@@ -1,0 +1,5 @@
+*** AUTOMATED FAULT DIGEST (fwd by J. Alvarez) ***
+period ending 13.05.2023
+TOWN OF CARY / P4_DTCARDECKE :: overtemp warning @ 147F :: count=6 :: sev=fyi
+TOWN OF CARY / BOND PARK :: overtemp warning @ 147F :: count=2 :: sev=minor
+NOTE units in W not kW on this feed

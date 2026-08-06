@@ -1,0 +1,4 @@
+customer complaint via 311, logged 13.08.2021
+location given: "TOWN OF CARY DT DECK P5"
+says charge stopped after 10 min
+routed to: M. Chen  priority: fyi

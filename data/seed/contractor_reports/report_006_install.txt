@@ -1,0 +1,6 @@
+INSTALL COMPLETION REPORT
+7/9/22 | crew: M. Chen
+new unit commissioned at TOWN OF CARY / P6_DTCARYDECKE
+nameplate: 50 kW DCFC, dual J1772
+punch list: GFCI wont reset
+energized + verified. billing starts 2022-07-12

@@ -1,0 +1,6 @@
+INSTALL COMPLETION REPORT
+2023-11-02 | crew: J. Alvarez
+new unit commissioned at TOWN OF CARY / BOND PARK BH
+nameplate: L2 dual port, dual J1772 + CCS
+punch list: overtemp warning @ 147F
+energized + verified. billing starts Nov 5, 2023

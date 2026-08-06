@@ -1,0 +1,9 @@
+From: J. Alvarez <field-ops@contractor-mail.example>
+Sent: 9/4/22
+Subj: RE: RE: site visit TOWN OF CARY / P5_DTCARYDECKE
+
+Hey team - swung by today. display flicker, unit resets. rated 6600 W but pulling less.
+Station: TOWN OF CARY / P5_DTCARYDECKE
+addr on file: 113 Walnut St 27511
+severity: safety!!   will file proper ticket later
+- sent from my phone

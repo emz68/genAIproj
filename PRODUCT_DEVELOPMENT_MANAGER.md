@@ -24,7 +24,7 @@ Con Edison runs EV-charger programs where chargers are installed and managed by 
 
 ### 2.0 Phase 0 — bootstrap (already done on `main`; humans only)
 
-Before any branch work starts, `main` must contain (and now does): this file, `.gitignore` (covering `data/raw/`, `artifacts/`, `.env`, `__pycache__/`), a seed `requirements.txt`, `pyproject.toml` (pytest configured with `--import-mode=importlib` and `pythonpath=["."]`), `src/__init__.py`, and an empty `__init__.py` in each of the five module directories. The five branches `emlyn`, `sanja`, `yash`, `emily`, `anastasia` are created from this `main` by the **Integration Manager (a human)** and pushed. **Agents never create branches and never check out `main`.**
+Before any branch work starts, `main` must contain (and now does): this file, `.gitignore` (covering `data/raw/`, `artifacts/`, `.env`, `__pycache__/`), a seed `requirements.txt`, `pyproject.toml` (pytest configured with `--import-mode=importlib` and `pythonpath=["."]`), `src/__init__.py`, an empty `__init__.py` in each of the five module directories, and the **committed seed dataset at `data/seed/`** (all three sources — see §7 P1 and `data/seed/README.md`). The five branches `emlyn`, `sanja`, `yash`, `emily`, `anastasia` are created from this `main` by the **Integration Manager (a human)** and pushed. **Agents never create branches and never check out `main`.**
 
 ### 2.1 Git rules — read carefully
 
@@ -33,7 +33,7 @@ Before any branch work starts, `main` must contain (and now does): this file, `.
    git fetch origin && git checkout <yourname>
    ```
 2. **Agents NEVER merge. Ever.** No agent may run `git merge`, `git rebase`, `git cherry-pick`, or `gh pr merge`, click a merge button, or otherwise combine branches. Agents never push to `main`, never force-push, never delete branches, never create additional branches, never fetch or read content from another person's branch, and never open PRs unless explicitly told to open a **draft** PR for visibility (still never merged by an agent). If a pull is ever needed, it is `git pull --ff-only` on the agent's own branch.
-3. Agents commit and push **only to their own person's branch**, and touch **only the paths owned by their person** (§4 ownership map). Files owned by `main` (this file, root `README.md`, root `requirements.txt`, `.gitignore`, `pyproject.toml`, all seeded `__init__.py` files) must not be edited on any branch — propose changes in `docs/proposals/<yourname>.md` instead.
+3. Agents commit and push **only to their own person's branch**, and touch **only the paths owned by their person** (§4 ownership map). Files owned by `main` (this file, root `README.md`, root `requirements.txt`, `.gitignore`, `pyproject.toml`, all seeded `__init__.py` files, and everything under `data/seed/`) must not be edited on any branch — propose changes in `docs/proposals/<yourname>.md` instead.
 4. **A single human — the Integration Manager (Anastasia by default) — performs all merging manually at the end**, following §8. Nobody else merges anything. **Anastasia's agent builds merge tooling (A4, A5) but never executes §8; every §8 command is typed by the human.**
 5. Commit early and often, messages prefixed by phase, e.g. `[P3] add cross-source reconciler for session records`.
 
@@ -80,8 +80,9 @@ genAIproj/
 ├── README.md, requirements.txt, .gitignore, pyproject.toml   ← frozen (main)
 ├── src/__init__.py and src/*/__init__.py                     ← frozen (main)
 ├── data/
-│   ├── raw/            ← gitignored; downloaded/provided datasets land here
-│   └── README.md       ← EMLYN: how to fetch/regenerate every dataset
+│   ├── seed/           ← frozen (main): committed dataset — Sources A/B (gzipped) + C samples + its README
+│   ├── raw/            ← gitignored working dir; initialized from data/seed (see data/seed/README.md)
+│   └── README.md       ← EMLYN: how to refresh from live sources and regenerate messy variants
 ├── src/
 │   ├── ingestion/      ← EMLYN (P1): readers, LLM parsers, messiness injector, own requirements.txt, fixtures, tests
 │   ├── validation/     ← SANJA (P2): rule engine, fixers, standardizers, own requirements.txt, fixtures, tests
@@ -244,18 +245,18 @@ python -m src.platform.run --pipeline full --config src/platform/config.yaml   #
 
 ### P1 — Emlyn: Data & Ingestion (`src/ingestion/`, `data/`)
 
-**Dataset (gap identified → filled here).** The repo contained **no dataset**. P1 establishes one from three complementary sources recreating the Con Edison situation (multi-source, multi-format, overlapping entities):
+**Dataset (gap identified → filled; now COMMITTED at `data/seed/` — see its README).** Three complementary sources recreating the Con Edison situation (multi-source, multi-format, overlapping entities):
 
-1. **Source A — charging sessions (structured CSV):** City of Palo Alto open-data "EV Charging Station Usage" export (or any equivalent public per-session CSV). If organizers supply an official dataset, drop it in `data/raw/` — contracts are dataset-agnostic; only P1 readers change.
-2. **Source B — station registry (API/JSON):** NREL AFDC Alternative Fuel Station Locator export covering the same region as Source A, giving a second overlapping description of the same chargers (what P3 reconciles against).
-3. **Source C — contractor reports (unstructured, synthetic):** a `messiness_injector` module that (a) generates realistic free-text/semi-structured maintenance & install reports (emails, CSVs with merged headers, PDF-like text) referencing Source A/B chargers, and (b) degrades copies of A/B: missing fields, unit swaps, date-format chaos, duplicated rows, conflicting values, late-arriving files. Deterministic via `--seed`; a `--scale N` flag multiplies synthetic volume for the §8 scale run.
+1. **Source A — charging sessions (structured CSV):** `data/seed/ev_charging_sessions_cary.csv.gz` — 20,142 real sessions (2012–2023) from the Town of Cary, NC open data portal: timestamps, station names, charging time, energy kWh, addresses. Semicolon-delimited, UTF-8 BOM. If organizers supply an official dataset, drop it in `data/raw/` — contracts are dataset-agnostic; only P1 readers change.
+2. **Source B — station registry (API/GeoJSON):** `data/seed/afdc_stations_nc_elec.geojson.gz` — 2,062 North Carolina electric stations from the U.S. DOT/BTS mirror of NREL's AFDC registry: coordinates, connector types, EVSE counts, networks, open dates. Overlaps Source A's chargers — what P3 reconciles against.
+3. **Source C — contractor reports (unstructured):** 24 committed seed samples at `data/seed/contractor_reports/` (synthetic, deterministic, referencing real A/B stations), plus a `messiness_injector` module that (a) regenerates and extends such reports at scale, and (b) degrades copies of A/B: missing fields, unit swaps, date-format chaos, duplicated rows, conflicting values, late-arriving files. Deterministic via `--seed`; a `--scale N` flag multiplies synthetic volume for the §8 scale run.
 
-**Geography note (binding):** the pipeline's default territory is **the Source A region (Palo Alto / Santa Clara County)**, not Con Ed's. Territory appears nowhere in code as a constant — see S1.
+**Geography note (binding):** the pipeline's default territory is **North Carolina** (Source A is Cary/Wake County; Source B is NC-wide), not Con Ed's. Territory appears nowhere in code as a constant — see S1.
 
 **Tasks**
 
-- E1. `data/README.md`: exact fetch/regeneration instructions for A, B, C.
-- E2. Format readers: CSV (incl. malformed/merged-header), JSON/API dump, free text — auto-detecting file type in `data/raw/`.
+- E1. `data/README.md`: how to refresh A/B from their live sources and regenerate/extend C; the committed seed in `data/seed/` stays the reproducible baseline.
+- E2. Format readers: CSV (incl. malformed/merged-header, `;`-delimited, BOM), JSON/GeoJSON API dump, free text — auto-detecting file type in `data/raw/`, handling `.gz` transparently.
 - E3. **LLM parsing layer**: Claude-based extraction of `MaintenanceEvent`s (and embedded charger facts) from Source C text, with a regex/heuristic `--no-llm` fallback; extraction confidence written to `quality.score` per §5.0.
 - E4. Structural normalization to canonical JSONL: field placement, provenance, one record per line. **Values pass through verbatim per §5.0 — no date/unit/enum conversion.**
 - E5. Messiness injector with `--seed` and `--scale` as described above.
@@ -269,7 +270,7 @@ Consumes canonical JSONL (her **own fixtures** during development), emits `valid
 
 **Tasks**
 
-- S1. Declarative **rule engine** (rules as data — YAML in her module): required fields per `record_type`, type/range checks (`energy_kwh ≥ 0`, `power_kw ≤ 400`, `end_time > start_time`), enum membership after normalization, cross-field checks (`duration_min` ≈ `end − start`), and a **territory bounding-box check whose coordinates live in the YAML config**, shipped defaulted to the Source A region (Palo Alto / Santa Clara County) and swapped by config alone if an official Con Ed dataset lands.
+- S1. Declarative **rule engine** (rules as data — YAML in her module): required fields per `record_type`, type/range checks (`energy_kwh ≥ 0`, `power_kw ≤ 400`, `end_time > start_time`), enum membership after normalization, cross-field checks (`duration_min` ≈ `end − start`), and a **territory bounding-box check whose coordinates live in the YAML config**, shipped defaulted to North Carolina (lat 33.7–36.6, lon −84.4 to −75.4, covering the seed dataset) and swapped by config alone if an official Con Ed dataset lands.
 - S2. **Standardizers**: dates → ISO-8601 with timezone, unit repair (W→kW, Wh→kWh via magnitude heuristics), connector/level/status normalization to §5 target enums, address/zip cleanup, whitespace/casing.
 - S3. **Missing-data handling**: derive when possible (duration from timestamps, level from power_kw), impute conservatively where safe (recording `fixes_applied`), else flag with an `issues` code — never drop a record; unfixable records are quarantined in the report but still emitted with a low score. **No cross-record logic; duplicates pass through untouched (§7 boundary rules).**
 - S4. **Incorrect-data detection & fixing** at single-record level: impossible values, out-of-range, internal contradictions; `stale_report` flagging per the 7-day rule.
@@ -362,7 +363,7 @@ Performed manually by the **Integration Manager (a person, not an agent — see 
 
 | Gap | Resolution |
 |---|---|
-| **No dataset in repo** | 3-source dataset (public sessions CSV + public station registry + synthetic messy contractor reports); official dataset can drop in later — only P1 readers adapt |
+| **No dataset in repo** | 3-source dataset **committed at `data/seed/`** (20,142 real Cary NC sessions + 2,062 AFDC/BTS NC stations + 24 synthetic messy contractor reports); official dataset can drop in later — only P1 readers adapt |
 | **Repo had no scaffold; frozen root files didn't exist** | Phase 0 (§2.0): `.gitignore`, `requirements.txt`, `pyproject.toml`, package `__init__.py`s seeded on `main` before branching; branches pre-created by a human |
 | Public data is clean; messy data is the premise | Deterministic messiness injector (E5) with `--seed`/`--scale` |
 | Parallel phases normally block on each other | Frozen schema (§5) + frozen CLI (§6) + frozen §5.5 report shapes + per-module fixtures |

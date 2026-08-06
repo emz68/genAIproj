@@ -1,0 +1,4 @@
+customer complaint via 311, logged 8/20/21
+location given: "TOWN OF CARY / DT DECK P3 WEST"
+says cable too short
+routed to: priya (subcontr.)  priority: fyi

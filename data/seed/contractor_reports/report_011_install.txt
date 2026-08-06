@@ -1,0 +1,6 @@
+INSTALL COMPLETION REPORT
+20.01.2023 | crew: priya (subcontr.)
+new unit commissioned at TOWN OF CARY / DT DECK P2 (1)
+nameplate: 6600 W, dual J1772
+punch list: E-341 ground fault
+energized + verified. billing starts Jan 23, 2023

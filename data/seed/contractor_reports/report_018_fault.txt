@@ -1,0 +1,5 @@
+*** AUTOMATED FAULT DIGEST (fwd by priya (subcontr.)) ***
+period ending 3/13/21
+WEINSTEIN TRIANGLE1 :: GFCI wont reset :: count=4 :: sev=minor
+
+NOTE units in W not kW on this feed

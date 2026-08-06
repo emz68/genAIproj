@@ -1,0 +1,8 @@
+QUARTERLY INSPECTION FORM (rev 3b)
+insp.date : 4/13/23
+site/station.... MetLife - Cary - Building 2
+technician:T. Okafor
+charger rating   L2 dual port
+findings -> E-341 ground fault; cosmetic scratches
+severity code [urgent-safety]
+followup req'd: y - parts ordered

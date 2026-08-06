@@ -1,0 +1,8 @@
+QUARTERLY INSPECTION FORM (rev 3b)
+insp.date : 22.04.2022
+site/station.... TOWN OF CARY / P2_DTCARYDECKE1
+technician:R. Singh - ChargeRight LLC
+charger rating   50 kW DCFC
+findings -> breaker trip x3 this wk; cosmetic scratches
+severity code [safety!!]
+followup req'd: Y

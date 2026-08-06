@@ -1,0 +1,5 @@
+*** AUTOMATED FAULT DIGEST (fwd by T. Okafor) ***
+period ending 1/28/21
+TOWN OF CARY / DT DECK P3 EAST :: comms dropout to network :: count=8 :: sev=safety!!
+
+NOTE units in W not kW on this feed
