@@ -1,0 +1,5 @@
+*** AUTOMATED FAULT DIGEST (fwd by M. Chen) ***
+period ending 2023-10-01
+TOWN OF CARY / P5_DTCARYDECKE :: breaker trip x3 this wk :: count=3 :: sev=fyi
+TOWN OF CARY / P2_DTCARYDEKCE2 :: cable insulation cracked NEEDS REVIEW :: count=3 :: sev=minor
+NOTE units in W not kW on this feed

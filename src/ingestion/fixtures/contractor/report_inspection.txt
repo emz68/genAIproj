@@ -1,0 +1,8 @@
+QUARTERLY INSPECTION FORM (rev 3b)
+insp.date : 2022-02-08
+site/station.... TOWN OF CARY / P3_DTCARYDECKE
+technician:D.K.
+charger rating   6600 W
+findings -> breaker trip x3 this wk; cosmetic scratches
+severity code [safety!!]
+followup req'd: Y

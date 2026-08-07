@@ -1,0 +1,9 @@
+From: R. Singh - ChargeRight LLC <field-ops@contractor-mail.example>
+Sent: 01.02.2023
+Subj: RE: RE: site visit TOWN OF CARY / DT DECK P2 (2)
+
+Hey team - swung by today. connector latch broken. rated 50 kW DCFC but pulling less.
+Station: TOWN OF CARY / DT DECK P2 (2)
+addr on file: 113 Walnut St 27511
+severity: urgent-safety   will file proper ticket later
+- sent from my phone
