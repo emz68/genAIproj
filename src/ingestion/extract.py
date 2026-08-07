@@ -95,10 +95,7 @@ _STATION_RULES: List[re.Pattern] = [
     re.compile(r"new unit commissioned at\s*(.+?)\s*$", re.M | re.I),
 ]
 
-_ADDRESS_RULES: List[Tuple[re.Pattern, str]] = [
-    (re.compile(r"addr on file:\s*(.+?)\s*$", re.M | re.I), "address"),
-    (re.compile(r"location given:\s*\"?(.+?)\"?\s*$", re.M | re.I), "location"),
-]
+_ADDRESS_KEYS = ("address", "location")  # _LABELED_FIELDS entries usable as station fallback
 
 _RATING_RE = re.compile(
     r"rated\s*([\d.]+\s*(?:kW|W|MW)(?:\s*DCFC)?|L1|L2|DCFC|level\s*\d)", re.I
@@ -327,7 +324,9 @@ def _severity_label(text: str) -> Optional[str]:
 
 
 def _extract_location(text: str) -> Optional[str]:
-    for pattern, key in _ADDRESS_RULES:
+    for pattern, key in _LABELED_FIELDS:
+        if key not in _ADDRESS_KEYS:
+            continue
         m = pattern.search(text)
         if m:
             return _clean(m.group(1))
