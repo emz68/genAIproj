@@ -1,0 +1,8 @@
+# Phase P2 (src/validation) dependencies — every package imported by this
+# module (PDM §2.3).  The Integration Manager unions these into the root
+# requirements.txt at merge time (§8 step 3).
+pydantic
+pyyaml
+python-dateutil
+anthropic
+pytest
