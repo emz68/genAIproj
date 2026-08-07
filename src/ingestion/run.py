@@ -28,9 +28,8 @@ import hashlib
 import json
 import os
 import sys
-import time
 from datetime import datetime, timezone
-from typing import Any, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Dict, Iterator, List, Optional
 
 from src.ingestion import extract, readers
 from src.ingestion.models import ChargerRecord, MaintenanceEvent, SessionRecord

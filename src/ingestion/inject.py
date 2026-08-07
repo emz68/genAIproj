@@ -278,7 +278,6 @@ _PUNCH = ["GFCI wont reset", "E-341 ground fault", "overtemp warning @ 147F", "c
 _TECHS = ["M. Chen", "D.K.", "R. Singh - ChargeRight LLC", "priya (subcontr.)", "T. Okafor", "J. Alvarez"]
 
 _SEV_WORDS = ["fyi", "minor", "major", "urgent-safety", "safety!!"]
-_SEV_WORD_FOR = {"fyi": "fyi", "minor": "minor", "major": "MAJOR", "urgent-safety": "urgent-safety", "safety!!": "safety!!"}
 
 _DATE_FMT_MAKERS = [
     lambda rng: f"{rng.randint(1, 28):02d}.{rng.randint(1, 12):02d}.{rng.randint(2021, 2024)}",
