@@ -117,8 +117,14 @@ def _check_iso(value: str | None, kind: str) -> str | None:
     try:
         if kind == "date":
             date.fromisoformat(text)
-        else:
-            datetime.fromisoformat(text)
+        elif kind == "datetime":  # §5.2: "ISO-8601 with timezone"
+            if datetime.fromisoformat(text).tzinfo is None:
+                raise ValueError("missing timezone")
+        else:  # date or datetime, tolerant (e.g. health.since, §5.4)
+            try:
+                datetime.fromisoformat(text)
+            except ValueError:
+                date.fromisoformat(text)
     except ValueError as e:
         raise ValueError(f"not ISO-8601 {kind}: {value!r}") from e
     return value
@@ -207,6 +213,11 @@ class Health(_Base):
     state: HealthState
     since: str | None = None
     evidence: list[str] = []
+
+    @field_validator("since")
+    @classmethod
+    def _iso_since(cls, v):
+        return _check_iso(v, "date_or_datetime")
 
 
 class ChargerMetrics(_Base):

@@ -17,6 +17,7 @@ from harness import (
     STAGE_FIXTURE_INPUT,
     auto_stage_argv,
     final_stderr,
+    real_module_present,
     run_cli,
     stage_io_args,
 )
@@ -49,6 +50,8 @@ def test_success_exit_code_and_metrics_line(stage, tmp_path):
     assert kind == "metrics", f"final stderr line must be metrics, got: {proc.stderr.splitlines()[-1:]}"
     assert METRIC_KEYS <= set(metrics)
     assert all(isinstance(metrics[k], int) for k in METRIC_KEYS)
+    # §6: "(zeros when --no-llm)" — and every harness run passes --no-llm
+    assert metrics["llm_calls"] == 0 and metrics["llm_tokens"] == 0
 
 
 @pytest.mark.parametrize("stage", JSONL_STAGES)
@@ -56,7 +59,10 @@ def test_output_lines_are_schema_valid(stage, tmp_path):
     proc, outputs = _run_stage(stage, tmp_path)
     assert proc.returncode == 0, proc.stderr
     lines = list(iter_jsonl(outputs[0]))
-    assert lines, "stage emitted no records from a non-empty fixture"
+    # §7 A4: no accept/reject verdicts on raw formats — the non-emptiness
+    # assertion applies to the stub only, never to Emlyn's real ingestion.
+    if stage != "ingestion" or not real_module_present("ingestion"):
+        assert lines, "stage emitted no records from a non-empty fixture"
     for lineno, obj in lines:
         PARSERS[stage](obj)  # raises on contract violation
     if stage in REPORT_MODELS:
@@ -125,6 +131,19 @@ def test_ingestion_missing_input_dir_fails_with_error_object(tmp_path):
     kind, error = final_stderr(proc)
     assert kind == "error"
     assert error["stage"] == "ingestion"
+
+
+def test_unexpected_crash_still_emits_error_object(tmp_path):
+    """§6 requires the error object on EVERY failure path — here, --out
+    pointing at an existing regular file (mkdir will raise)."""
+    blocker = tmp_path / "reports"
+    blocker.write_text("i am a file, not a directory", encoding="utf-8")
+    io_args, _ = stage_io_args("reporting", tmp_path, STAGE_FIXTURE_INPUT["reporting"])
+    proc = run_cli(auto_stage_argv("reporting") + io_args + ["--no-llm"])
+    assert proc.returncode != 0
+    kind, error = final_stderr(proc)
+    assert kind == "error", f"crash must end in a §6 error object, got: {proc.stderr[-300:]}"
+    assert error["stage"] == "reporting"
 
 
 def test_validation_quarantines_schema_invalid_records(tmp_path):

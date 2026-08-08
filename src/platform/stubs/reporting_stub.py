@@ -46,7 +46,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--pipeline-health", default=None)
     protocol.add_common_flags(parser)
     args = parser.parse_args(argv)
+    return protocol.run_guarded(STAGE, lambda: _execute(args))
 
+
+def _execute(args) -> int:
     in_path = Path(args.in_path)
     if not in_path.is_file():
         protocol.fail(STAGE, f"input file not found: {in_path}", {"path": str(in_path)})

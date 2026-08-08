@@ -36,7 +36,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--report", dest="report_path", required=True)
     protocol.add_common_flags(parser)
     args = parser.parse_args(argv)
+    return protocol.run_guarded(STAGE, lambda: _execute(args))
 
+
+def _execute(args) -> int:
     in_path = Path(args.in_path)
     if not in_path.is_file():
         protocol.fail(STAGE, f"input file not found: {in_path}", {"path": str(in_path)})
@@ -47,6 +50,8 @@ def main(argv: list[str] | None = None) -> int:
     try:
         with protocol.JsonlWriter(Path(args.out_path)) as out:
             for lineno, obj in protocol.iter_jsonl(in_path):
+                if args.limit is not None and out.count >= args.limit:
+                    break  # §6: at most N output records, then STOP consuming
                 records_in += 1
                 try:
                     schemas.parse_validated_line(obj)
@@ -77,8 +82,7 @@ def main(argv: list[str] | None = None) -> int:
                     obj["golden_id"] = _gid(obj.get("charger_id") or obj.get("station_id"),
                                             "unmatched")
                 schemas.parse_golden_line(obj)  # own-output contract check
-                if args.limit is None or out.count < args.limit:
-                    out.write(obj)
+                out.write(protocol.strip_nones(obj))
             records_out = out.count
     except ValueError as e:
         protocol.fail(STAGE, str(e), {"input": str(in_path)})

@@ -18,7 +18,7 @@ import sys
 from pathlib import Path
 
 import yaml
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 STAGE_ORDER = ["ingestion", "validation", "reconciliation", "reporting"]
 
@@ -34,7 +34,7 @@ class _Base(BaseModel):
 class StageConfig(_Base):
     entrypoint: list[str]
     stub: list[str]
-    retries: int = 1  # additional attempts after the first failure
+    retries: int = Field(default=1, ge=0)  # additional attempts after the first failure
 
 
 class PathsConfig(_Base):
@@ -94,7 +94,10 @@ def preflight(cfg: PlatformConfig, no_llm: bool) -> dict:
         )
     key_present = bool(os.environ.get(cfg.llm.api_key_env, "").strip())
     effective_no_llm = no_llm
-    if cfg.llm.enabled and not no_llm and not key_present:
+    if not cfg.llm.enabled and not no_llm:
+        warnings.append("LLM disabled by config (llm.enabled: false) — running with --no-llm")
+        effective_no_llm = True
+    elif cfg.llm.enabled and not no_llm and not key_present:
         warnings.append(
             f"LLM enabled but ${cfg.llm.api_key_env} is not set — downgrading run to --no-llm"
         )

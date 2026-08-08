@@ -37,7 +37,8 @@ def _records_for(path: Path, rel: str) -> list[dict]:
     }
     if path.name.lower().endswith(".txt"):
         try:
-            description = path.read_text(encoding="utf-8", errors="replace")[:400].strip() or "(empty)"
+            with protocol.open_maybe_gzip(path) as fh:  # bounded read (§2.3)
+                description = fh.read(400).strip() or "(empty)"
         except OSError:
             description = "(unreadable)"
         return [{
@@ -82,7 +83,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", dest="out_path", required=True)
     protocol.add_common_flags(parser)
     args = parser.parse_args(argv)
+    return protocol.run_guarded(STAGE, lambda: _execute(args))
 
+
+def _execute(args) -> int:
     in_dir = Path(args.in_dir)
     if not in_dir.is_dir():
         protocol.fail(STAGE, f"input directory not found: {in_dir}", {"path": str(in_dir)})
@@ -99,7 +103,7 @@ def main(argv: list[str] | None = None) -> int:
             for record in _records_for(path, rel):
                 if args.limit is not None and out.count >= args.limit:
                     break
-                out.write(record)
+                out.write(protocol.strip_nones(record))
         emitted = out.count
 
     protocol.emit_metrics(protocol.base_metrics(records_in=files_read, records_out=emitted))

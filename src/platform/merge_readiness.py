@@ -25,6 +25,13 @@ OWNERSHIP: dict[str, tuple[str, ...]] = {
     "anastasia": ("src/platform/", "tests/integration/"),
 }
 
+# §2.0/§2.1 rule 3: seeded on main and frozen for every branch — a violation
+# even when they sit inside a branch owner's directory.
+FROZEN_FILES = ("src/__init__.py",) + tuple(
+    f"src/{module}/__init__.py"
+    for module in ("ingestion", "validation", "reconciliation", "reporting", "platform")
+)
+
 ALL_BRANCHES = tuple(OWNERSHIP)
 
 
@@ -36,6 +43,9 @@ def violations(branch: str, changed_paths: list[str]) -> list[str]:
     proposal = f"docs/proposals/{branch}.md"
     bad = []
     for path in changed_paths:
+        if path in FROZEN_FILES:
+            bad.append(path)
+            continue
         if path == proposal:
             continue
         if any(path.startswith(rule) if rule.endswith("/") else path == rule for rule in allowed):

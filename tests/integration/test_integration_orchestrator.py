@@ -104,10 +104,28 @@ def test_limit_propagates_to_stages(workdir):
     assert count <= 3
 
 
-def test_health_snapshot_reaches_reporting_stage(workdir):
+def test_all_three_report_inputs_reach_reporting_stage(workdir):
+    """A1 requires wiring ALL of --validation-report, --reconciliation-report,
+    and --pipeline-health into the reporting stage; if any were dropped, its
+    lineage section would render 'data unavailable'."""
     raw, artifacts = workdir
     proc = run_cli(_platform_argv(raw, artifacts))
     assert proc.returncode == 0, proc.stderr
-    psc = (artifacts / "reports" / "psc_report.html").read_text(encoding="utf-8")
-    assert "data unavailable" not in psc.lower().split("pipeline health")[-1], \
-        "reporting stage should have received the pipeline-health snapshot"
+    psc = (artifacts / "reports" / "psc_report.html").read_text(encoding="utf-8").lower()
+    assert "data unavailable" not in psc, \
+        "a report input was not wired through to the reporting stage"
+    assert "validation" in psc and "reconciliation" in psc and "pipeline health" in psc
+
+
+def test_platform_log_json_protocol(workdir):
+    """The platform CLI is itself a §6 stage: under --log-json every non-final
+    stderr line must be a JSON object with log:true, final line = metrics."""
+    raw, artifacts = workdir
+    proc = run_cli(_platform_argv(raw, artifacts, "--log-json"))
+    assert proc.returncode == 0, proc.stderr
+    lines = [ln for ln in proc.stderr.splitlines() if ln.strip()]
+    assert lines
+    for ln in lines[:-1]:
+        obj = json.loads(ln)
+        assert obj.get("log") is True, f"non-final stderr line lacks log:true — {ln[:80]}"
+    assert "metrics" in json.loads(lines[-1])

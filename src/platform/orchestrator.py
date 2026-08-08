@@ -14,7 +14,8 @@ from __future__ import annotations
 
 import subprocess
 import time
-from dataclasses import dataclass, field
+from collections import deque
+from dataclasses import dataclass
 from pathlib import Path
 
 from src.platform import protocol
@@ -40,7 +41,6 @@ class StagePlan:
     argv: list[str]
     inputs: list[Path]
     outputs: list[Path]
-    digest_extra: list[Path] = field(default_factory=list)  # in params, not inputs
 
 
 def build_plan(cfg: PlatformConfig, opts: RunOptions) -> tuple[list[StagePlan], Path, Path]:
@@ -90,17 +90,30 @@ def build_plan(cfg: PlatformConfig, opts: RunOptions) -> tuple[list[StagePlan], 
     return plan, health_path, manifest_path
 
 
+def _run_once(argv: list[str]) -> tuple[int, str]:
+    """Run one stage attempt, streaming stderr with a bounded tail (§2.3:
+    memory must stay flat however much the stage logs)."""
+    proc = subprocess.Popen(argv, stdout=subprocess.DEVNULL,
+                            stderr=subprocess.PIPE, text=True)
+    tail: deque[str] = deque(maxlen=200)
+    assert proc.stderr is not None
+    for line in proc.stderr:
+        if line.strip():
+            tail.append(line.rstrip("\n"))
+    return proc.wait(), "\n".join(tail)
+
+
 def _run_stage(plan: StagePlan, retries: int, log) -> tuple[int, str, int]:
-    """Returns (exit_code, stderr_text, attempts_used)."""
-    attempts = retries + 1
+    """Returns (exit_code, stderr_tail, retries_used)."""
+    attempts = max(1, retries + 1)
+    exit_code, stderr_tail = 1, ""
     for attempt in range(1, attempts + 1):
-        proc = subprocess.run(plan.argv, capture_output=True, text=True)
-        if proc.returncode == 0:
-            return 0, proc.stderr, attempt - 1
-        log(f"stage {plan.name} attempt {attempt}/{attempts} failed (exit {proc.returncode})",
-            stage=plan.name, attempt=attempt, exit_code=proc.returncode)
-        stderr = proc.stderr
-    return proc.returncode, stderr, attempts - 1
+        exit_code, stderr_tail = _run_once(plan.argv)
+        if exit_code == 0:
+            return 0, stderr_tail, attempt - 1
+        log(f"stage {plan.name} attempt {attempt}/{attempts} failed (exit {exit_code})",
+            stage=plan.name, attempt=attempt, exit_code=exit_code)
+    return exit_code, stderr_tail, attempts - 1
 
 
 def run_pipeline(cfg: PlatformConfig, opts: RunOptions) -> int:

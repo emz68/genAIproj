@@ -49,3 +49,22 @@ def test_preflight_respects_explicit_no_llm(monkeypatch):
     report = preflight(cfg, no_llm=True)
     assert report["effective_no_llm"] is True
     assert not any("downgrading" in w for w in report["warnings"])
+
+
+def test_preflight_honors_llm_disabled_in_config(monkeypatch):
+    cfg = load_config(DEFAULT_CONFIG_PATH)
+    monkeypatch.setenv(cfg.llm.api_key_env, "key-present")
+    cfg.llm.enabled = False
+    report = preflight(cfg, no_llm=False)
+    assert report["effective_no_llm"] is True, "llm.enabled: false must force --no-llm"
+    assert any("disabled by config" in w for w in report["warnings"])
+
+
+def test_negative_retries_rejected():
+    import pytest
+    from pydantic import ValidationError
+
+    from src.platform.config import StageConfig
+
+    with pytest.raises(ValidationError):
+        StageConfig(entrypoint=["x"], stub=["y"], retries=-1)

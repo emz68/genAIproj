@@ -25,6 +25,15 @@ def test_frozen_root_and_seed_files_flagged():
         assert violations("anastasia", [path]) == [path], path
 
 
+def test_frozen_seeded_init_flagged_even_inside_owned_directory():
+    # §2.1 rule 3: seeded __init__.py files are main-owned even though they
+    # sit under a branch owner's directory prefix.
+    assert violations("emlyn", ["src/ingestion/__init__.py"]) == ["src/ingestion/__init__.py"]
+    assert violations("anastasia", ["src/platform/__init__.py"]) == ["src/platform/__init__.py"]
+    # …but new files beside them are fine:
+    assert violations("emlyn", ["src/ingestion/readers/__init__.py"]) == []
+
+
 def test_proposal_file_only_for_own_branch():
     assert violations("sanja", ["docs/proposals/sanja.md"]) == []
     assert violations("sanja", ["docs/proposals/yash.md"]) == ["docs/proposals/yash.md"]
@@ -63,8 +72,10 @@ def test_cli_smoke():
 
     proc = subprocess.run([sys.executable, "-m", "src.platform.merge_readiness", "--branch", "anastasia"],
                           capture_output=True, text=True)
-    assert proc.returncode in (0, 1)  # 1 only if the working tree genuinely violates
-    assert "anastasia" in proc.stdout
+    if "ERROR" in proc.stdout:
+        pytest.skip(f"git refs unavailable for the CLI check: {proc.stdout.strip()}")
+    assert "anastasia: PASS" in proc.stdout, proc.stdout
+    assert proc.returncode == 0
 
 
 def test_ownership_map_matches_the_five_people():

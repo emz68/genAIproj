@@ -54,6 +54,29 @@ def fail(stage: str, message: str, detail: dict | None = None, exit_code: int = 
     raise SystemExit(exit_code)
 
 
+def run_guarded(stage: str, fn):
+    """§6 crash boundary: any unexpected exception exits via the error object."""
+    import traceback
+
+    try:
+        return fn()
+    except SystemExit:
+        raise
+    except Exception as e:  # noqa: BLE001 — stage boundary: anything → §6 error object
+        fail(stage, f"{type(e).__name__}: {e}",
+             detail={"traceback": traceback.format_exc().splitlines()[-6:]})
+
+
+def strip_nones(value):
+    """Recursively drop None-valued dict keys (§5.0: writers should omit nulls;
+    readers treat absent == null, so this is always safe)."""
+    if isinstance(value, dict):
+        return {k: strip_nones(v) for k, v in value.items() if v is not None}
+    if isinstance(value, list):
+        return [strip_nones(v) for v in value]
+    return value
+
+
 def ensure_parent_dir(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
 
