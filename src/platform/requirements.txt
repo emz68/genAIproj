@@ -1,0 +1,5 @@
+# Third-party imports of src/platform (§2.3 — unioned into the root
+# requirements.txt by the Integration Manager at §8 step 3).
+pydantic>=2
+PyYAML
+pytest

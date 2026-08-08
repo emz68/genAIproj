@@ -1,0 +1,1 @@
+{"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [-78.781, 35.787]}, "properties": {"station_name": "TOWN OF CARY TOWN HALL", "city": "Cary", "state": "NC", "ev_connector_types": "J1772", "ev_network": "ChargePoint Network"}}]}

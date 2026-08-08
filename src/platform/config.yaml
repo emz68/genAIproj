@@ -1,0 +1,29 @@
+# A2 — default platform configuration.
+# Entrypoints are the frozen §6 module paths; "{python}" resolves to the
+# running interpreter. --use-stubs switches every stage to its stub
+# (src/platform/stubs/, A6) so the pipeline runs end-to-end pre-merge.
+paths:
+  raw_dir: data/raw
+  artifacts_dir: artifacts
+
+llm:
+  enabled: true
+  api_key_env: ANTHROPIC_API_KEY
+
+stages:
+  ingestion:
+    entrypoint: ["{python}", "-m", "src.ingestion.run"]
+    stub: ["{python}", "-m", "src.platform.stubs.ingestion_stub"]
+    retries: 1
+  validation:
+    entrypoint: ["{python}", "-m", "src.validation.run"]
+    stub: ["{python}", "-m", "src.platform.stubs.validation_stub"]
+    retries: 1
+  reconciliation:
+    entrypoint: ["{python}", "-m", "src.reconciliation.run"]
+    stub: ["{python}", "-m", "src.platform.stubs.reconciliation_stub"]
+    retries: 1
+  reporting:
+    entrypoint: ["{python}", "-m", "src.reporting.run"]
+    stub: ["{python}", "-m", "src.platform.stubs.reporting_stub"]
+    retries: 1
