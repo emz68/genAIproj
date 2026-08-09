@@ -1,0 +1,7 @@
+# P3 — Reconciliation & Anomaly Detection (Yash)
+# Declared per PRODUCT_DEVELOPMENT_MANAGER.md §2.3; the Integration Manager
+# unions this into root requirements.txt at merge time (§8 step 3).
+# Core logic is stdlib-only (difflib, hashlib, datetime, statistics-free
+# hand-rolled percentiles); pydantic enforces the §5.4 golden schema.
+pydantic
+pytest
