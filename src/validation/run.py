@@ -96,13 +96,11 @@ def _process_stream(
         try:
             raw = json.loads(line)
         except json.JSONDecodeError as exc:
-            skipped += 1
-            logger.log("warn", f"unparseable JSON on line {lineno}", line=lineno, error=str(exc))
-            continue
+            # §6: a non-JSON line means the upstream canonical file is corrupt —
+            # an upstream contract violation, not a data-quality issue to skip.
+            _fail(f"invalid JSON at line {lineno}: {exc}", {"line": lineno})
         if not isinstance(raw, dict):
-            skipped += 1
-            logger.log("warn", f"non-object JSON on line {lineno}", line=lineno)
-            continue
+            _fail(f"line {lineno} is not a JSON object", {"line": lineno})
 
         records_in += 1
         try:
@@ -186,21 +184,21 @@ def main(argv: list[str] | None = None) -> int:
     except OSError as exc:
         _fail(f"cannot write report: {exc}", {"error": str(exc)})
 
-    # §6 stderr protocol: final line is the metrics object (--log-json).
     metrics = {
         "records_in": stats["records_in"],
         "records_out": stats["records_out"],
         "llm_calls": pipeline.llm_calls,
         "llm_tokens": pipeline.llm_tokens,
     }
-    if args.log_json:
-        print(json.dumps({"metrics": metrics}), file=sys.stderr)
-    else:
+    if not args.log_json:
         print(
             f"validated: in={stats['records_in']} out={stats['records_out']} "
             f"quarantined={stats['quarantined']} skipped={stats['skipped']}",
             file=sys.stderr,
         )
+    # §6: the metrics object is the final stderr line unconditionally —
+    # only intermediate log lines are gated by --log-json.
+    print(json.dumps({"metrics": metrics}), file=sys.stderr)
     return 0
 
 
