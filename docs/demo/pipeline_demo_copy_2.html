@@ -79,14 +79,12 @@
   /* ---------- nav ---------- */
   nav { position: sticky; top: 0; z-index: 60; background: rgba(255,255,255,.88); backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line); }
-  nav .wrap { display: flex; align-items: center; gap: 4px; overflow-x: auto; padding-top: 8px; padding-bottom: 8px; }
-  nav .brand { display: flex; align-items: center; gap: 10px; margin-right: 18px; flex: 0 0 auto; }
+  nav .wrap { display: flex; align-items: center; gap: 2px; overflow-x: auto; padding-top: 8px; padding-bottom: 8px; }
+  nav .brand { display: flex; align-items: center; gap: 10px; margin-right: 14px; flex: 0 0 auto; }
   nav .brand img { height: 22px; width: auto; }
-  nav a { color: var(--navy-700); text-decoration: none; font-size: .86rem; font-weight: 600; padding: 8px 13px;
-    border-radius: 9px; white-space: nowrap; }
+  nav a { color: var(--navy-700); text-decoration: none; font-size: .82rem; font-weight: 600; padding: 7px 10px;
+    border-radius: 8px; white-space: nowrap; }
   nav a:hover { background: var(--navy-100); }
-  nav a.cta { background: var(--navy-800); color: #fff; margin-left: auto; }
-  nav a.cta:hover { background: var(--navy-700); }
 
   /* ---------- sections ---------- */
   main { padding: 70px 0 90px; }
@@ -211,6 +209,12 @@
         <a class="btn btn-ghost" href="#testing">See the test results</a>
         <a class="btn btn-ghost" href="https://github.com/emz68/genAIproj" target="_blank" rel="noopener">View on GitHub ↗</a>
       </div>
+      <div class="hero-dl" style="margin-top:16px; font-size:.88rem; color:#A9C3DC;">
+        Prefer the raw numbers?&nbsp;
+        <a href="outputs/psc_compliance_report.csv" download style="color:#fff; font-weight:700; text-decoration:underline; text-underline-offset:3px;">⬇ Download the PSC compliance report (CSV)</a>
+        &nbsp;·&nbsp;
+        <a href="outputs/psc_compliance_report.html" style="color:#A9C3DC; text-decoration:underline; text-underline-offset:3px;">HTML view</a>
+      </div>
       <div class="hero-stats">
         <div class="hstat"><div class="v"><span class="count" data-to="258343">0</span></div><div class="l">RAW RECORDS PROCESSED</div></div>
         <div class="hstat"><div class="v"><span class="count" data-to="247886">0</span></div><div class="l">GOLDEN RECORDS OUT</div></div>
@@ -238,7 +242,6 @@
     <a href="#testing">Testing</a>
     <a href="#recommendation">Recommendation</a>
     <a href="#risks">Risks</a>
-    <a class="cta" href="outputs/psc_compliance_report.csv" download>PSC report ↓</a>
   </div>
 </nav>
 
