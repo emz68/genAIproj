@@ -157,9 +157,9 @@
 
   <div class="tiles">
     <div class="tile"><div class="n">258,343</div><div class="l">raw records, 3 formats in</div></div>
-    <div class="tile green"><div class="n">247,886</div><div class="l">golden records out</div></div>
-    <div class="tile"><div class="n">10,457</div><div class="l">duplicates auto-resolved</div></div>
-    <div class="tile"><div class="n">5.6 GWh</div><div class="l">energy accounted &amp; auditable</div></div>
+    <div class="tile green"><div class="n">254,414</div><div class="l">golden records out</div></div>
+    <div class="tile"><div class="n">4,105</div><div class="l">duplicates &amp; stale listings resolved — every one audited</div></div>
+    <div class="tile"><div class="n">5.7 GWh</div><div class="l">energy accounted &amp; auditable</div></div>
   </div>
 </header>
 
@@ -240,10 +240,10 @@ routed to: J. Alvarez  priority: <span class="alert">urgent-safety</span></pre>
       <p class="what">Records describing the same physical charger are clustered across all three sources; field conflicts are resolved by explicit survivorship rules; duplicates and billing anomalies are detected statistically.</p>
       <div class="trace"><table>
         <tr><th>golden-record evidence (real output)</th><th></th></tr>
-        <tr><td class="k">merged_from</td><td>4 registry entries for "NISSAN FAST CHR RIVERHEAD" → <span class="now">one charger</span></td></tr>
-        <tr><td class="k">conflicts resolved</td><td>network: <span class="now">"ChargePoint Network"</span> chosen, <span class="was">"Non-Networked", "Blink Network"</span> rejected · "Rd"/"Road" address variants collapsed — 16,157 conflicts resolved in total</td></tr>
+        <tr><td class="k">merged_from</td><td>4 registry entries for "NISSAN FAST CHR RIVERHEAD" → <span class="now">one charger</span>; 1,697 stale/duplicate registry listings absorbed, every merge reversible via the audit trail</td></tr>
+        <tr><td class="k">conflicts resolved</td><td>network: <span class="now">"ChargePoint Network"</span> chosen, <span class="was">"Non-Networked", "Blink Network"</span> rejected — 2,731 conflicts resolved by survivorship rules</td></tr>
         <tr><td class="k">golden_id</td><td><span class="now">mnt-6ba48a9631bc6f4340f4</span> <span class="flag">← stable across re-runs</span></td></tr>
-        <tr><td class="k">anomalies found</td><td>6,765 duplicate-billing patterns · 1,671 energy outliers · 1 unresolved SAFETY event</td></tr>
+        <tr><td class="k">anomalies found</td><td>2,222 duplicate-billing patterns · 2,100 energy outliers · 82 utilization cliffs · 3 unresolved SAFETY events</td></tr>
       </table></div>
     </div>
 
@@ -254,7 +254,7 @@ routed to: J. Alvarez  priority: <span class="alert">urgent-safety</span></pre>
     </div>
 
   </div>
-  <p class="note">Wrapped around all four: the <strong>platform layer (Anastasia)</strong> — orchestration, retries, health monitoring, and a resumability manifest that detects late-arriving contractor files and re-runs exactly the affected stages. A 285-test contract harness caught and localized every integration bug at merge time — and absorbed the official dataset with only a reader change, exactly as the frozen contract promised.</p>
+  <p class="note">Wrapped around all four: the <strong>platform layer (Anastasia)</strong> — orchestration, retries, health monitoring, and a resumability manifest that detects late-arriving contractor files and re-runs exactly the affected stages. A 298-test contract harness caught and localized every integration bug at merge time — and absorbed the official dataset with only a reader change, exactly as the frozen contract promised.</p>
 </section>
 
 <section class="section">
@@ -262,10 +262,11 @@ routed to: J. Alvarez  priority: <span class="alert">urgent-safety</span></pre>
   <h2>What comes out</h2>
 
   <div class="kpis"><table>
-    <tr><td>Golden chargers (deduplicated fleet)</td><td class="v">3,889</td><td class="u">from 5,740 registry rows + 24 garages</td></tr>
-    <tr><td>Golden charging sessions</td><td class="v">243,983</td><td class="u">duplicate billings removed</td></tr>
-    <tr><td>Energy delivered</td><td class="v">5,605,117 kWh</td><td class="u">summed from cleaned sessions</td></tr>
-    <tr><td>Structured maintenance events</td><td class="v">14</td><td class="u">parsed from free text</td></tr>
+    <tr><td>Golden chargers (deduplicated fleet)</td><td class="v">4,219</td><td class="u">incl. all 176 municipal charge boxes</td></tr>
+    <tr><td>Golden charging sessions</td><td class="v">250,181</td><td class="u">100% traceable to their charger</td></tr>
+    <tr><td>Energy delivered</td><td class="v">5,694,019 kWh</td><td class="u">summed from cleaned sessions</td></tr>
+    <tr><td>Estimated fleet uptime</td><td class="v">82.1%</td><td class="u">per-box, from session gaps + maintenance</td></tr>
+    <tr><td>Structured maintenance events</td><td class="v">14</td><td class="u">parsed from free text, 14/14 linked to a charger</td></tr>
     <tr><td>Data completeness score</td><td class="v">89.4%</td><td class="u">per-record quality, averaged</td></tr>
     <tr><td>Per-feed quality league</td><td class="v">0.90 / 0.82 / 0.72</td><td class="u">NYC sessions / contractor / registry feed</td></tr>
   </table></div>
@@ -273,29 +274,30 @@ routed to: J. Alvarez  priority: <span class="alert">urgent-safety</span></pre>
   <h3 style="margin-top:34px">Every problem found, counted, and attributed</h3>
   <div class="bars">
     <div class="bar-row"><span class="lab">stale reports (&gt;7 days)</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="val">251,701</span></div>
-    <div class="bar-row anom"><span class="lab">duplicate-billing patterns</span><div class="bar-track"><div class="bar-fill" style="width:2.7%"></div></div><span class="val">6,765</span></div>
     <div class="bar-row"><span class="lab">invalid install dates</span><div class="bar-track"><div class="bar-fill" style="width:2.3%"></div></div><span class="val">5,721</span></div>
     <div class="bar-row"><span class="lab">outside Con Ed territory</span><div class="bar-track"><div class="bar-fill" style="width:1.7%"></div></div><span class="val">4,175</span></div>
     <div class="bar-row"><span class="lab">unparseable durations</span><div class="bar-track"><div class="bar-fill" style="width:1.6%"></div></div><span class="val">3,955</span></div>
-    <div class="bar-row anom"><span class="lab">energy outliers</span><div class="bar-track"><div class="bar-fill" style="width:.7%"></div></div><span class="val">1,671</span></div>
+    <div class="bar-row anom"><span class="lab">duplicate-billing patterns</span><div class="bar-track"><div class="bar-fill" style="width:.9%"></div></div><span class="val">2,222</span></div>
+    <div class="bar-row anom"><span class="lab">energy outliers</span><div class="bar-track"><div class="bar-fill" style="width:.8%"></div></div><span class="val">2,100</span></div>
+    <div class="bar-row anom"><span class="lab">utilization cliffs (suspected outage)</span><div class="bar-track"><div class="bar-fill" style="width:.3%"></div></div><span class="val">82</span></div>
   </div>
   <p class="note">Copper bars: single-record issues flagged by the validation rule engine. Amber: cross-record anomalies from statistical detection. The 4,175 out-of-territory records are upstate-NY registry stations correctly excluded by the Con Edison service-territory bounding box; "stale" is expected for a historical export — the same rule catches genuinely late contractor files in production.</p>
 
   <div class="safety">
-    <strong>Safety triage:</strong> SAFETY-severity events extracted from contractor free text and surfaced with location, date, and evidence — including the dead-screen 311 complaint at Jerome 190th Street above, one of them flagged as having <em>no follow-up repair on record</em>.
+    <strong>Safety triage:</strong> SAFETY-severity events extracted from contractor free text and surfaced with location, date, and evidence — including the dead-screen 311 complaint at Jerome 190th Street above. All 14 maintenance events are navigable to their charger (box ids like "EVB-P2042308" are lifted straight out of the free text); 3 SAFETY events are flagged with <em>no follow-up repair on record</em>.
   </div>
 </section>
 
 <section class="section">
   <p class="eyebrow">Scale &amp; rigor</p>
-  <h2>It holds at volume — and monitors itself</h2>
+  <h2>It holds at volume — and audits itself</h2>
   <div class="tiles">
     <div class="tile"><div class="n">258,343</div><div class="l">records in this run</div></div>
-    <div class="tile"><div class="n">41 s</div><div class="l">parse + validate + report</div></div>
-    <div class="tile"><div class="n">74 min</div><div class="l">reconciliation — bottleneck found, attributed, fix assigned</div></div>
-    <div class="tile"><div class="n">285</div><div class="l">tests, all passing offline</div></div>
+    <div class="tile"><div class="n">2.9 min</div><div class="l">end-to-end, laptop, offline</div></div>
+    <div class="tile"><div class="n">74 → 2.2 min</div><div class="l">reconciliation, after its audit-driven fix</div></div>
+    <div class="tile"><div class="n">298</div><div class="l">tests, all passing offline</div></div>
   </div>
-  <p class="note" style="margin-top:18px">Built by five people simultaneously on five branches against a frozen data contract — merged with zero file conflicts. The pipeline's own health monitoring localized the scaling hot-spot to a single stage (entity-resolution matching) with the timing evidence to prove it — that is what operational awareness of the <em>pipeline itself</em> looks like. Reproduce from the repo root:</p>
+  <p class="note" style="margin-top:18px">Built by five people simultaneously on five branches against a frozen data contract — merged with zero file conflicts. And because every golden record carries its full merge history, an adversarial audit could reconstruct <em>every single removal</em> back to its source line — it caught the first reconciliation pass being too aggressive, drove a fix (a duplicate must be the same driver on the same charge box), and verified the corrected run record-by-record. A cleansing framework you can audit is a cleansing framework a regulator can trust. Reproduce from the repo root:</p>
   <pre class="snippet repro">python -m src.platform.run --pipeline full --config src/platform/config.yaml --no-llm</pre>
 </section>
 

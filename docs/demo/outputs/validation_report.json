@@ -1,6 +1,6 @@
 {
-  "records_in": 258343,
-  "records_out": 258343,
+  "records_in": 258519,
+  "records_out": 258519,
   "quarantined": 0,
   "per_source": {
     "afdc": {
@@ -12,10 +12,10 @@
       }
     },
     "nyc_dot": {
-      "records": 252589,
-      "avg_score": 0.8964,
+      "records": 252765,
+      "avg_score": 0.8965,
       "issues": {
-        "stale_report": 251688,
+        "stale_report": 251760,
         "invalid_duration_min": 3955
       }
     },
@@ -30,7 +30,7 @@
   "per_issue": {
     "invalid_install_date": 5721,
     "outside_territory": 4175,
-    "stale_report": 251701,
+    "stale_report": 251773,
     "invalid_duration_min": 3955
   }
 }

@@ -1,12 +1,12 @@
 section,metric,value,unit,note
-KPI,Chargers deployed,3889,count,golden charger records
+KPI,Chargers deployed,4219,count,golden charger records
 KPI,Chargers active,0,count,status = ACTIVE
-KPI,Energy delivered,5605116.95,kWh,sum over sessions
-KPI,Sessions,243983,count,golden session records
-KPI,Est. fleet uptime,100.0%,%,fleet mean of per-charger est_uptime_pct (P3 metrics)
+KPI,Energy delivered,5694019.24,kWh,sum over sessions
+KPI,Sessions,250181,count,golden session records
+KPI,Est. fleet uptime,82.1%,%,fleet mean of per-charger est_uptime_pct (P3 metrics)
 KPI,Data completeness,89.4%,%,mean of P2 quality.score over charger+session records
-LINEAGE,records in,258343,,Validation
-LINEAGE,records out,258343,,Validation
+LINEAGE,records in,258519,,Validation
+LINEAGE,records out,258519,,Validation
 LINEAGE,quarantined,0,,Validation
 LINEAGE,afdc — avg quality score,0.72,,Validation per-source
 LINEAGE,contractor — avg quality score,0.82,,Validation per-source
@@ -14,17 +14,17 @@ LINEAGE,nyc_dot — avg quality score,0.90,,Validation per-source
 LINEAGE,invalid_duration_min,3955,,Validation per-issue
 LINEAGE,invalid_install_date,5721,,Validation per-issue
 LINEAGE,outside_territory,4175,,Validation per-issue
-LINEAGE,stale_report,251701,,Validation per-issue
-LINEAGE,records in,258343,,Reconciliation
-LINEAGE,golden records out,247886,,Reconciliation
-LINEAGE,duplicates removed,10457,,Reconciliation
-LINEAGE,clusters,3889,,Reconciliation
-LINEAGE,conflicts resolved,16157,,Reconciliation
-LINEAGE,contractor — p50 / p95 (days),510.2 / 726.2,,Reconciliation lag
-LINEAGE,nyc_dot — p50 / p95 (days),670.2 / 1474.1,,Reconciliation lag
-LINEAGE,ingestion — records,258343 → 258343,,Pipeline
-LINEAGE,ingestion — duration / LLM calls,2.29s / 0,,Pipeline
-LINEAGE,reconciliation — records,258343 → 247886,,Pipeline
-LINEAGE,reconciliation — duration / LLM calls,4417.28s / 0,,Pipeline
-LINEAGE,validation — records,258343 → 258343,,Pipeline
-LINEAGE,validation — duration / LLM calls,27.83s / 0,,Pipeline
+LINEAGE,stale_report,251773,,Validation per-issue
+LINEAGE,records in,258519,,Reconciliation
+LINEAGE,golden records out,254414,,Reconciliation
+LINEAGE,duplicates removed,4105,,Reconciliation
+LINEAGE,clusters,4219,,Reconciliation
+LINEAGE,conflicts resolved,2731,,Reconciliation
+LINEAGE,contractor — p50 / p95 (days),510.7 / 726.7,,Reconciliation lag
+LINEAGE,nyc_dot — p50 / p95 (days),670.9 / 1471.2,,Reconciliation lag
+LINEAGE,ingestion — records,258343 → 258519,,Pipeline
+LINEAGE,ingestion — duration / LLM calls,2.21s / 0,,Pipeline
+LINEAGE,reconciliation — records,258519 → 254414,,Pipeline
+LINEAGE,reconciliation — duration / LLM calls,134.14s / 0,,Pipeline
+LINEAGE,validation — records,258519 → 258519,,Pipeline
+LINEAGE,validation — duration / LLM calls,26.87s / 0,,Pipeline
