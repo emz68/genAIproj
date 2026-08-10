@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Con Edison · EV Charger Data Platform — 10-Minute Presentation</title>
+<style>
+  :root {
+    --navy-900: #0E2A47;
+    --navy-800: #002F6C;
+    --navy-700: #003E7E;
+    --navy-600: #0057A8;
+    --navy-100: #E3EDF7;
+    --navy-050: #F0F5FA;
+    --red: #E31837;
+    --red-soft: #FBE9EC;
+    --ink: #12263C;
+    --muted: #5B6B7C;
+    --paper: #F4F6F8;
+    --card: #FFFFFF;
+    --line: #D9E1E8;
+    --ok: #1B7F4D;
+    --ok-soft: #E4F2EA;
+    --warn: #B45309;
+    --warn-soft: #FDF3E7;
+    --shadow: 0 1px 2px rgba(14,42,71,.06), 0 8px 24px rgba(14,42,71,.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--paper); color: var(--ink); line-height: 1.6; font-size: 16px;
+  }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---- header ---- */
+  header {
+    background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 55%, var(--navy-700) 100%);
+    color: #fff; padding: 64px 0 56px; position: relative; overflow: hidden;
+  }
+  header::after {
+    content: ""; position: absolute; inset: auto 0 0 0; height: 6px;
+    background: linear-gradient(90deg, var(--red) 0 18%, transparent 18% 100%);
+  }
+  .kicker { letter-spacing: .22em; text-transform: uppercase; font-size: .78rem; color: #9FC2E8; font-weight: 600; }
+
+  /* ---- logo row (monochrome, CI-matched) ---- */
+  .logos { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 34px; flex-wrap: wrap; }
+  .logo { display: flex; align-items: center; gap: 12px; color: #fff; opacity: .95; }
+  .logo svg { display: block; }
+  .logo .nyu { font-family: Georgia, "Times New Roman", serif; font-weight: 700; font-size: 1.35rem; line-height: 1; letter-spacing: .01em; }
+  .logo .stern { font-size: .68rem; font-weight: 700; letter-spacing: .42em; text-transform: uppercase; margin-top: 4px; color: #B9D2EC; }
+  .logo .coned { font-weight: 700; font-size: 1.22rem; letter-spacing: .015em; }
+  .logo .coned small { display: block; font-size: .6rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: #B9D2EC; margin-top: 3px; }
+  .logo .divider { width: 1px; height: 34px; background: rgba(255,255,255,.28); }
+  @media (max-width: 560px) {
+    .logos { justify-content: center; }
+    .logo .divider { display: none; }
+  }
+  h1 { font-size: clamp(1.9rem, 4.5vw, 3rem); line-height: 1.15; margin: 12px 0 10px; font-weight: 800; letter-spacing: -.01em; }
+  .sub { color: #C9DCEF; font-size: 1.08rem; max-width: 62ch; }
+  .meta { margin-top: 22px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .chip { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.22); color: #E7F0F9;
+          padding: 5px 13px; border-radius: 999px; font-size: .82rem; }
+
+  /* ---- sticky nav ---- */
+  nav {
+    position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,.92);
+    backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+  }
+  nav .wrap { display: flex; gap: 4px; overflow-x: auto; padding-top: 10px; padding-bottom: 10px; }
+  nav a { color: var(--navy-700); text-decoration: none; font-size: .85rem; font-weight: 600;
+          padding: 6px 12px; border-radius: 8px; white-space: nowrap; }
+  nav a:hover { background: var(--navy-100); }
+
+  /* ---- sections ---- */
+  main { padding: 48px 0 72px; }
+  section { margin: 44px 0; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding: 28px 30px; }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 14px; }
+  .num { background: var(--navy-800); color: #fff; font-weight: 800; font-size: .85rem; width: 30px; height: 30px;
+         border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+  h2 { font-size: 1.42rem; color: var(--navy-900); font-weight: 800; letter-spacing: -.01em; }
+  h3 { font-size: 1.02rem; color: var(--navy-800); margin: 18px 0 8px; font-weight: 700; }
+  p { margin: 10px 0; }
+  .lead { font-size: 1.05rem; color: var(--muted); }
+  strong { color: var(--navy-900); }
+  a { color: var(--navy-600); }
+
+  /* ---- KPI row ---- */
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin: 20px 0 6px; }
+  .kpi { background: var(--navy-050); border: 1px solid var(--navy-100); border-radius: 12px; padding: 16px 18px; }
+  .kpi .v { font-size: 1.55rem; font-weight: 800; color: var(--navy-800); letter-spacing: -.02em; }
+  .kpi .l { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+  .kpi.red .v { color: var(--red); }
+
+  /* ---- stages ---- */
+  .stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 18px 0; }
+  .stage { border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; background: #fff; }
+  .stage .tag { display: inline-block; font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+                color: var(--navy-700); background: var(--navy-100); border-radius: 6px; padding: 3px 9px; margin-bottom: 8px; }
+  .stage .tag.r { background: var(--red-soft); color: var(--red); }
+  .stage h4 { font-size: .98rem; color: var(--navy-900); }
+  .stage p { font-size: .86rem; color: var(--muted); margin: 6px 0 0; }
+
+  /* ---- lists ---- */
+  ul, ol { margin: 10px 0 10px 22px; }
+  li { margin: 6px 0; }
+  .check { list-style: none; margin-left: 0; }
+  .check li { padding-left: 30px; position: relative; }
+  .check li::before { content: "✔"; position: absolute; left: 2px; color: var(--ok); font-weight: 800; }
+  .cross { list-style: none; margin-left: 0; }
+  .cross li { padding-left: 30px; position: relative; }
+  .cross li::before { content: "✕"; position: absolute; left: 2px; color: var(--red); font-weight: 800; }
+
+  /* ---- fail cards ---- */
+  .fail { background: var(--red-soft); border: 1px solid #F3C9D1; border-radius: 12px; padding: 14px 18px; margin: 10px 0; }
+  .fail .t { font-weight: 700; color: var(--red); }
+  .fail p { margin: 4px 0 0; font-size: .92rem; color: var(--ink); }
+
+  /* ---- comparison table ---- */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0 6px; font-size: .92rem; }
+  th { background: var(--navy-800); color: #fff; text-align: left; padding: 10px 14px; font-weight: 700; }
+  th:first-child { border-radius: 10px 0 0 0; } th:last-child { border-radius: 0 10px 0 0; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--navy-050); }
+  td.b { font-weight: 700; color: var(--navy-900); white-space: nowrap; }
+
+  /* ---- callouts ---- */
+  .callout { border-left: 5px solid var(--red); background: #fff; border-radius: 0 12px 12px 0;
+             padding: 16px 20px; margin: 18px 0; box-shadow: var(--shadow); }
+  .callout.blue { border-left-color: var(--navy-600); }
+  .callout .h { font-weight: 800; color: var(--navy-900); display: block; margin-bottom: 4px; }
+  .fact { display: flex; gap: 14px; align-items: flex-start; background: var(--ok-soft); border: 1px solid #BFE0CD;
+          border-radius: 12px; padding: 16px 20px; margin: 18px 0; }
+  .fact .ic { font-size: 1.6rem; line-height: 1; }
+
+  /* ---- footer ---- */
+  footer { background: var(--navy-900); color: #A9C3DC; padding: 34px 0; font-size: .88rem; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  footer a { color: #D6E6F5; }
+
+  @media (max-width: 640px) {
+    header { padding: 44px 0 40px; }
+    .card { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="logos">
+      <div class="logo" aria-label="NYU Stern">
+        <svg width="30" height="34" viewBox="0 0 30 34" fill="none" aria-hidden="true">
+          <!-- stylized torch mark, monochrome -->
+          <path d="M15 1c2.6 3.4 4.6 6.2 4.6 9.4 0 2.5-1.1 4.4-2.6 5.7V19h-4v-2.9c-1.5-1.3-2.6-3.2-2.6-5.7C10.4 7.2 12.4 4.4 15 1Z" fill="#fff"/>
+          <path d="M11 20h8l-1.2 3.2h-5.6L11 20Z" fill="#fff"/>
+          <path d="M12.2 24h5.6L15 33l-2.8-9Z" fill="#fff"/>
+        </svg>
+        <div>
+          <div class="nyu">NYU</div>
+          <div class="stern">Stern</div>
+        </div>
+      </div>
+      <div class="logo" aria-label="Con Edison">
+        <div class="divider" aria-hidden="true"></div>
+        <svg width="22" height="30" viewBox="0 0 22 30" fill="none" aria-hidden="true">
+          <!-- stylized lightning bolt, monochrome -->
+          <path d="M13.5 1 3 16.5h6.2L7.6 29 19 12.5h-6.4L13.5 1Z" fill="#fff" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <div class="coned">Con Edison</div>
+          <small>Clean Energy · New York</small>
+        </div>
+      </div>
+    </div>
+    <div class="kicker">10-Minute Presentation · Con Edison Headquarters · Team genAIproj</div>
+    <h1>Turning Chaotic EV-Charger Data into Accurate, On-Time PSC Reporting</h1>
+    <p class="sub">An AI-powered pipeline that cleans, standardizes, validates, reconciles, and reports on
+    EV-charger data from third-party integrators — built as five parallel agent phases, merged, and tested
+    against Con Edison's own territory data.</p>
+    <div class="meta">
+      <span class="chip">P1 Ingestion · Emlyn</span>
+      <span class="chip">P2 Validation &amp; Cleaning · Sanja</span>
+      <span class="chip">P3 Reconciliation · Yash</span>
+      <span class="chip">P4 Reporting · Emily</span>
+      <span class="chip">P5 Platform · Anastasia</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="wrap">
+    <a href="#problem">1 · Problem</a>
+    <a href="#research">2 · Research</a>
+    <a href="#ideation">3 · Ideation</a>
+    <a href="#failed">4 · What failed</a>
+    <a href="#solution">5 · What worked</a>
+    <a href="#testing">6 · Testing</a>
+    <a href="#recommendation">7 · Recommendation</a>
+    <a href="#risks">8 · What could go wrong</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- 1 · PROBLEM -->
+  <section id="problem">
+    <div class="card">
+      <div class="sec-head"><span class="num">1</span><h2>The problem area, and why we chose it</h2></div>
+      <p class="lead">Con Edison runs EV-charger programs where chargers are installed and managed by external
+      contractors. Data arrives through third-party integrators — and it is frequently <strong>late, incomplete,
+      inconsistent, and unstructured</strong>, in multiple formats from multiple sources.</p>
+      <p>Today, cleansing, reconciliation, structuring, and reporting are <strong>manual</strong>, causing delays that
+      jeopardize strict <strong>PSC (Public Service Commission) mandates</strong> to report accurately and on time.
+      We chose this area because it is a real, high-stakes operational problem where AI can demonstrably remove
+      manual work — and where a wrong number has regulatory consequences.</p>
+      <div class="kpis">
+        <div class="kpi"><div class="v">3</div><div class="l">source formats: CSV · GeoJSON · free text</div></div>
+        <div class="kpi"><div class="v">258,343</div><div class="l">records in the official NYC test case</div></div>
+        <div class="kpi red"><div class="v">10,457</div><div class="l">duplicate records found by the pipeline</div></div>
+        <div class="kpi red"><div class="v">16,157</div><div class="l">field conflicts resolved across sources</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · RESEARCH -->
+  <section id="research">
+    <div class="card">
+      <div class="sec-head"><span class="num">2</span><h2>Background research — and one surprising fact</h2></div>
+      <p>We studied how charger data actually behaves across the industry: station registries (AFDC/NREL),
+      municipal charging-session logs, and unstructured contractor reports. The literature and public datasets
+      agree on one thing: <strong>the data is messier than anyone budgets for</strong> — unit swaps (W vs kW),
+      date-format chaos, free-text connector names, and late-arriving files are the norm, not the exception.</p>
+      <div class="fact">
+        <div class="ic">⚡</div>
+        <div>
+          <strong>Surprising fact:</strong> in the official NYC DOT dataset we tested — supposedly "clean"
+          municipal data — the pipeline still found <strong>10,457 duplicate records (≈4%)</strong>,
+          <strong>16,157 conflicting field values</strong> that no single source could resolve,
+          and <strong>one unresolved SAFETY maintenance event</strong> hiding in plain sight.
+          The mess isn't in exotic files; it's in the data you already have.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · IDEATION -->
+  <section id="ideation">
+    <div class="card">
+      <div class="sec-head"><span class="num">3</span><h2>Ideation process</h2></div>
+      <p>We designed the project as a <strong>five-phase pipeline</strong>, each phase owned by one person and one
+      agent session, all running <strong>in parallel on separate branches</strong>:</p>
+      <div class="stages">
+        <div class="stage"><span class="tag">P1 · Ingestion</span><h4>Parse everything</h4>
+          <p>Readers for every format, LLM extraction of maintenance events from contractor text, a deterministic
+          messiness injector for testing.</p></div>
+        <div class="stage"><span class="tag">P2 · Validation</span><h4>Fix what's fixable</h4>
+          <p>A declarative YAML rule engine, standardizers (dates, units, enums), missing-data derivation,
+          quality scoring per record.</p></div>
+        <div class="stage"><span class="tag">P3 · Reconciliation</span><h4>One source of truth</h4>
+          <p>Entity resolution across sources, conflict resolution into golden records, anomaly and safety detection.</p></div>
+        <div class="stage"><span class="tag">P4 · Reporting</span><h4>Regulatory output</h4>
+          <p>PSC compliance report with audit-trail lineage, operations dashboard, safety triage, customer-experience view.</p></div>
+        <div class="stage"><span class="tag r">P5 · Platform</span><h4>Make it a product</h4>
+          <p>Orchestrator, health monitoring, integration harness, merge-readiness gate — and the human integration manager.</p></div>
+      </div>
+      <p>The enabling decisions: a <strong>frozen canonical schema</strong> and <strong>frozen CLI contract</strong> so
+      five people never block each other; every module developed against its own fixtures; and the whole plan
+      adversarially reviewed for task overlap and merge safety <em>before</em> anyone wrote code.</p>
+    </div>
+  </section>
+
+  <!-- 4 · WHAT FAILED -->
+  <section id="failed">
+    <div class="card">
+      <div class="sec-head"><span class="num">4</span><h2>What failed — honestly</h2></div>
+      <p class="lead">The brief asks what failed, so here is the list — each item was found, fixed, and tested:</p>
+
+      <div class="fail"><span class="t">§6 protocol deviations found at merge review.</span>
+        <p>Two stages (P1 and P2) emitted their final metrics line only under a flag and skipped corrupt input lines
+        instead of hard-failing. The Integration Manager's contract harness caught both (commits <code>d33f684</code>,
+        <code>640ee4f</code>) — a reminder that "works on my fixtures" is not the contract.</p></div>
+
+      <div class="fail"><span class="t">A config bug that looked like correct output.</span>
+        <p>The severity synonym <code>urgent-safety</code> normalized to <code>MAJOR</code> instead of
+        <code>SAFETY</code>, because the shorter synonym <code>urgent</code> matched first. Only hand-verifying
+        every fixture line caught it.</p></div>
+
+      <div class="fail"><span class="t">Near-public privacy leak.</span>
+        <p>Git auto-configured a commit author with a student's NYU username and wireless hostname — which would
+        have been permanently public in a fork. Caught before push; fixed with the GitHub no-reply address.</p></div>
+
+      <div class="fail"><span class="t">The schema vs. "never drop a record" conflict.</span>
+        <p>A record missing a required provenance field cannot exist in the frozen P2 schema. Resolution: flag it,
+        emit it anyway with a marker, and stash dropped values as <code>raw_&lt;field&gt;</code> extras — no data lost,
+        no contract broken silently.</p></div>
+
+      <div class="fail"><span class="t">The LLM path was never live-tested.</span>
+        <p>No API key in the development environment, so all runs used the deterministic fallback. The LLM path is
+        implemented, counted, and fails safe — but "untested live" is a fact, not a feature.</p></div>
+
+      <div class="fail"><span class="t">Reconciliation is the bottleneck.</span>
+        <p>The hardest run spent ~74 of 75 minutes in fuzzy matching (4,417s). Correct, but it sets the budget for
+        nightly runs.</p></div>
+    </div>
+  </section>
+
+  <!-- 5 · WHAT WORKED -->
+  <section id="solution">
+    <div class="card">
+      <div class="sec-head"><span class="num">5</span><h2>What did not fail — what the solution looks like</h2></div>
+      <p class="lead">A four-stage pipeline, one command, full audit trail:</p>
+      <ul class="check">
+        <li><strong>Ingestion</strong> parses all three formats and turns unstructured contractor text into typed
+        records via LLM extraction with a deterministic fallback.</li>
+        <li><strong>Validation &amp; cleaning</strong> repairs what is repairable — <code>W→kW</code>,
+        <code>Wh→kWh</code>, date-format chaos (<code>"3/4/24 2pm"</code> → ISO-8601 with timezone),
+        free-text enums (<code>"chgpt LVL2 dual"</code> → CHAdeMO / L2) — derives missing values, and scores every
+        record 0–1 with stable issue codes.</li>
+        <li><strong>Reconciliation</strong> resolves the same physical charger across sources into
+        <strong>golden records</strong>, logging every conflict decision, and detects anomalies statistically.</li>
+        <li><strong>Reporting</strong> renders the PSC compliance report with a <strong>data-lineage appendix</strong>
+        (so "accurate and on time" is demonstrable), an operations dashboard, a safety triage, and a
+        customer-experience view.</li>
+      </ul>
+      <p>The result on the real run: <strong>258,343 raw records → 247,886 golden records</strong>, every decision
+      attributable, every problem counted in per-stage reports — offline, deterministic, and re-runnable.</p>
+      <div class="callout blue">
+        <span class="h">The shape of the answer</span>
+        Don't replace the analysts. Remove the manual data scramble: automated cleansing and reconciliation
+        compress days of spreadsheet work into a 75-minute offline run with a paper trail regulators can audit.
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · TESTING -->
+  <section id="testing">
+    <div class="card">
+      <div class="sec-head"><span class="num">6</span><h2>Testing: baseline case, then a harder case</h2></div>
+      <p>We tested in two steps, exactly as the brief asks: a baseline case we fully understood, then a harder
+      case at real-world scale.</p>
+      <table>
+        <tr><th></th><th>Baseline case — seed dataset</th><th>Harder case — official NYC DOT dataset</th></tr>
+        <tr><td class="b">Input</td><td>Cary, NC seed: 20k+ sessions, 2k stations, 24 contractor reports, plus
+            synthetic messiness injected deterministically</td><td>258,343 records: NYC municipal garages +
+            NY AFDC registry + contractor reports, all real, no curation</td></tr>
+        <tr><td class="b">How it performed</td><td>76 offline unit tests + fixture runs: every planted problem
+            caught (bad dates, W/kW swaps, missing fields, stale reports, duplicates)</td><td>Validation: 27.8s for
+            all 258,343 records; 10,457 duplicates removed; 16,157 conflicts resolved into 3,889 clusters;
+            6,765 duplicate-billing anomalies + 1,671 energy outliers + 1 unresolved SAFETY event detected;
+            0 records quarantined</td></tr>
+        <tr><td class="b">What it proved</td><td>Correctness: the pipeline fixes the fixable and flags the rest,
+            never dropping a record</td><td>Scale: flat memory streaming, deterministic reruns, and outputs that
+            parse against the frozen schema at 1/4 million records</td></tr>
+      </table>
+      <div class="kpis">
+        <div class="kpi"><div class="v">76</div><div class="l">offline unit tests, all phases</div></div>
+        <div class="kpi"><div class="v">27.8s</div><div class="l">validation of 258k records</div></div>
+        <div class="kpi"><div class="v">74 min</div><div class="l">full reconcile → golden records</div></div>
+        <div class="kpi red"><div class="v">1</div><div class="l">unresolved SAFETY event surfaced</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · RECOMMENDATION -->
+  <section id="recommendation">
+    <div class="card">
+      <div class="sec-head"><span class="num">7</span><h2>Our recommendation to Con Edison</h2></div>
+      <ol>
+        <li><strong>Adopt the pipeline as the PSC reporting path.</strong> Run it on every late-arriving batch:
+        deterministic reruns supersede prior golden records, and the lineage appendix makes "accurate and on time"
+        auditable.</li>
+        <li><strong>Start with validation + reporting on live data,</strong> LLM extraction off by default
+        (<code>--no-llm</code>): the deterministic path already delivers most of the value at zero marginal cost.</li>
+        <li><strong>Keep a human in the loop for SAFETY anomalies only.</strong> Everything else — duplicates,
+        conflicts, outliers — can auto-resolve with a logged decision.</li>
+        <li><strong>Instrument it.</strong> Pipeline-health metrics per stage (records, duration, LLM usage) already
+        ship with every run.</li>
+        <li><strong>Then extend:</strong> plug in contractor-portal feeds, add alerting on the anomaly feed, and
+        schedule nightly reconciliation (the 74-minute matching step is the capacity planner's number).</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 8 · RISKS -->
+  <section id="risks">
+    <div class="card">
+      <div class="sec-head"><span class="num">8</span><h2>What could go wrong</h2></div>
+      <ul class="cross">
+        <li><strong>Model/provider drift.</strong> LLM extraction quality and pricing change without notice; the
+        fallback path and pinned model configuration mitigate, but monitoring is mandatory.</li>
+        <li><strong>Schema drift.</strong> A new integrator format or a changed field meaning silently shifts
+        interpretation — the frozen-schema proposal process exists, but someone must run it.</li>
+        <li><strong>Late-arriving data at the deadline.</strong> A file landing after the report window forces a
+        restatement; the pipeline supports it, but the <em>process</em> must allow it.</li>
+        <li><strong>Scale.</strong> Reconciliation took 74 minutes at 258k records; annual growth or full-state
+        rollout needs the matching step optimized or sharded.</li>
+        <li><strong>Overtrust.</strong> A 0.99-quality score is not ground truth. Analysts must be able to see
+        <em>why</em> — the issue codes, conflict logs, and raw-value stashes exist for exactly that.</li>
+        <li><strong>Credential hygiene.</strong> Keys live only in the environment, never in the repository;
+        the pipeline scans every submission for them — but a leak elsewhere still burns a key.</li>
+        <li><strong>Privacy/public-work rules.</strong> Anything pushed to a public fork is public; identifiable
+        field media and private feedback must stay on private channels.</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Team genAIproj · Applied Generative AI in Business · Summer 2026</span>
+    <span>Work link: <a href="https://github.com/emz68/genAIproj">github.com/emz68/genAIproj</a> ·
+    demo outputs: <code>docs/demo/outputs/</code></span>
+  </div>
+</footer>
+
+</body>
+</html>
