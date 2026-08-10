@@ -1,9 +1,10 @@
-# Frozen on main (PRODUCT_DEVELOPMENT_MANAGER.md §2.3).
-# Branches declare additional packages in src/<module>/requirements.txt;
-# the Integration Manager unions them here at merge time (§8 step 3).
-pandas
-pydantic
-pytest
-pyyaml
+# Union of the five src/<module>/requirements.txt files, per §8 step 3
+# (performed by the Integration Manager at merge time).
 anthropic
+ijson
+pandas
+pydantic>=2
+pytest
+python-dateutil
+PyYAML
 requests
