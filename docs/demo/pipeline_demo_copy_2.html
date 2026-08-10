@@ -525,8 +525,8 @@
     </div>
     <div class="callout">
       <span class="h">The enabling decisions</span>
-      let five builders work in parallel on separate branches; every module was developed against its own adversarial fixtures; and the plan was reviewed for overlap and merge safety <em>before</em> a line of code was written. A fifth phase (P5) wraps it all in an orchestrator
-      with health monitoring and an integration harness.
+      Set the rules first, then wrote the code. Agreed on the data format and how every command works — before anyone started. 
+      let five builders work in parallel on separate branches; Everyone tested with their own sample data, and then we put it all together at the end.
     </div>
   </section>
 
@@ -537,7 +537,7 @@
     <div class="card">
       <div class="fail"><span class="x">✕</span><div><span class="t">Contract-protocol deviations caught at merge review.</span>
         <p>Two stages emitted their final metrics line only under a flag and skipped corrupt input instead of hard-failing.
-        The integration harness caught both (<code>d33f684</code>, <code>640ee4f</code>) — a reminder that "works on my fixtures"
+        The automatic checks caught both (<code>d33f684</code>, <code>640ee4f</code>) — a reminder that "works on my fixtures"
         is not the contract.</p></div></div>
       <div class="fail"><span class="x">✕</span><div><span class="t">A config bug that looked like correct output.</span>
         <p>The severity synonym <code>urgent-safety</code> normalized to <code>MAJOR</code> instead of <code>SAFETY</code>,
@@ -545,8 +545,8 @@
       <div class="fail"><span class="x">✕</span><div><span class="t">A near-public privacy leak.</span>
         <p>Git auto-configured a commit author with a student's NYU username and wireless hostname — permanently public in a fork.
         Caught before push; fixed with the GitHub no-reply address.</p></div></div>
-      <div class="fail"><span class="x">✕</span><div><span class="t">"Never drop a record" vs. the frozen schema.</span>
-        <p>A record missing a required provenance field cannot exist in the P2 schema. Resolution: flag it, emit it anyway with a
+      <div class="fail"><span class="x">✕</span><div><span class="t">"Never drop a record".</span>
+        <p>A record missing a required provenance field cannot exist in the P2. Resolution: flag it, emit it anyway with a
         marker, and stash raw values as <code>raw_&lt;field&gt;</code> extras — nothing lost, nothing silently broken.</p></div></div>
     </div>
   </section>
