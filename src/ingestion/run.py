@@ -173,6 +173,24 @@ def _pick_csv_assembler(row: Dict[str, Any]):
     return assemble_nyc_csv_row if "Charge Box ID" in row else assemble_csv_row
 
 
+def nyc_charger_record(session_rec: Dict[str, Any]) -> Dict[str, Any]:
+    """§5.1 ChargerRecord for a municipal charge box, derived from the first
+    session that mentions it. The sessions feed is the ONLY source that
+    knows the municipal fleet's boxes — without these records the fleet has
+    no charger representation and sessions/maintenance cannot link (P3
+    matches on the exact charger_id/station_id these carry)."""
+    rec = {
+        "record_type": "charger",
+        "charger_id": session_rec.get("charger_id"),
+        "station_id": session_rec.get("station_id"),
+        "network": "NYC DOT Municipal",
+        "station_name": session_rec.get("station_name"),  # extra, verbatim
+        "provenance": dict(session_rec["provenance"]),
+        "quality": _quality(1.0),
+    }
+    return {k: v for k, v in rec.items() if v is not None}
+
+
 def _s(v: Any) -> Optional[str]:
     """Verbatim pass-through as a free string; None stays None (§5.0).
 
@@ -349,12 +367,22 @@ def run(
             fmt = readers.detect_format(path)
             log(f"processing {os.path.basename(path)} as {fmt}")
             if fmt == "csv":
+                seen_boxes: set = set()
                 for row, issues in readers.iter_csv_records(path):
                     records_in += 1
                     if limit is not None and records_out >= limit:
                         break
                     assemble = _pick_csv_assembler(row)
                     rec = assemble(row, issues, path, ingested_at, records_in)
+                    # First sight of a municipal charge box → emit its
+                    # §5.1 charger record ahead of the session.
+                    if assemble is assemble_nyc_csv_row and rec.get("charger_id") \
+                            and rec["charger_id"] not in seen_boxes:
+                        seen_boxes.add(rec["charger_id"])
+                        out_fh.write(json.dumps(nyc_charger_record(rec), ensure_ascii=False) + "\n")
+                        records_out += 1
+                        if limit is not None and records_out >= limit:
+                            break
                     out_fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
                     records_out += 1
             elif fmt == "geojson":

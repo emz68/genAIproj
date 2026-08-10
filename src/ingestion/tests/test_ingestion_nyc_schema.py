@@ -1,7 +1,10 @@
-"""NYC DOT "Municipal Lots and Garages" schema — reader dispatch and mapping.
+"""NYC DOT "Municipal Lots and Garages" schema — reader dispatch, mapping,
+and municipal charge-box charger emission.
 
 Added at integration time when the official dataset landed (PDM §7 P1:
-"contracts are dataset-agnostic; only P1 readers change").
+"contracts are dataset-agnostic; only P1 readers change"). Charger emission
+added after the 2026-08-10 audit: the sessions feed is the only source that
+knows the municipal fleet, so each charge box becomes a §5.1 ChargerRecord.
 """
 
 import json
@@ -23,14 +26,15 @@ def _run(tmp_path):
         capture_output=True, text=True,
     )
     assert proc.returncode == 0, proc.stderr
-    return [json.loads(line) for line in out.read_text().splitlines()]
+    recs = [json.loads(line) for line in out.read_text().splitlines()]
+    return ([r for r in recs if r["record_type"] == "session"],
+            [r for r in recs if r["record_type"] == "charger"])
 
 
 def test_nyc_rows_become_sessions_with_verbatim_values(tmp_path):
-    recs = _run(tmp_path)
-    assert len(recs) == 3
-    r = recs[0]
-    assert r["record_type"] == "session"
+    sessions, _ = _run(tmp_path)
+    assert len(sessions) == 4
+    r = sessions[0]
     assert r["session_id"].startswith("nyc-")
     assert r["charger_id"] == "101013:1"
     assert r["station_id"] == "101013"
@@ -43,14 +47,27 @@ def test_nyc_rows_become_sessions_with_verbatim_values(tmp_path):
     assert r["provenance"]["source"] == "nyc_dot"
 
 
+def test_municipal_boxes_become_chargers_once_each(tmp_path):
+    _, chargers = _run(tmp_path)
+    # 4 rows over 3 distinct boxes (101013 appears twice) -> 3 charger records
+    assert [c["charger_id"] for c in chargers] == ["101013:1", "101014:1", "102001:2"]
+    c = chargers[0]
+    assert c["station_id"] == "101013"
+    assert c["network"] == "NYC DOT Municipal"
+    assert c["station_name"] == "JGU - Jerome Gun Hill Road Municipal Parking Garage"
+    assert c["provenance"]["source"] == "nyc_dot"
+
+
 def test_nyc_midnight_crossing_session_has_no_end_time(tmp_path):
-    r = _run(tmp_path)[0]  # connected 19:10, disconnected 07:11 next day
+    sessions, _ = _run(tmp_path)
+    r = sessions[0]  # connected 19:10, disconnected 07:11 next day
     assert "end_time" not in r  # absent == null; no disconnect DATE exists
     assert r["disconnected_time"] == "07:11:12.0000000"  # raw evidence kept
 
 
 def test_nyc_invalid_session_passes_through_with_status(tmp_path):
-    r = _run(tmp_path)[2]
+    sessions, _ = _run(tmp_path)
+    r = sessions[2]
     assert r["session_status"] == "INVALID"
     assert r["invalidity_reason"] == "ZERO_CHARGING_TIME"
     assert r["energy_kwh"] == "0"  # never silently dropped — P2 scores it
@@ -70,6 +87,7 @@ def test_cary_schema_still_dispatches_to_cary_assembler(tmp_path):
         capture_output=True, text=True,
     )
     assert proc.returncode == 0, proc.stderr
-    rec = json.loads(out.read_text().splitlines()[0])
-    assert rec["session_id"].startswith("cary-")
-    assert rec["provenance"]["source"] == "cary"
+    recs = [json.loads(line) for line in out.read_text().splitlines()]
+    assert len(recs) == 1  # no charger emission for the Cary schema
+    assert recs[0]["session_id"].startswith("cary-")
+    assert recs[0]["provenance"]["source"] == "cary"

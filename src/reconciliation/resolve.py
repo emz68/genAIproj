@@ -30,10 +30,14 @@ Design (all deterministic — fixed thresholds, stable tie-breaks):
   then geo proximity (name sim ≥ 0.7 within 1 km). Best-scoring candidate
   wins; sessions matching nothing stay unresolved (own golden record).
 
-- **Session dedup** (within one charger cluster, or unresolved group):
-  exact ``session_id`` match, or fuzzy: |start diff| ≤ ``DUP_START_MIN`` min
-  AND |energy diff| ≤ max(``DUP_ENERGY_ABS``, rel% of larger) AND |duration
-  diff| ≤ ``DUP_DURATION_REL`` (both null durations treated as equal). The
+- **Session dedup** (grouped by exact driver+charge-box identity when those
+  fields exist, else within one charger cluster / unresolved name group):
+  exact ``session_id`` match, or near-identical: same driver and box (a
+  different driver or box is an immediate veto), |start diff| ≤
+  ``DUP_START_EXACT_S`` AND |energy diff| ≤ max(``DUP_ENERGY_ABS``, rel% of
+  larger) AND |duration diff| ≤ ``DUP_DURATION_REL`` (both null durations
+  treated as equal). A duplicate is the same session reported twice — a
+  same-driver re-plug minutes later is a distinct billed session. The
   survivor maximizes (source_rank, quality.score, ingested_at, session_id).
 
 - **Event dedup:** same ``event_id``, or same (charger cluster, event_date,
@@ -46,21 +50,30 @@ both directions and no whole-file blob is ever materialized.
 
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Sequence, Tuple
 
 from .matching import haversine_km, name_similarity, norm, source_rank
 
-# Matching thresholds (deterministic — documented in module README)
-GEO_MATCH_KM = 1.0
+# Matching thresholds (deterministic — documented in module README).
+# Recalibrated after the 2026-08-10 audit of the NYC run: the old values
+# (GEO 1.0 km; dup window 15 min / 10% energy with no identity check)
+# merged distinct sites and deleted distinct paid sessions.
+GEO_MATCH_KM = 0.2
 NAME_SIM_MATCH = 0.85
 NAME_SIM_STRONG = 0.92
+NAME_STRONG_MAX_KM = 0.25  # strong-name matches must also be co-located
 GEO_WITH_NAME_SIM = 0.70
-DUP_START_MIN = 15.0
-DUP_ENERGY_ABS = 0.5
-DUP_ENERGY_REL = 0.10
-DUP_DURATION_REL = 0.15
+# A duplicate is the SAME session reported twice. Identity fields (driver,
+# charge box) veto before values are compared; the value tolerances then
+# cover integrator clock skew and re-metering jitter — but NOT a re-plug
+# minutes later (distinct energy) or another customer's session.
+DUP_START_EXACT_S = 300.0
+DUP_ENERGY_ABS = 0.25
+DUP_ENERGY_REL = 0.04
+DUP_DURATION_REL = 0.05
 
 
 class UnionFind:
@@ -139,6 +152,12 @@ def blocking_keys(ref: dict) -> List[str]:
         tokens = ref["name_norm"].split()
         if tokens:
             keys.append("name3:" + " ".join(tokens[:3]))
+            # Alias tolerance: garages appear both as "Court Square …" and
+            # "CSQ - Court Square …". A short leading token (acronym code)
+            # shifts the name3 key and hides the pair from candidate
+            # retrieval, so also emit the key with the first token skipped.
+            if len(tokens) > 3 and len(tokens[0]) <= 4:
+                keys.append("name3:" + " ".join(tokens[1:4]))
     return keys
 
 
@@ -164,7 +183,15 @@ def same_entity(a: dict, b: dict) -> bool:
     if geo_ok and (sim >= NAME_SIM_MATCH or addr_ok):
         return True
     if sim >= NAME_SIM_STRONG and a.get("city_norm") and a["city_norm"] == b.get("city_norm"):
-        return True
+        # Templated brand names ("Icon Parking 235 W 48th St") clear 0.92
+        # across physically distinct sites, so a strong-name match must also
+        # be co-located: within NAME_STRONG_MAX_KM when both sides carry
+        # coordinates, or on the exact same street when either side doesn't.
+        if dist <= NAME_STRONG_MAX_KM:
+            return True
+        if dist == float("inf") and a.get("street_norm") and a["street_norm"] == b.get("street_norm"):
+            return True
+        return False
     if addr_ok:
         return True
     return False
@@ -269,6 +296,26 @@ def _associate(refs: List[dict], charger_refs: List[dict], charger_clusters: Lis
     return out
 
 
+_BOX_ID_RE = re.compile(
+    r"(?:charge\s*box|box)(?:\s*id)?\s*[:#]?\s*([A-Za-z0-9][A-Za-z0-9-]{2,})", re.IGNORECASE
+)
+
+
+def _enrich_event_ref(ref: dict, rec: dict) -> dict:
+    """Maintenance texts name charge boxes ("box 101088", "charge box
+    EVB-P2042308") that the structured fields don't carry. Lift the first
+    such id into the ref's station_id so association can use the exact-id
+    path instead of relying on garage-name similarity."""
+    if ref.get("station_id") or ref.get("charger_id"):
+        return ref
+    parts = [str(rec.get("description") or "")]
+    parts += [str(v) for v in (rec.get("extracted_fields") or {}).values() if isinstance(v, str)]
+    match = _BOX_ID_RE.search("\n".join(parts))
+    if match:
+        ref["station_id"] = match.group(1)
+    return ref
+
+
 def _parse_ts(ts) -> Optional[float]:
     if not ts:
         return None
@@ -293,12 +340,22 @@ def _duration_min(rec: dict) -> Optional[float]:
 
 
 def _session_duplicate(a: dict, b: dict) -> bool:
-    """Exact (session_id) or fuzzy duplicate test for two sessions."""
+    """Exact (session_id) or near-identical duplicate test for two sessions.
+
+    A duplicate is the SAME physical session reported twice (re-export,
+    double feed) — never two different drivers, never two different charge
+    boxes, and never a same-driver re-plug minutes later. Identity fields
+    veto first; the value test then requires near-identical start, energy,
+    and duration (double-reports agree up to formatting jitter)."""
     a_id, b_id = a.get("session_id"), b.get("session_id")
     if a_id and b_id and str(a_id).strip() == str(b_id).strip():
         return True
+    for key in ("driver_id", "charger_id"):
+        va, vb = a.get(key), b.get(key)
+        if va and vb and str(va).strip().lower() != str(vb).strip().lower():
+            return False  # different person or different physical box
     ta, tb = _parse_ts(a.get("start_time")), _parse_ts(b.get("start_time"))
-    if ta is None or tb is None or abs(ta - tb) > DUP_START_MIN * 60:
+    if ta is None or tb is None or abs(ta - tb) > DUP_START_EXACT_S:
         return False
     ea, eb = a.get("energy_kwh"), b.get("energy_kwh")
     if ea is not None and eb is not None:
@@ -352,14 +409,24 @@ def resolve(chargers: List[dict], sessions: List[dict], events: List[dict]) -> R
     # Associate sessions and events to charger clusters.
     sess_refs = [station_ref(s) for s in sessions]
     res.session_charger = _associate(sess_refs, charger_refs, res.charger_clusters)
-    ev_refs = [station_ref(e) for e in events]
+    ev_refs = [_enrich_event_ref(station_ref(e), e) for e in events]
     res.event_charger = _associate(ev_refs, charger_refs, res.charger_clusters)
 
-    # Group sessions for dedup: within charger cluster (or unresolved group
-    # keyed by station name, so distinct unknown stations never cross-dedup).
-    sess_groups: Dict[Tuple[int, str], List[int]] = defaultdict(list)
+    # Group sessions for dedup. Records carrying identity (driver and/or
+    # charge box) group by exact identity — a duplicate can only be the same
+    # driver on the same box, and this also keeps groups tiny (the old
+    # per-garage grouping made high-traffic garages O(n²) hot spots and let
+    # different customers' sessions collide). Id-less records (e.g. the Cary
+    # pilot feed) fall back to charger cluster / station name as before.
+    sess_groups: Dict[Tuple, List[int]] = defaultdict(list)
     for si in range(len(sessions)):
-        key = (res.session_charger.get(si, -1), sess_refs[si]["name_norm"] or "?")
+        s = sessions[si]
+        drv = str(s.get("driver_id") or "").strip().lower()
+        box = str(s.get("charger_id") or "").strip().lower()
+        if drv or box:
+            key = ("id", drv, box)
+        else:
+            key = ("geo", res.session_charger.get(si, -1), sess_refs[si]["name_norm"] or "?")
         sess_groups[key].append(si)
     for key, group in sess_groups.items():
         if len(group) < 2:
