@@ -58,9 +58,9 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
-def _session_id(source_file: str, line_no: int) -> str:
+def _session_id(source_file: str, line_no: int, prefix: str = "cary") -> str:
     key = f"{os.path.basename(source_file)}:{line_no}"
-    return "cary-" + hashlib.sha1(key.encode("utf-8")).hexdigest()[:12]
+    return prefix + "-" + hashlib.sha1(key.encode("utf-8")).hexdigest()[:12]
 
 
 def _quality(score: float, issues: Optional[List[str]] = None) -> Dict[str, Any]:
@@ -108,6 +108,69 @@ def assemble_csv_row(
         "quality": _quality(score, issues),
     }
     return {k: v for k, v in rec.items() if v is not None}
+
+
+def assemble_nyc_csv_row(
+    row: Dict[str, Any],
+    issues: List[str],
+    source_file: str,
+    ingested_at: str,
+    line_no: int,
+) -> Dict[str, Any]:
+    """NYC DOT "Municipal Lots and Garages" row -> §5.2 SessionRecord (verbatim).
+
+    Schema: Date, Station Name (numeric charge-box alias), Location Name,
+    Charge Box ID, Connector ID, Connected/Disconnected Time (time-of-day
+    only — sessions may cross midnight), Charge/Connected Duration (min),
+    Energy Provided (kWh), Session Status, Invalidity Reason (literal "NULL"
+    when unset — kept verbatim; interpreting it is P2's job).
+
+    start_time is the Date column joined with Connected Time (field placement
+    of one timestamp split across two columns). end_time is deliberately left
+    absent: the file carries no disconnect DATE, and inventing one would be
+    interpretation, not placement.
+    """
+    def g(col: str) -> Optional[str]:
+        v = row.get(col)
+        if isinstance(v, str):
+            v = v.strip()
+        return v if v not in (None, "") else None
+
+    date, connected = g("Date"), g("Connected Time")
+    box, connector = g("Charge Box ID"), g("Connector ID")
+    score = 0.7 if issues else 1.0
+    rec: Dict[str, Any] = {
+        "record_type": "session",
+        "session_id": _session_id(source_file, line_no, prefix="nyc"),
+        "charger_id": f"{box}:{connector}" if box and connector else box,
+        "station_id": box,
+        "start_time": f"{date} {connected}" if date and connected else date,
+        "energy_kwh": g("Energy Provided (kWh)"),
+        "duration_min": g("Charge Duration (min)"),
+        # Extras — verbatim source fidelity; P3 matches Source B stations on
+        # station_name (the garage name), P2 normalizes values.
+        "station_name": g("Location Name"),
+        "nyc_station_alias": g("Station Name"),
+        "connected_time": connected,
+        "disconnected_time": g("Disconnected Time"),
+        "connected_duration_min": g("Connected Duration (min)"),
+        "session_status": g("Session Status"),
+        "invalidity_reason": g("Invalidity Reason"),
+        "driver_id": g("Driver ID"),
+        "provenance": {
+            "source": "nyc_dot",
+            "source_file": os.path.basename(source_file),
+            "ingested_at": ingested_at,
+            "raw_ref": f"line:{line_no}",
+        },
+        "quality": _quality(score, issues),
+    }
+    return {k: v for k, v in rec.items() if v is not None}
+
+
+def _pick_csv_assembler(row: Dict[str, Any]):
+    """Schema dispatch by header signature: NYC DOT vs Cary (default)."""
+    return assemble_nyc_csv_row if "Charge Box ID" in row else assemble_csv_row
 
 
 def _s(v: Any) -> Optional[str]:
@@ -290,7 +353,8 @@ def run(
                     records_in += 1
                     if limit is not None and records_out >= limit:
                         break
-                    rec = assemble_csv_row(row, issues, path, ingested_at, records_in)
+                    assemble = _pick_csv_assembler(row)
+                    rec = assemble(row, issues, path, ingested_at, records_in)
                     out_fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
                     records_out += 1
             elif fmt == "geojson":

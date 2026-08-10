@@ -1,0 +1,4 @@
+customer complaint via 311, logged 2025-07-18
+location given: "the municipal garage on the corner"
+charge box EVB-P1947365: spot ICEd + beeping
+routed to: D.K.  priority: MAJOR

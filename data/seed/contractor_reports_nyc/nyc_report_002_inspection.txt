@@ -1,0 +1,8 @@
+QUARTERLY INSPECTION FORM (rev 3b)
+insp.date : 21.11.2024
+site/station.... Bay Ridge Municipal Parking Garage
+charge box id: EVB-P1914207
+technician:J. Alvarez
+findings -> overtemp warning @ 147F
+severity code [fyi]
+followup req'd: N

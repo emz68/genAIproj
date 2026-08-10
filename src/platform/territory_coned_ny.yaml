@@ -1,0 +1,12 @@
+# Production territory override for the official NYC DOT dataset (PDM S1:
+# "swapped by config alone if an official Con Ed dataset lands" — it landed).
+# Deep-merged over src/validation/rules.yaml via the validation stage's
+# --rules flag; wired in src/platform/config.yaml. The module default stays
+# North Carolina so the seed fixtures and module tests are untouched.
+territory:
+  name: coned_new_york
+  bbox:
+    min_lat: 40.4
+    max_lat: 41.2
+    min_lon: -74.3
+    max_lon: -73.5

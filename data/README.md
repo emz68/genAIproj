@@ -5,6 +5,16 @@ complementary sources, three formats, overlapping entities**, arriving late,
 inconsistent and messy. The committed baseline lives in `data/seed/` (frozen
 on `main`); pipelines read from `data/raw/` (gitignored, never committed).
 
+> **Official dataset (2026-08-10):** the NYC DOT "Electric Vehicle (EV)
+> Charging Data — Municipal Lots and Garages" export (252,589 sessions,
+> Con Edison territory) is now the primary Source A, committed as
+> `data/seed/nyc_ev_charging_municipal_lots_garages.csv.gz`, with the AFDC
+> **New York** registry extract as its Source B and NYC-referencing contractor
+> reports as Source C — see `data/seed/README.md` for the file map and the
+> populate command. Refresh from NYC Open Data (dataset "Electric Vehicle
+> (EV) Charging Data - Municipal Lots and Garages", CSV export). The NC
+> pilot sources below remain for fixtures, module tests, and the injector.
+
 ## Source A — charging sessions (structured CSV)
 
 - **Live source:** Town of Cary, NC open data portal — `data.townofcary.org`,

@@ -1,0 +1,3 @@
+*** AUTOMATED FAULT DIGEST (fwd by R. Singh - ChargeRight LLC) ***
+period ending 8/3/26
+JGU - Jerome Gun Hill Road Municipal Parking Garage :: box 101016 :: connector latch broken :: count=8 :: sev=fyi

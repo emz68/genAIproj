@@ -118,11 +118,19 @@ def _pick_delimiter(sample_line: str) -> str:
 
 
 def _looks_like_header(cells: List[str]) -> bool:
-    """A header row is all snake_case-ish identifiers (no timestamps/numbers)."""
-    if not cells:
+    """A header row is snake_case identifiers (Cary style) or human-readable
+    titles like "Charge Duration (min)" (NYC DOT style) — never values."""
+    stripped = [c.strip() for c in cells if c.strip()]
+    if len(stripped) < 2:
         return False
-    token = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
-    return all(token.match(c.strip()) for c in cells if c.strip()) and len(cells) >= 2
+    ident = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+    if all(ident.match(c) for c in stripped):
+        return True
+    # Title-style: every cell must contain a letter, and none may read as a
+    # bare number, date, or timestamp (which would mean it's a data row).
+    has_letter = re.compile(r"[A-Za-z]")
+    datalike = re.compile(r"^[\d\s./:+\-]+$")
+    return all(has_letter.search(c) and not datalike.match(c) for c in stripped)
 
 
 def iter_csv_records(path: str) -> Iterator[Tuple[dict, List[str]]]:

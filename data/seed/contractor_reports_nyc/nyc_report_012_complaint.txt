@@ -1,0 +1,4 @@
+customer complaint via 311, logged 3/3/24
+location given: "Court Square Municipal Parking Garage"
+charge box EV0437: screen dead
+routed to: R. Singh - ChargeRight LLC  priority: fyi

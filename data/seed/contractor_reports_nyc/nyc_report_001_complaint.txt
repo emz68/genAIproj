@@ -1,0 +1,4 @@
+customer complaint via 311, logged 4/2/26
+location given: "N/A"
+charge box W1-1113-SA13-6-2436-00002: charge stopped after 10 min
+routed to: J. Alvarez  priority: fyi

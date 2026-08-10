@@ -1,0 +1,4 @@
+customer complaint via 311, logged 9/23/24
+location given: "the municipal garage on the corner"
+charge box BTCE0107: spot ICEd + beeping
+routed to: T. Okafor  priority: safety!!

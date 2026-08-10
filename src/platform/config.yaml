@@ -16,7 +16,9 @@ stages:
     stub: ["{python}", "-m", "src.platform.stubs.ingestion_stub"]
     retries: 1
   validation:
-    entrypoint: ["{python}", "-m", "src.validation.run"]
+    # --rules swaps the territory to Con Ed NY for the official NYC dataset
+    # (deep-merged over the module's rules.yaml; see territory_coned_ny.yaml)
+    entrypoint: ["{python}", "-m", "src.validation.run", "--rules", "src/platform/territory_coned_ny.yaml"]
     stub: ["{python}", "-m", "src.platform.stubs.validation_stub"]
     retries: 1
   reconciliation:

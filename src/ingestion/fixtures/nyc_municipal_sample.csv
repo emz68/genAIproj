@@ -1,0 +1,4 @@
+"Date","Station Name","Location Name","Country","Charge Box ID","Connector ID","Driver ID","ID Tag","Connected Time","Disconnected Time","Charge Duration (min)","Connected Duration (min)","Energy Provided (kWh)","Session Status","Invalidity Reason"
+"08/21/2025","101013","JGU - Jerome Gun Hill Road Municipal Parking Garage","USA","101013","1","4a37c773-2997-472d-a5e1-0dfc26bf4883","ADJRKBZ9BBMW0B0LMVCA","19:10:54.0000000","07:11:12.0000000","720.3","720.3","41.369","PAID","NULL"
+"08/21/2025","101014","JGU - Jerome Gun Hill Road Municipal Parking Garage","USA","101014","1","7fa6b416-4196-4120-b6bd-409e1ad65ba6","78I78199YN3TRVI1OSMH","16:53:00.0000000","20:29:07.0000000","160.1","216.116666667","15.814","PAID","NULL"
+"03/05/2024","102001","COURT SQUARE - Court Square Municipal Garage","USA","102001","2","","","09:15:00.0000000","09:15:30.0000000","0","0.5","0","INVALID","ZERO_CHARGING_TIME"

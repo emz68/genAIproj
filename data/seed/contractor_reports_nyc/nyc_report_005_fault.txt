@@ -1,0 +1,3 @@
+*** AUTOMATED FAULT DIGEST (fwd by R. Singh - ChargeRight LLC) ***
+period ending 2026-08-12
+HPO - Hunts Point Municipal Parking Field :: box 117372 :: overtemp warning @ 147F :: count=9 :: sev=fyi

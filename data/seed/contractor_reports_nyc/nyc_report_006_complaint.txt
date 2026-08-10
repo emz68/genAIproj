@@ -1,0 +1,4 @@
+customer complaint via 311, logged 2025-06-24
+location given: "JON - Jerome 190th Street Municipal Parking"
+charge box EVB-P2042308: screen dead
+routed to: J. Alvarez  priority: urgent-safety

@@ -1,0 +1,3 @@
+*** AUTOMATED FAULT DIGEST (fwd by T. Okafor) ***
+period ending 8/14/24
+SGE - St. George Courthouse Municipal Parking Garage :: box 103375 :: cable insulation cracked NEEDS REVIEW :: count=8 :: sev=MAJOR

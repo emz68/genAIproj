@@ -1,0 +1,8 @@
+QUARTERLY INSPECTION FORM (rev 3b)
+insp.date : 3/18/25
+site/station.... Queens Family Court Municipal Garage
+charge box id: BTCE0122
+technician:T. Okafor
+findings -> display flicker, unit resets
+severity code [fyi]
+followup req'd: N
