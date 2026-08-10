@@ -371,6 +371,67 @@
   .stepper-panel.active { display: block; animation: fadeIn .35s ease; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
+  /* ── Visual diff rows ── */
+  .diff-row {
+    display: flex; align-items: center; gap: 10px; padding: 6px 0;
+    font-family: 'SF Mono', SFMono-Regular, monospace; font-size: .76rem;
+  }
+  .diff-row .old { color: var(--red); text-decoration: line-through; text-decoration-thickness: 1.5px; opacity: .85; word-break: break-all; }
+  .diff-row .arrow { color: var(--muted); font-weight: 700; flex: 0 0 auto; }
+  .diff-row .new { color: var(--ok); font-weight: 700; word-break: break-all; }
+  .diff-row .note { color: var(--faint); font-size: .68rem; font-family: system-ui, sans-serif; margin-left: auto; flex: 0 0 auto; white-space: nowrap; }
+
+  /* ── JSON block ── */
+  .json-block {
+    background: #1A1E2B; color: #C8D6E5; border-radius: 10px; padding: 14px 16px;
+    font-family: 'SF Mono', SFMono-Regular, monospace; font-size: .7rem; line-height: 1.55;
+    overflow-x: auto; margin: 8px 0;
+    white-space: pre;
+  }
+  .json-block .jkey { color: #54A0FF; }
+  .json-block .jstr { color: #55C990; }
+  .json-block .jnum { color: #FECA57; }
+  .json-block .jbad { color: #FF6B6B; text-decoration: line-through; }
+  .json-block .jgood { color: #55C990; font-weight: 700; }
+  .json-block .jcmt { color: #7E9186; font-style: italic; }
+
+  /* ── Big counter ── */
+  .big-counter {
+    text-align: center; padding: 10px 0;
+  }
+  .big-counter .bc-val {
+    font-size: 2.2rem; font-weight: 800; color: var(--navy-800);
+    font-family: ui-serif, Georgia, serif; letter-spacing: -.02em;
+  }
+  .big-counter .bc-arrow { color: var(--navy-500); font-size: 1.4rem; margin: 0 6px; }
+  .big-counter .bc-label { font-size: .74rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+
+  /* ── Mini PSC report preview ── */
+  .report-preview {
+    background: #fff; border: 2px solid var(--ok); border-radius: 12px;
+    padding: 18px 20px; margin-top: 10px;
+  }
+  .report-preview .rp-head {
+    display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: .82rem;
+    color: var(--navy-900); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line);
+  }
+  .report-preview .rp-head .icon { font-size: 1.2rem; }
+  .report-preview .rp-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+  }
+  @media (max-width: 600px) { .report-preview .rp-grid { grid-template-columns: 1fr 1fr; } }
+  .report-preview .rp-kpi {
+    text-align: center; padding: 8px;
+  }
+  .report-preview .rp-kpi .kpi-val {
+    font-size: 1.2rem; font-weight: 800; color: var(--navy-800);
+  }
+  .report-preview .rp-kpi .kpi-lab {
+    font-size: .62rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em;
+  }
+  .report-preview .rp-kpi.red .kpi-val { color: var(--red); }
+  .report-preview .rp-kpi.green .kpi-val { color: var(--ok); }
+
   /* table */
   .tbl-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin: 22px 0; }
   table { width: 100%; border-collapse: collapse; font-size: .93rem; background: #fff; min-width: 640px; }
@@ -607,13 +668,6 @@
 
     <div class="stepper" id="stepper">
 
-      <!-- 3 input datasets (always visible) -->
-      <div class="stepper-inputs">
-        <div class="src-chip"><span class="ic">⚡</span><span class="lbl">Charging Sessions</span><span class="cnt">252,589 rows · CSV</span></div>
-        <div class="src-chip"><span class="ic">🗺️</span><span class="lbl">Station Registry</span><span class="cnt">5,740 stations · GeoJSON</span></div>
-        <div class="src-chip"><span class="ic">📄</span><span class="lbl">Contractor Reports</span><span class="cnt">14 reports · Free text</span></div>
-      </div>
-
       <!-- pipeline track with 4 stage nodes -->
       <div class="stepper-track">
         <div class="prog-fill" id="progFill" style="width:0%"></div>
@@ -642,93 +696,109 @@
       <!-- detail panel -->
       <div class="stepper-detail" id="stepperDetail">
 
-        <!-- PANEL 1: Ingestion -->
+        <!-- PANEL 1: Ingestion — trace one record -->
         <div class="stepper-panel" id="panel1">
-          <div class="detail-head"><span class="dh-num" style="background:var(--navy-700);">1</span> INGESTION — Parse everything into one format</div>
-          <div class="detail-title">Three format-specific readers normalize all sources into canonical JSONL</div>
-          <div class="detail-sub">CSV parser handles quoted fields and midnight-crossing timestamps. GeoJSON reader unwraps nested JSON-in-JSON. LLM extraction pulls structured events from contractor free text. <strong>+176 municipal charge box records created</strong> to ensure every session has a charger to link to.</div>
+          <div class="detail-head"><span class="dh-num" style="background:var(--navy-700);">1</span> INGESTION — Three formats in, one canonical format out</div>
+          <div class="detail-title">Tracing a 311 complaint from Jerome Avenue through the pipeline</div>
+          <div class="detail-sub">Here's one real contractor report — free text about a dead screen at charge box EVB-P2042308. The ingestion stage parses it into a typed record alongside CSV sessions and GeoJSON chargers, all landing in a single <code>canonical.jsonl</code> format.</div>
+
+          <div class="big-counter"><span class="bc-val" id="c1in">258,343</span><span class="bc-arrow">→</span><span class="bc-val" id="c1out">258,519</span><div class="bc-label">records in → records out (+176 municipal charge boxes created)</div></div>
+
           <div class="before-after">
-            <div class="ba-col before"><span class="ba-label">⚠ BEFORE</span>
-              <code>"08/21/2025","19:10:54.0000000","720.3","NULL"</code><br>
-              <code>ev_connector_types: "[\"CHADEMO\",\"J1772COMBO\"]"</code><br>
-              <code>"JON - Jerome 190th Street Municipal Parking"</code> (free text)
+            <div class="ba-col before"><span class="ba-label">⚠ RAW INPUT</span>
+              <div class="json-block"><span class="jcmt">// Source C — Contractor free-text report</span>
+<span class="jbad">customer complaint via 311, logged 2025-06-24
+location given: "JON - Jerome 190th Street
+  Municipal Parking"
+charge box EVB-P2042308: screen dead
+routed to: J. Alvarez
+priority: urgent-safety</span></div>
             </div>
             <div class="ba-arrow">→</div>
-            <div class="ba-col after"><span class="ba-label">✓ AFTER</span>
-              Structured <code>record_type: session | charger | maintenance</code> records.<br>
-              All in one <code>canonical.jsonl</code> format.<br>
-              <strong>258,343 → 258,519 records</strong> (176 charge boxes added)
+            <div class="ba-col after"><span class="ba-label">✓ PARSED RECORD</span>
+              <div class="json-block"><span class="jcmt">// canonical.jsonl — typed maintenance record</span>
+{ <span class="jkey">"record_type"</span>: <span class="jstr">"maintenance"</span>,
+  <span class="jkey">"event_type"</span>: <span class="jstr">"COMPLAINT"</span>,
+  <span class="jkey">"severity"</span>: <span class="jstr">"SAFETY"</span>,
+  <span class="jkey">"charge_box"</span>: <span class="jstr">"EVB-P2042308"</span>,
+  <span class="jkey">"location"</span>: <span class="jstr">"JON - Jerome 190th St"</span>,
+  <span class="jkey">"date"</span>: <span class="jstr">"2025-06-24"</span>,
+  <span class="jkey">"provenance"</span>: { <span class="jkey">"source"</span>: <span class="jstr">"contractor"</span> } }</div>
             </div>
           </div>
         </div>
 
-        <!-- PANEL 2: Validation -->
+        <!-- PANEL 2: Validation — visual diffs -->
         <div class="stepper-panel" id="panel2">
           <div class="detail-head"><span class="dh-num" style="background:#856404;">2</span> VALIDATION — Fix what's fixable, flag what isn't</div>
-          <div class="detail-title">Declarative rule engine cleans every record. Nothing is ever silently dropped.</div>
-          <div class="detail-sub">Dates normalized to ISO-8601 with timezone. Units repaired (W→kW, Wh→kWh). Enums standardized ("urgent-safety" → SAFETY). Missing values flagged, never deleted. Per-record quality scores 0–1 with stable issue codes. <strong>0 records quarantined — 251,773 issues flagged in-place.</strong></div>
-          <div class="before-after">
-            <div class="ba-col before"><span class="ba-label">⚠ BEFORE</span>
-              <code>"08/21/2025 19:10:54.0000000"</code> — ambiguous date<br>
-              <code>"720.3"</code> — watts, not kilowatts<br>
-              <code>priority: "urgent-safety"</code> — free-text severity<br>
-              <code>"NULL"</code> — missing field
-            </div>
-            <div class="ba-arrow">→</div>
-            <div class="ba-col after"><span class="ba-label">✓ AFTER</span>
-              <code>2025-08-21T19:10:54-04:00</code> — ISO-8601 with NY offset<br>
-              <code>0.7203 kW</code> — correct unit<br>
-              <code>severity: SAFETY</code> — normalized enum<br>
-              <code>flagged · not dropped</code> — issue logged in record
-            </div>
+          <div class="detail-title">Same record, now cleaned. Every fix is logged; nothing is silently dropped.</div>
+          <div class="detail-sub">A declarative rule engine runs every record through standardizers. Dates → ISO-8601. Units repaired. Enums normalized. Missing values flagged in-place. <strong>0 records quarantined. 251,773 issues flagged.</strong></div>
+
+          <div class="big-counter"><span class="bc-val" style="color:var(--ok);">0</span><div class="bc-label">records quarantined — all issues flagged in-place</div></div>
+
+          <div style="margin-top: 10px;">
+            <div class="diff-row"><span class="old">"08/21/2025 19:10:54.0000000"</span><span class="arrow">→</span><span class="new">2025-08-21T19:10:54-04:00</span><span class="note">ISO-8601 + NY offset</span></div>
+            <div class="diff-row"><span class="old">"720.3" (watts)</span><span class="arrow">→</span><span class="new">0.7203 kW</span><span class="note">unit repaired</span></div>
+            <div class="diff-row"><span class="old">"NULL"</span><span class="arrow">→</span><span class="new">⚠ flagged · not dropped</span><span class="note">missing field logged</span></div>
+            <div class="diff-row"><span class="old">urgent-safety</span><span class="arrow">→</span><span class="new">SAFETY</span><span class="note">enum normalized</span></div>
+            <div class="diff-row"><span class="old">1327968000000</span><span class="arrow">→</span><span class="new">2012-01-31</span><span class="note">Unix ms → date</span></div>
           </div>
         </div>
 
-        <!-- PANEL 3: Reconciliation -->
+        <!-- PANEL 3: Reconciliation — merge visual -->
         <div class="stepper-panel" id="panel3">
-          <div class="detail-head"><span class="dh-num" style="background:#155724;">3</span> RECONCILIATION — One source of truth</div>
-          <div class="detail-title">Duplicate detection, charger clustering, and conflict resolution into golden records</div>
-          <div class="detail-sub">Session dedup requires <strong>same driver + same charger + same time window</strong> — prevents wrongful billing merges. Charger clustering uses GPS proximity with 200m cap. Every merge is reversible via the <code>merged_from</code> audit trail. Anomalies detected statistically. <strong>Audited: 96.5% of 4,105 merges are legitimate.</strong></div>
-          <div class="before-after">
-            <div class="ba-col before"><span class="ba-label">⚠ BEFORE</span>
-              5,740 AFDC registry entries — many describing the <strong>same physical charger</strong> (one per network listing, one per refresh).<br><br>
-              252,589 sessions with potential duplicates (midnight splits, re-plugs).
+          <div class="detail-head"><span class="dh-num" style="background:#155724;">3</span> RECONCILIATION — Duplicates merged into one source of truth</div>
+          <div class="detail-title">4 AFDC registry entries for the same charger → 1 golden record. Every merge is reversible.</div>
+          <div class="detail-sub">Session dedup requires <strong>same driver + same charger + same time window</strong>. Charger clustering uses GPS proximity. All 4,105 merged records are traceable via <code>merged_from</code>. <strong>Audited: 96.5% legitimate.</strong></div>
+
+          <div class="big-counter"><span class="bc-val">258,519</span><span class="bc-arrow">→</span><span class="bc-val" style="color:var(--ok);">254,414</span><div class="bc-label">pre-reconciliation → golden records (4,105 merged)</div></div>
+
+          <div class="before-after" style="margin-top:8px;">
+            <div class="ba-col before"><span class="ba-label">⚠ 4 SOURCE RECORDS</span>
+              <div style="font-family:monospace; font-size:.7rem; color:var(--red);">
+              station_id: 35272 — "NISSAN FAST CHR RIVERHEAD" (J1772)<br>
+              station_id: 351402 — "NISSAN FAST CHR RIVERHEAD" (CHAdeMO)<br>
+              station_id: 351403 — "NISSAN FAST CHR RIVERHEAD" (refresh)<br>
+              station_id: 351404 — "NISSAN FAST CHR RIVERHEAD" (refresh)<br>
+              <span style="color:var(--muted);">All at 1800 Old Country Rd, Riverhead, NY · within 80m</span></div>
             </div>
             <div class="ba-arrow">→</div>
-            <div class="ba-col after"><span class="ba-label">✓ AFTER</span>
-              <strong>4,219 golden chargers</strong> (1,697 AFDC duplicates merged).<br>
-              <strong>250,181 sessions</strong> (2,408 duplicates merged — all same driver+charger).<br>
-              <strong>2,731 conflicts resolved</strong> by survivorship rules.<br>
-              <strong>2,222 duplicate-billing · 2,100 energy outliers · 3 SAFETY events</strong> detected.
+            <div class="ba-col after"><span class="ba-label">✓ 1 GOLDEN RECORD</span>
+              <div style="font-family:monospace; font-size:.7rem; color:var(--ok);">
+              golden_id: chg-f2053989...<br>
+              station_name: "NISSAN FAST CHR RIVERHEAD"<br>
+              connectors: J1772, CHAdeMO<br>
+              <strong>merged_from: [35272, 351402, 351403, 351404]</strong><br>
+              <span style="color:var(--muted);">← full audit trail preserved</span></div>
             </div>
           </div>
         </div>
 
-        <!-- PANEL 4: Reporting -->
+        <!-- PANEL 4: Reporting — PSC report preview -->
         <div class="stepper-panel" id="panel4">
-          <div class="detail-head"><span class="dh-num" style="background:var(--red);">4</span> REPORTING — Regulator-ready output</div>
-          <div class="detail-title">PSC compliance report with full data-lineage appendix. One command.</div>
-          <div class="detail-sub">Every record's journey is traceable: input → fixes applied → golden record → report. The lineage appendix proves "accurate and on time" to a regulator. Operations dashboard, safety triage, and customer-experience views ship alongside.</div>
-          <div class="before-after">
-            <div class="ba-col before"><span class="ba-label">⚠ BEFORE</span>
-              Days of manual spreadsheet reconciliation.<br>
-              No audit trail — "trust me" reporting.<br>
-              Safety events buried in free text.
+          <div class="detail-head"><span class="dh-num" style="background:var(--red);">4</span> REPORTING — Regulator-ready output, one command</div>
+          <div class="detail-title">PSC compliance report with full data-lineage appendix</div>
+          <div class="detail-sub">Every record's journey is traceable: input → fixes → golden → report. The lineage appendix proves "accurate and on time." Below: a preview of the actual PSC compliance report generated from our pipeline run.</div>
+
+          <div class="report-preview">
+            <div class="rp-head"><span class="icon">📋</span> PSC COMPLIANCE REPORT — Con Edison EV Charger Data</div>
+            <div class="rp-grid">
+              <div class="rp-kpi"><div class="kpi-val">4,219</div><div class="kpi-lab">chargers deployed</div></div>
+              <div class="rp-kpi"><div class="kpi-val">250,181</div><div class="kpi-lab">charging sessions</div></div>
+              <div class="rp-kpi"><div class="kpi-val">5.69 GWh</div><div class="kpi-lab">energy delivered</div></div>
+              <div class="rp-kpi"><div class="kpi-val">82.1%</div><div class="kpi-lab">municipal uptime</div></div>
+              <div class="rp-kpi"><div class="kpi-val">89.4%</div><div class="kpi-lab">data completeness</div></div>
+              <div class="rp-kpi red"><div class="kpi-val">3</div><div class="kpi-lab">safety events</div></div>
             </div>
-            <div class="ba-arrow">→</div>
-            <div class="ba-col after"><span class="ba-label">✓ AFTER</span>
-              <strong>254,414 golden records</strong> in 2.9 min total.<br>
-              <strong>5,694,019 kWh</strong> accounted & auditable.<br>
-              <strong>82.1% municipal fleet uptime</strong> (176 boxes).<br>
-              <strong>3 SAFETY events</strong> surfaced with charger linkage.<br>
-              <code>python -m src.platform.run --pipeline full --no-llm</code>
+            <div style="margin-top:10px; font-size:.7rem; color:var(--muted); text-align:center;">
+              Lineage appendix traces every record back to its source · 2.9 min end-to-end · <code>python -m src.platform.run --pipeline full --no-llm</code>
             </div>
           </div>
         </div>
 
       </div>
 
-      <!-- controls — manual only -->
+      <!-- controls -->
       <div class="stepper-controls">
         <button class="stepper-btn prev" id="btnPrev" onclick="prevStage()" disabled>← Previous</button>
         <span class="stepper-stage-indicator" id="stageLabel">Stage 1 of 4</span>
