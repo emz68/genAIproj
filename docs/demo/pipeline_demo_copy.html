@@ -43,6 +43,20 @@
     background: linear-gradient(90deg, var(--red) 0 18%, transparent 18% 100%);
   }
   .kicker { letter-spacing: .22em; text-transform: uppercase; font-size: .78rem; color: #9FC2E8; font-weight: 600; }
+
+  /* ---- logo row (monochrome, CI-matched) ---- */
+  .logos { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 34px; flex-wrap: wrap; }
+  .logo { display: flex; align-items: center; gap: 12px; color: #fff; opacity: .95; }
+  .logo svg { display: block; }
+  .logo .nyu { font-family: Georgia, "Times New Roman", serif; font-weight: 700; font-size: 1.35rem; line-height: 1; letter-spacing: .01em; }
+  .logo .stern { font-size: .68rem; font-weight: 700; letter-spacing: .42em; text-transform: uppercase; margin-top: 4px; color: #B9D2EC; }
+  .logo .coned { font-weight: 700; font-size: 1.22rem; letter-spacing: .015em; }
+  .logo .coned small { display: block; font-size: .6rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: #B9D2EC; margin-top: 3px; }
+  .logo .divider { width: 1px; height: 34px; background: rgba(255,255,255,.28); }
+  @media (max-width: 560px) {
+    .logos { justify-content: center; }
+    .logo .divider { display: none; }
+  }
   h1 { font-size: clamp(1.9rem, 4.5vw, 3rem); line-height: 1.15; margin: 12px 0 10px; font-weight: 800; letter-spacing: -.01em; }
   .sub { color: #C9DCEF; font-size: 1.08rem; max-width: 62ch; }
   .meta { margin-top: 22px; display: flex; gap: 12px; flex-wrap: wrap; }
@@ -136,6 +150,31 @@
 
 <header>
   <div class="wrap">
+    <div class="logos">
+      <div class="logo" aria-label="NYU Stern">
+        <svg width="30" height="34" viewBox="0 0 30 34" fill="none" aria-hidden="true">
+          <!-- stylized torch mark, monochrome -->
+          <path d="M15 1c2.6 3.4 4.6 6.2 4.6 9.4 0 2.5-1.1 4.4-2.6 5.7V19h-4v-2.9c-1.5-1.3-2.6-3.2-2.6-5.7C10.4 7.2 12.4 4.4 15 1Z" fill="#fff"/>
+          <path d="M11 20h8l-1.2 3.2h-5.6L11 20Z" fill="#fff"/>
+          <path d="M12.2 24h5.6L15 33l-2.8-9Z" fill="#fff"/>
+        </svg>
+        <div>
+          <div class="nyu">NYU</div>
+          <div class="stern">Stern</div>
+        </div>
+      </div>
+      <div class="logo" aria-label="Con Edison">
+        <div class="divider" aria-hidden="true"></div>
+        <svg width="22" height="30" viewBox="0 0 22 30" fill="none" aria-hidden="true">
+          <!-- stylized lightning bolt, monochrome -->
+          <path d="M13.5 1 3 16.5h6.2L7.6 29 19 12.5h-6.4L13.5 1Z" fill="#fff" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <div class="coned">Con Edison</div>
+          <small>Clean Energy · New York</small>
+        </div>
+      </div>
+    </div>
     <div class="kicker">10-Minute Presentation · Con Edison Headquarters · Team genAIproj</div>
     <h1>Turning Chaotic EV-Charger Data into Accurate, On-Time PSC Reporting</h1>
     <p class="sub">An AI-powered pipeline that cleans, standardizes, validates, reconciles, and reports on
