@@ -659,7 +659,7 @@
 <span class="kw">Source C · Maintenance</span>  <span class="str">COMPLAINT</span> · severity: <span class="str">SAFETY</span>
   charge_box: <span class="str">EVB-P2042308</span>
   location: <span class="str">"JON - Jerome 190th St Municipal Parking"</span>
-  <span class="cmt">← typed record, LLM-extracted, severity normalized</span>
+  <span class="cmt">← NLP/LLM-extracted from free text, severity normalized</span>
 
 <span class="cmt">merged_from audit trail preserved · 2,731 conflicts resolved
 4,105 duplicates resolved · 2.9 min total runtime</span></div>
@@ -703,7 +703,7 @@
         <div class="stepper-panel" id="panel1">
           <div class="detail-head"><span class="dh-num" style="background:var(--navy-700);">1</span> INGESTION — Three formats in, one canonical format out</div>
           <div class="detail-title">Tracing a 311 complaint from Jerome Avenue through the pipeline</div>
-          <div class="detail-sub">Here's one real contractor report — free text about a dead screen at charge box EVB-P2042308. The ingestion stage parses it into a typed record alongside CSV sessions and GeoJSON chargers, all landing in a single <code>canonical.jsonl</code> format.</div>
+          <div class="detail-sub">Here's one real contractor report — free text about a dead screen at charge box EVB-P2042308. The ingestion stage uses <strong>NLP and LLM extraction</strong> to pull structured events from unstructured prose, alongside CSV and GeoJSON format readers. Two paths: a deterministic regex engine (the default, runs offline with zero API cost) and a Claude LLM path with automatic regex fallback. All sources land in a single <code>canonical.jsonl</code> format.</div>
 
           <div class="big-counter"><span class="bc-val" id="c1in">258,343</span><span class="bc-arrow">→</span><span class="bc-val" id="c1out">258,519</span><div class="bc-label">records in → records out (+176 municipal charge boxes created)</div></div>
 
