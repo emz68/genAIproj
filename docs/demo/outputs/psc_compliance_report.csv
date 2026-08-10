@@ -1,30 +1,30 @@
 section,metric,value,unit,note
-KPI,Chargers deployed,1476,count,golden charger records
+KPI,Chargers deployed,3889,count,golden charger records
 KPI,Chargers active,0,count,status = ACTIVE
-KPI,Energy delivered,162820.45,kWh,sum over sessions
-KPI,Sessions,19597,count,golden session records
+KPI,Energy delivered,5605116.95,kWh,sum over sessions
+KPI,Sessions,243983,count,golden session records
 KPI,Est. fleet uptime,100.0%,%,fleet mean of per-charger est_uptime_pct (P3 metrics)
-KPI,Data completeness,66.8%,%,mean of P2 quality.score over charger+session records
-LINEAGE,records in,22231,,Validation
-LINEAGE,records out,22231,,Validation
+KPI,Data completeness,89.4%,%,mean of P2 quality.score over charger+session records
+LINEAGE,records in,258343,,Validation
+LINEAGE,records out,258343,,Validation
 LINEAGE,quarantined,0,,Validation
-LINEAGE,afdc — avg quality score,0.90,,Validation per-source
-LINEAGE,cary — avg quality score,0.65,,Validation per-source
-LINEAGE,contractor — avg quality score,0.83,,Validation per-source
-LINEAGE,invalid_duration_min,20142,,Validation per-issue
-LINEAGE,invalid_install_date,2048,,Validation per-issue
-LINEAGE,outside_territory,1,,Validation per-issue
-LINEAGE,stale_report,20169,,Validation per-issue
-LINEAGE,records in,22231,,Reconciliation
-LINEAGE,golden records out,21100,,Reconciliation
-LINEAGE,duplicates removed,1131,,Reconciliation
-LINEAGE,clusters,1476,,Reconciliation
-LINEAGE,conflicts resolved,1043,,Reconciliation
-LINEAGE,cary — p50 / p95 (days),1929.2 / 3603.3,,Reconciliation lag
-LINEAGE,contractor — p50 / p95 (days),1571.2 / 1976.2,,Reconciliation lag
-LINEAGE,ingestion — records,22228 → 22231,,Pipeline
-LINEAGE,ingestion — duration / LLM calls,0.27s / 0,,Pipeline
-LINEAGE,reconciliation — records,22231 → 21100,,Pipeline
-LINEAGE,reconciliation — duration / LLM calls,35.51s / 0,,Pipeline
-LINEAGE,validation — records,22231 → 22231,,Pipeline
-LINEAGE,validation — duration / LLM calls,2.58s / 0,,Pipeline
+LINEAGE,afdc — avg quality score,0.72,,Validation per-source
+LINEAGE,contractor — avg quality score,0.82,,Validation per-source
+LINEAGE,nyc_dot — avg quality score,0.90,,Validation per-source
+LINEAGE,invalid_duration_min,3955,,Validation per-issue
+LINEAGE,invalid_install_date,5721,,Validation per-issue
+LINEAGE,outside_territory,4175,,Validation per-issue
+LINEAGE,stale_report,251701,,Validation per-issue
+LINEAGE,records in,258343,,Reconciliation
+LINEAGE,golden records out,247886,,Reconciliation
+LINEAGE,duplicates removed,10457,,Reconciliation
+LINEAGE,clusters,3889,,Reconciliation
+LINEAGE,conflicts resolved,16157,,Reconciliation
+LINEAGE,contractor — p50 / p95 (days),510.2 / 726.2,,Reconciliation lag
+LINEAGE,nyc_dot — p50 / p95 (days),670.2 / 1474.1,,Reconciliation lag
+LINEAGE,ingestion — records,258343 → 258343,,Pipeline
+LINEAGE,ingestion — duration / LLM calls,2.29s / 0,,Pipeline
+LINEAGE,reconciliation — records,258343 → 247886,,Pipeline
+LINEAGE,reconciliation — duration / LLM calls,4417.28s / 0,,Pipeline
+LINEAGE,validation — records,258343 → 258343,,Pipeline
+LINEAGE,validation — duration / LLM calls,27.83s / 0,,Pipeline

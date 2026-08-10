@@ -1,21 +1,22 @@
 {
-  "records_in": 22231,
-  "golden_records_out": 21100,
-  "duplicates_removed": 1131,
-  "clusters": 1476,
-  "conflicts_resolved": 1043,
+  "records_in": 258343,
+  "golden_records_out": 247886,
+  "duplicates_removed": 10457,
+  "clusters": 3889,
+  "conflicts_resolved": 16157,
   "anomalies": {
-    "duplicate_billing": 375,
-    "energy_outlier": 247
+    "duplicate_billing": 6765,
+    "energy_outlier": 1671,
+    "unresolved_safety_event": 1
   },
   "per_source_lag_days": {
-    "cary": {
-      "p50": 1929.2176157407407,
-      "p95": 3603.2936574074074
+    "nyc_dot": {
+      "p50": 670.1998032407407,
+      "p95": 1474.121412037037
     },
     "contractor": {
-      "p50": 1571.1742361111112,
-      "p95": 1976.1742361111112
+      "p50": 510.1952083333333,
+      "p95": 726.1952083333333
     }
   }
 }

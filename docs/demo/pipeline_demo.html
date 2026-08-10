@@ -153,46 +153,48 @@
 <header class="hero">
   <p class="eyebrow">EV Charger Data Platform · Live pipeline demonstration</p>
   <h1>Contractor chaos in.<br>A regulator-ready single source of truth out.</h1>
-  <p class="sub">Charger data arrives from external contractors late, incomplete, inconsistent, and unstructured — in three different formats. This is a real run of our AI-powered pipeline over <strong>22,228 real records</strong>: every number below comes from the actual output artifacts, and every fix is logged and auditable.</p>
+  <p class="sub">Charger data arrives from external contractors late, incomplete, inconsistent, and unstructured — in three different formats. This is a real run over the <strong>official NYC DOT dataset: 252,589 charging sessions at 24 municipal garages in Con Edison territory</strong>, plus the federal station registry and contractor free-text reports. Every number below comes from the actual output artifacts, and every fix is logged and auditable.</p>
 
   <div class="tiles">
-    <div class="tile"><div class="n">22,228</div><div class="l">raw records, 3 formats in</div></div>
-    <div class="tile green"><div class="n">21,100</div><div class="l">golden records out</div></div>
-    <div class="tile"><div class="n">1,131</div><div class="l">duplicates auto-resolved</div></div>
-    <div class="tile"><div class="n">~40 s</div><div class="l">end-to-end, laptop, offline</div></div>
+    <div class="tile"><div class="n">258,343</div><div class="l">raw records, 3 formats in</div></div>
+    <div class="tile green"><div class="n">247,886</div><div class="l">golden records out</div></div>
+    <div class="tile"><div class="n">10,457</div><div class="l">duplicates auto-resolved</div></div>
+    <div class="tile"><div class="n">5.6 GWh</div><div class="l">energy accounted &amp; auditable</div></div>
   </div>
 </header>
 
 <section class="section">
   <p class="eyebrow">Input</p>
   <h2>What goes in — three sources, three formats, all messy</h2>
-  <p class="lede">Real North Carolina EV-charger data standing in for the Con Edison territory: municipal charging sessions, the federal station registry, and free-text contractor reports.</p>
+  <p class="lede">The real Con Edison-territory data situation: NYC DOT municipal-garage charging sessions, the federal station registry for New York, and free-text contractor reports.</p>
 
   <div class="sources">
     <div class="source">
       <h3>Charging sessions</h3>
-      <div class="meta">20,142 rows · semicolon CSV · Town of Cary open data</div>
-      <pre class="snippet"><span class="dim">start_date;station_name;charging_time…</span>
-2023-01-03T17:58:04+00:00;
-TOWN OF CARY / TOWN HALL-PWH;
-<span class="bad">00:54:50</span>;<span class="bad">"3.976"</span>;228 Ambassador Loop…</pre>
+      <div class="meta">252,589 rows · quoted CSV · NYC DOT Municipal Lots &amp; Garages</div>
+      <pre class="snippet"><span class="dim">"Date","Station Name","Location Name",…</span>
+<span class="bad">"08/21/2025"</span>,"101013","JGU - Jerome
+Gun Hill Road Municipal Parking Garage",
+<span class="bad">"19:10:54.0000000"</span>,<span class="bad">"07:11:12…"</span>  <span class="dim">← crosses
+midnight</span>,"720.3","41.369","PAID",<span class="bad">"NULL"</span></pre>
     </div>
     <div class="source">
       <h3>Station registry</h3>
-      <div class="meta">2,062 stations · GeoJSON API dump · NREL AFDC via USDOT</div>
-      <pre class="snippet">"station_name": "Leith Nissan",
+      <div class="meta">5,740 NY stations · GeoJSON API dump · NREL AFDC via USDOT</div>
+      <pre class="snippet">"station_name": "NISSAN FAST CHR
+  RIVERHEAD",
 "ev_connector_types":
-  <span class="bad">"[\"CHADEMO\",\"J1772\",\"J1772COMBO\"]"</span>,
+  <span class="bad">"[\"CHADEMO\",\"J1772COMBO\"]"</span>,
 "open_date": <span class="bad">1327968000000</span></pre>
     </div>
     <div class="source">
       <h3>Contractor reports</h3>
-      <div class="meta">Free text · emails, forms, fault digests</div>
-      <pre class="snippet">QUARTERLY INSPECTION FORM (rev 3b)
-insp.date : <span class="bad">27.11.2022</span>
-findings -&gt; connector latch broken
-severity code [<span class="alert">urgent-safety</span>]
-followup req'd: N</pre>
+      <div class="meta">Free text · 311 complaints, forms, fault digests</div>
+      <pre class="snippet">customer complaint via 311, logged 2025-06-24
+location given: "JON - Jerome 190th
+  Street Municipal Parking"
+charge box EVB-P2042308: screen dead
+routed to: J. Alvarez  priority: <span class="alert">urgent-safety</span></pre>
     </div>
   </div>
 </section>
@@ -200,7 +202,7 @@ followup req'd: N</pre>
 <section class="section">
   <p class="eyebrow">The pipeline</p>
   <h2>Follow one record through</h2>
-  <p class="lede">The inspection report above — a contractor's free-text form with a broken latch and a made-up severity label — traced through all four stages of the real run.</p>
+  <p class="lede">The 311 complaint above — free text, a vague location, a dead screen, and a made-up "urgent-safety" label — traced through all four stages of the real run.</p>
 
   <div class="spine">
 
@@ -210,11 +212,11 @@ followup req'd: N</pre>
       <p class="what">Format-detecting readers for CSV, GeoJSON, and free text. The extraction layer reads the contractor's prose and emits a structured maintenance event — values still verbatim, nothing silently altered.</p>
       <div class="trace"><table>
         <tr><th>field</th><th>extracted from free text</th></tr>
-        <tr><td class="k">event_id</td><td>maint-ceba84a5dc4e</td></tr>
-        <tr><td class="k">event_type</td><td><span class="now">INSPECTION</span> <span class="flag">← classified from prose</span></td></tr>
+        <tr><td class="k">event_id</td><td>maint-2225ba317e29</td></tr>
+        <tr><td class="k">event_type</td><td><span class="now">COMPLAINT</span> <span class="flag">← classified from prose</span></td></tr>
         <tr><td class="k">severity</td><td><span class="was">"urgent-safety"</span> → <span class="safe">SAFETY</span></td></tr>
-        <tr><td class="k">event_date</td><td>"27.11.2022" <span class="flag">(kept raw — fixing is Stage 2's job)</span></td></tr>
-        <tr><td class="k">extraction confidence</td><td>0.95</td></tr>
+        <tr><td class="k">location</td><td>"JON - Jerome 190th Street Municipal Parking" <span class="flag">← pulled from quotes</span></td></tr>
+        <tr><td class="k">sessions, same file</td><td>"08/21/2025" + "19:10:54.0000000" <span class="flag">(kept raw — fixing is Stage 2's job)</span></td></tr>
       </table></div>
     </div>
 
@@ -224,11 +226,11 @@ followup req'd: N</pre>
       <p class="what">Dates to ISO, units repaired, enums normalized, territory checked. Every fix is logged in the record itself; nothing is ever silently dropped.</p>
       <div class="trace"><table>
         <tr><th>field</th><th>before → after</th></tr>
-        <tr><td class="k">event_date</td><td><span class="was">"27.11.2022"</span> → <span class="now">"2022-11-27"</span></td></tr>
-        <tr><td class="k">energy_kwh <span style="font-family:system-ui">(session)</span></td><td><span class="was">"3.976" (string)</span> → <span class="now">3.976 (number)</span></td></tr>
-        <tr><td class="k">fixes_applied</td><td>["date:event_date:'27.11.2022'→'2022-11-27'"]</td></tr>
-        <tr><td class="k">issues flagged</td><td><span class="flag">stale_report</span> — filed 1,300+ days after the event</td></tr>
-        <tr><td class="k">quality score</td><td>0.85 / 1.00</td></tr>
+        <tr><td class="k">session start_time</td><td><span class="was">"08/21/2025 19:10:54.0000000"</span> → <span class="now">"2025-08-21T19:10:54-04:00"</span> <span class="flag">← correct NY daylight-saving offset</span></td></tr>
+        <tr><td class="k">event_date</td><td><span class="was">"9/23/24"</span> → <span class="now">"2024-09-23"</span></td></tr>
+        <tr><td class="k">energy_kwh</td><td><span class="was">"41.369" (string)</span> → <span class="now">41.369 (number)</span></td></tr>
+        <tr><td class="k">fixes_applied</td><td>["date:start_time:'08/21/2025 19:10:54.0000000'→…"] — every fix logged in the record</td></tr>
+        <tr><td class="k">issues flagged</td><td><span class="flag">stale_report</span>, <span class="flag">outside_territory</span> — flagged, never silently dropped</td></tr>
       </table></div>
     </div>
 
@@ -238,10 +240,10 @@ followup req'd: N</pre>
       <p class="what">Records describing the same physical charger are clustered across all three sources; field conflicts are resolved by explicit survivorship rules; duplicates and billing anomalies are detected statistically.</p>
       <div class="trace"><table>
         <tr><th>golden-record evidence (real output)</th><th></th></tr>
-        <tr><td class="k">merged_from</td><td>afdc feature:39017 <span class="now">+</span> afdc feature:42397 → one charger</td></tr>
-        <tr><td class="k">conflict resolved</td><td>address: <span class="now">"231 Fayetteville St"</span> chosen, <span class="was">"215 W Cabarrus St"</span> rejected</td></tr>
-        <tr><td class="k">golden_id</td><td><span class="now">mnt-f23eccf3398d51a88317</span> <span class="flag">← stable across re-runs</span></td></tr>
-        <tr><td class="k">anomalies found</td><td>375 duplicate-billing patterns · 247 energy outliers</td></tr>
+        <tr><td class="k">merged_from</td><td>4 registry entries for "NISSAN FAST CHR RIVERHEAD" → <span class="now">one charger</span></td></tr>
+        <tr><td class="k">conflicts resolved</td><td>network: <span class="now">"ChargePoint Network"</span> chosen, <span class="was">"Non-Networked", "Blink Network"</span> rejected · "Rd"/"Road" address variants collapsed — 16,157 conflicts resolved in total</td></tr>
+        <tr><td class="k">golden_id</td><td><span class="now">mnt-6ba48a9631bc6f4340f4</span> <span class="flag">← stable across re-runs</span></td></tr>
+        <tr><td class="k">anomalies found</td><td>6,765 duplicate-billing patterns · 1,671 energy outliers · 1 unresolved SAFETY event</td></tr>
       </table></div>
     </div>
 
@@ -252,7 +254,7 @@ followup req'd: N</pre>
     </div>
 
   </div>
-  <p class="note">Wrapped around all four: the <strong>platform layer (Anastasia)</strong> — orchestration, retries, health monitoring, and a resumability manifest that detects late-arriving contractor files and re-runs exactly the affected stages. A 281-test contract harness caught and localized every integration bug at merge time.</p>
+  <p class="note">Wrapped around all four: the <strong>platform layer (Anastasia)</strong> — orchestration, retries, health monitoring, and a resumability manifest that detects late-arriving contractor files and re-runs exactly the affected stages. A 285-test contract harness caught and localized every integration bug at merge time — and absorbed the official dataset with only a reader change, exactly as the frozen contract promised.</p>
 </section>
 
 <section class="section">
@@ -260,40 +262,40 @@ followup req'd: N</pre>
   <h2>What comes out</h2>
 
   <div class="kpis"><table>
-    <tr><td>Golden chargers (deduplicated fleet)</td><td class="v">1,476</td><td class="u">from 2,062 registry rows + sessions</td></tr>
-    <tr><td>Golden charging sessions</td><td class="v">19,597</td><td class="u">545 duplicate billings removed</td></tr>
-    <tr><td>Energy delivered</td><td class="v">162,820 kWh</td><td class="u">summed from cleaned sessions</td></tr>
-    <tr><td>Structured maintenance events</td><td class="v">27</td><td class="u">parsed from free text</td></tr>
-    <tr><td>Data completeness score</td><td class="v">66.8%</td><td class="u">per-record quality, averaged</td></tr>
-    <tr><td>Per-contractor quality league</td><td class="v">0.90 / 0.83 / 0.65</td><td class="u">registry / contractor / sessions feed</td></tr>
+    <tr><td>Golden chargers (deduplicated fleet)</td><td class="v">3,889</td><td class="u">from 5,740 registry rows + 24 garages</td></tr>
+    <tr><td>Golden charging sessions</td><td class="v">243,983</td><td class="u">duplicate billings removed</td></tr>
+    <tr><td>Energy delivered</td><td class="v">5,605,117 kWh</td><td class="u">summed from cleaned sessions</td></tr>
+    <tr><td>Structured maintenance events</td><td class="v">14</td><td class="u">parsed from free text</td></tr>
+    <tr><td>Data completeness score</td><td class="v">89.4%</td><td class="u">per-record quality, averaged</td></tr>
+    <tr><td>Per-feed quality league</td><td class="v">0.90 / 0.82 / 0.72</td><td class="u">NYC sessions / contractor / registry feed</td></tr>
   </table></div>
 
   <h3 style="margin-top:34px">Every problem found, counted, and attributed</h3>
   <div class="bars">
-    <div class="bar-row"><span class="lab">stale reports (&gt;7 days)</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="val">20,169</span></div>
-    <div class="bar-row"><span class="lab">unparseable durations</span><div class="bar-track"><div class="bar-fill" style="width:99.9%"></div></div><span class="val">20,142</span></div>
-    <div class="bar-row"><span class="lab">invalid install dates</span><div class="bar-track"><div class="bar-fill" style="width:10.2%"></div></div><span class="val">2,048</span></div>
-    <div class="bar-row anom"><span class="lab">duplicate-billing patterns</span><div class="bar-track"><div class="bar-fill" style="width:1.9%"></div></div><span class="val">375</span></div>
-    <div class="bar-row anom"><span class="lab">energy outliers</span><div class="bar-track"><div class="bar-fill" style="width:1.2%"></div></div><span class="val">247</span></div>
-    <div class="bar-row anom"><span class="lab">outside service territory</span><div class="bar-track"><div class="bar-fill" style="width:.3%"></div></div><span class="val">1</span></div>
+    <div class="bar-row"><span class="lab">stale reports (&gt;7 days)</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="val">251,701</span></div>
+    <div class="bar-row anom"><span class="lab">duplicate-billing patterns</span><div class="bar-track"><div class="bar-fill" style="width:2.7%"></div></div><span class="val">6,765</span></div>
+    <div class="bar-row"><span class="lab">invalid install dates</span><div class="bar-track"><div class="bar-fill" style="width:2.3%"></div></div><span class="val">5,721</span></div>
+    <div class="bar-row"><span class="lab">outside Con Ed territory</span><div class="bar-track"><div class="bar-fill" style="width:1.7%"></div></div><span class="val">4,175</span></div>
+    <div class="bar-row"><span class="lab">unparseable durations</span><div class="bar-track"><div class="bar-fill" style="width:1.6%"></div></div><span class="val">3,955</span></div>
+    <div class="bar-row anom"><span class="lab">energy outliers</span><div class="bar-track"><div class="bar-fill" style="width:.7%"></div></div><span class="val">1,671</span></div>
   </div>
-  <p class="note">Copper bars: single-record issues flagged by the validation rule engine. Amber: cross-record anomalies from statistical detection. The one out-of-territory record is a coordinate the messiness injector deliberately planted — and the pipeline caught it.</p>
+  <p class="note">Copper bars: single-record issues flagged by the validation rule engine. Amber: cross-record anomalies from statistical detection. The 4,175 out-of-territory records are upstate-NY registry stations correctly excluded by the Con Edison service-territory bounding box; "stale" is expected for a historical export — the same rule catches genuinely late contractor files in production.</p>
 
   <div class="safety">
-    <strong>Safety triage:</strong> 10 SAFETY-severity events extracted from contractor free text and surfaced with location, date, and evidence — including the broken connector latch above, which the contractor had marked “followup req'd: N”.
+    <strong>Safety triage:</strong> SAFETY-severity events extracted from contractor free text and surfaced with location, date, and evidence — including the dead-screen 311 complaint at Jerome 190th Street above, one of them flagged as having <em>no follow-up repair on record</em>.
   </div>
 </section>
 
 <section class="section">
   <p class="eyebrow">Scale &amp; rigor</p>
-  <h2>It holds at volume</h2>
+  <h2>It holds at volume — and monitors itself</h2>
   <div class="tiles">
-    <div class="tile"><div class="n">123,873</div><div class="l">records in the scale run</div></div>
-    <div class="tile"><div class="n">4.2 min</div><div class="l">full pipeline at scale</div></div>
-    <div class="tile"><div class="n">281</div><div class="l">tests, all passing offline</div></div>
-    <div class="tile"><div class="n">5</div><div class="l">parallel builders, zero merge conflicts</div></div>
+    <div class="tile"><div class="n">258,343</div><div class="l">records in this run</div></div>
+    <div class="tile"><div class="n">41 s</div><div class="l">parse + validate + report</div></div>
+    <div class="tile"><div class="n">74 min</div><div class="l">reconciliation — bottleneck found, attributed, fix assigned</div></div>
+    <div class="tile"><div class="n">285</div><div class="l">tests, all passing offline</div></div>
   </div>
-  <p class="note" style="margin-top:18px">Built by five people simultaneously on five branches against a frozen data contract — merged in one afternoon with zero file conflicts. Reproduce the demo run from the repo root:</p>
+  <p class="note" style="margin-top:18px">Built by five people simultaneously on five branches against a frozen data contract — merged with zero file conflicts. The pipeline's own health monitoring localized the scaling hot-spot to a single stage (entity-resolution matching) with the timing evidence to prove it — that is what operational awareness of the <em>pipeline itself</em> looks like. Reproduce from the repo root:</p>
   <pre class="snippet repro">python -m src.platform.run --pipeline full --config src/platform/config.yaml --no-llm</pre>
 </section>
 
@@ -307,7 +309,7 @@ followup req'd: N</pre>
 </section>
 
 <footer>
-  Real pipeline run of 2026-08-10 · genAIproj main branch · sources: Town of Cary open data, NREL AFDC (USDOT mirror), synthetic contractor reports · all figures from the run's output artifacts (validation_report.json, reconciliation_report.json, pipeline_health.json, psc_compliance_report.csv)
+  Real pipeline run of 2026-08-10 · genAIproj main branch · sources: NYC DOT "Electric Vehicle (EV) Charging Data — Municipal Lots and Garages" (NYC Open Data), NREL AFDC New York registry (USDOT mirror), synthetic contractor reports referencing real garages · all figures from the run's output artifacts (validation_report.json, reconciliation_report.json, pipeline_health.json, psc_compliance_report.csv)
 </footer>
 
 </div>

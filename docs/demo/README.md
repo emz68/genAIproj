@@ -1,7 +1,7 @@
 # Pipeline demo — real run, real outputs
 
 Demonstration package from the full pipeline run of **2026-08-10** on merged `main`
-(22,228 raw records, three sources, three formats → 21,100 golden records in ~40 s, offline).
+(258,343 raw records — the official NYC DOT municipal-garage dataset plus the AFDC New York registry and contractor reports — → 247,886 golden records, offline).
 
 - **`pipeline_demo.html`** — the presentation infographic: inputs, the four-stage flow with a
   real record traced through every stage, outputs, and scale numbers. Open directly in a browser.
@@ -14,30 +14,34 @@ Demonstration package from the full pipeline run of **2026-08-10** on merged `ma
 
 ## The one-record story (for the presentation)
 
-A contractor's free-text inspection form (`data/seed/contractor_reports/report_004_inspection.txt`):
+A contractor's free-text 311 complaint (`data/seed/contractor_reports_nyc/nyc_report_006_complaint.txt`):
 
 ```
-insp.date : 27.11.2022
-findings -> connector latch broken; cosmetic scratches
-severity code [urgent-safety]
-followup req'd: N
+customer complaint via 311, logged 2025-06-24
+location given: "JON - Jerome 190th Street Municipal Parking"
+charge box EVB-P2042308: screen dead
+routed to: J. Alvarez  priority: urgent-safety
 ```
 
-1. **Ingestion (P1)** extracts a typed `maintenance` record: `event_type: INSPECTION`,
-   `severity: SAFETY` (from "urgent-safety"), extraction confidence 0.95 — values kept verbatim.
-2. **Validation (P2)** fixes `27.11.2022 → 2022-11-27` (logged in `fixes_applied`), flags
-   `stale_report`, scores the record 0.85.
-3. **Reconciliation (P3)** links it to its charger and assigns a stable `golden_id`.
-4. **Reporting (P4)** puts it on the safety triage list — one of 10 SAFETY events the pipeline
-   surfaced from free text, despite the contractor marking "followup req'd: N".
+1. **Ingestion (P1)** extracts a typed `maintenance` record: `event_type: COMPLAINT`,
+   `severity: SAFETY` (from "urgent-safety"), the garage name pulled from the quoted text.
+2. **Validation (P2)** normalizes dates/units across the run (e.g. session timestamps
+   `08/21/2025 19:10:54.0000000 → 2025-08-21T19:10:54-04:00`, correct NY DST offset),
+   flags issues, logs every fix inside the record.
+3. **Reconciliation (P3)** assigns a stable `golden_id`; across the run it removed 10,457
+   duplicates, resolved 16,157 field conflicts, and found 6,765 duplicate-billing patterns.
+4. **Reporting (P4)** puts it on the safety triage list, one such event flagged as having
+   no follow-up repair on record.
 
 ## Reproduce
 
 ```bash
 pip install -r requirements.txt
-mkdir -p data/raw && cp data/seed/*.gz data/raw/ && cp data/seed/contractor_reports/*.txt data/raw/
+mkdir -p data/raw
+cp data/seed/nyc_ev_charging_municipal_lots_garages.csv.gz data/seed/afdc_stations_ny_elec.geojson.gz data/raw/
+cp data/seed/contractor_reports_nyc/*.txt data/raw/
 python -m src.platform.run --pipeline full --config src/platform/config.yaml --no-llm
 ```
 
-Scale run (~124k records): generate with
-`python -m src.ingestion.inject --in data/seed --out data/raw --seed 42 --scale 2500` first.
+Timing at this volume: ingestion 2.3 s, validation 28 s, reporting 10 s; reconciliation
+73.6 min (known bottleneck, punch-listed to P3 — entity-resolution blocking).

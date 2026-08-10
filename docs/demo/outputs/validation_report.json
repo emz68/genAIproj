@@ -1,36 +1,36 @@
 {
-  "records_in": 22231,
-  "records_out": 22231,
+  "records_in": 258343,
+  "records_out": 258343,
   "quarantined": 0,
   "per_source": {
     "afdc": {
-      "records": 2062,
-      "avg_score": 0.9006,
+      "records": 5740,
+      "avg_score": 0.7185,
       "issues": {
-        "invalid_install_date": 2048,
-        "outside_territory": 1
+        "invalid_install_date": 5721,
+        "outside_territory": 4175
       }
     },
-    "cary": {
-      "records": 20142,
-      "avg_score": 0.65,
+    "nyc_dot": {
+      "records": 252589,
+      "avg_score": 0.8964,
       "issues": {
-        "invalid_duration_min": 20142,
-        "stale_report": 20142
+        "stale_report": 251688,
+        "invalid_duration_min": 3955
       }
     },
     "contractor": {
-      "records": 27,
-      "avg_score": 0.8278,
+      "records": 14,
+      "avg_score": 0.825,
       "issues": {
-        "stale_report": 27
+        "stale_report": 13
       }
     }
   },
   "per_issue": {
-    "invalid_install_date": 2048,
-    "outside_territory": 1,
-    "invalid_duration_min": 20142,
-    "stale_report": 20169
+    "invalid_install_date": 5721,
+    "outside_territory": 4175,
+    "stale_report": 251701,
+    "invalid_duration_min": 3955
   }
 }
