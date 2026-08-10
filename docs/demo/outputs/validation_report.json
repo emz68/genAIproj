@@ -1,0 +1,36 @@
+{
+  "records_in": 22231,
+  "records_out": 22231,
+  "quarantined": 0,
+  "per_source": {
+    "afdc": {
+      "records": 2062,
+      "avg_score": 0.9006,
+      "issues": {
+        "invalid_install_date": 2048,
+        "outside_territory": 1
+      }
+    },
+    "cary": {
+      "records": 20142,
+      "avg_score": 0.65,
+      "issues": {
+        "invalid_duration_min": 20142,
+        "stale_report": 20142
+      }
+    },
+    "contractor": {
+      "records": 27,
+      "avg_score": 0.8278,
+      "issues": {
+        "stale_report": 27
+      }
+    }
+  },
+  "per_issue": {
+    "invalid_install_date": 2048,
+    "outside_territory": 1,
+    "invalid_duration_min": 20142,
+    "stale_report": 20169
+  }
+}

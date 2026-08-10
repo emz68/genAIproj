@@ -1,0 +1,21 @@
+{
+  "records_in": 22231,
+  "golden_records_out": 21100,
+  "duplicates_removed": 1131,
+  "clusters": 1476,
+  "conflicts_resolved": 1043,
+  "anomalies": {
+    "duplicate_billing": 375,
+    "energy_outlier": 247
+  },
+  "per_source_lag_days": {
+    "cary": {
+      "p50": 1929.2176157407407,
+      "p95": 3603.2936574074074
+    },
+    "contractor": {
+      "p50": 1571.1742361111112,
+      "p95": 1976.1742361111112
+    }
+  }
+}

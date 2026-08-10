@@ -1,0 +1,53 @@
+{
+  "stages": {
+    "ingestion": {
+      "records_in": 22228,
+      "records_out": 22231,
+      "duration_s": 0.268,
+      "llm_calls": 0,
+      "llm_tokens": 0,
+      "exit_code": 0,
+      "skipped": false,
+      "retries": 0
+    },
+    "validation": {
+      "records_in": 22231,
+      "records_out": 22231,
+      "duration_s": 2.578,
+      "llm_calls": 0,
+      "llm_tokens": 0,
+      "exit_code": 0,
+      "skipped": false,
+      "retries": 0
+    },
+    "reconciliation": {
+      "records_in": 22231,
+      "records_out": 21100,
+      "duration_s": 35.506,
+      "llm_calls": 0,
+      "llm_tokens": 0,
+      "exit_code": 0,
+      "skipped": false,
+      "retries": 0
+    },
+    "reporting": {
+      "records_in": 21100,
+      "records_out": 21100,
+      "duration_s": 1.008,
+      "llm_calls": 0,
+      "llm_tokens": 0,
+      "exit_code": 0,
+      "skipped": false,
+      "retries": 0
+    }
+  },
+  "run_started": "2026-08-10T04:10:54+00:00",
+  "run_finished": "2026-08-10T04:11:33+00:00",
+  "preflight": {
+    "gitignore_ok": true,
+    "gitignore_missing": [],
+    "llm_key_present": false,
+    "effective_no_llm": true
+  },
+  "use_stubs": false
+}

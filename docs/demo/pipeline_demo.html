@@ -1,0 +1,313 @@
+<title>EV Charger Data Pipeline — Live Demo</title>
+<style>
+  :root {
+    --paper: #F3F5F2;
+    --card: #FFFFFF;
+    --ink: #1B2420;
+    --muted: #5A6B62;
+    --faint: #8A968E;
+    --line: #DDE3DD;
+    --green: #128A54;
+    --green-soft: #E3F1E9;
+    --copper: #A4632B;
+    --copper-soft: #F5EADD;
+    --amber: #A67A08;
+    --red: #B5443A;
+    --red-soft: #F7E8E6;
+    --code-bg: #1A231E;
+    --code-ink: #D8E4DB;
+    --code-dim: #7E9186;
+    --code-green: #55C990;
+    --code-copper: #DA9A5F;
+    --code-red: #E88B7F;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #111815; --card: #1A231E; --ink: #E8EEE9; --muted: #93A399;
+      --faint: #6D7A72; --line: #2A362F; --green: #3BC488; --green-soft: #17342A;
+      --copper: #D08A4C; --copper-soft: #33261A; --amber: #D3A63C;
+      --red: #E07568; --red-soft: #3A211E; --code-bg: #0C110F;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #111815; --card: #1A231E; --ink: #E8EEE9; --muted: #93A399;
+    --faint: #6D7A72; --line: #2A362F; --green: #3BC488; --green-soft: #17342A;
+    --copper: #D08A4C; --copper-soft: #33261A; --amber: #D3A63C;
+    --red: #E07568; --red-soft: #3A211E; --code-bg: #0C110F;
+  }
+  :root[data-theme="light"] {
+    --paper: #F3F5F2; --card: #FFFFFF; --ink: #1B2420; --muted: #5A6B62;
+    --faint: #8A968E; --line: #DDE3DD; --green: #128A54; --green-soft: #E3F1E9;
+    --copper: #A4632B; --copper-soft: #F5EADD; --amber: #A67A08;
+    --red: #B5443A; --red-soft: #F7E8E6; --code-bg: #1A231E;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+    margin: 0; padding: 0;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 24px 96px; }
+  h1, h2, h3 { font-family: ui-serif, Georgia, "Times New Roman", serif; text-wrap: balance; }
+  h1 { font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.12; font-weight: 600; margin: 0 0 14px; }
+  h2 { font-size: 1.55rem; font-weight: 600; margin: 0 0 6px; }
+  h3 { font-size: 1.12rem; font-weight: 600; margin: 0 0 6px; }
+  p  { max-width: 62ch; }
+  code, .mono { font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace; }
+
+  .eyebrow {
+    text-transform: uppercase; letter-spacing: .14em; font-size: .72rem;
+    font-weight: 600; color: var(--green); margin: 0 0 10px;
+  }
+  .section { margin-top: 72px; }
+  .section > .lede { color: var(--muted); margin-top: 4px; }
+
+  header.hero { padding-top: 64px; }
+  .hero .sub { color: var(--muted); font-size: 1.06rem; max-width: 58ch; }
+
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-top: 36px; }
+  .tile { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px 14px; }
+  .tile .n { font-family: ui-serif, Georgia, serif; font-size: 2rem; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .tile .l { color: var(--muted); font-size: .82rem; margin-top: 4px; }
+  .tile.green .n { color: var(--green); }
+
+  .sources { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 24px; }
+  .source { background: var(--card); border: 1px solid var(--line); border-top: 3px solid var(--copper); border-radius: 6px; padding: 16px 18px; }
+  .source h3 { margin-bottom: 2px; }
+  .source .meta { color: var(--muted); font-size: .82rem; margin-bottom: 12px; }
+  pre.snippet {
+    background: var(--code-bg); color: var(--code-ink); border-radius: 6px;
+    padding: 12px 14px; font-size: .74rem; line-height: 1.55; overflow-x: auto; margin: 0;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  pre.snippet .dim { color: var(--code-dim); }
+  pre.snippet .bad { color: var(--code-copper); }
+  pre.snippet .good { color: var(--code-green); }
+  pre.snippet .alert { color: var(--code-red); }
+
+  /* ---- the spine ---- */
+  .spine { position: relative; margin-top: 34px; padding-left: 34px; }
+  .spine::before {
+    content: ""; position: absolute; left: 10px; top: 8px; bottom: 8px; width: 2px;
+    background: linear-gradient(to bottom, var(--copper), var(--green));
+  }
+  .stage { position: relative; margin-bottom: 40px; }
+  .stage::before {
+    content: ""; position: absolute; left: -30px; top: 6px; width: 14px; height: 14px;
+    border-radius: 50%; background: var(--paper); border: 3px solid var(--green);
+  }
+  .stage.raw::before { border-color: var(--copper); }
+  .stage .who {
+    display: inline-block; font-size: .72rem; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 2px;
+  }
+  .stage .what { color: var(--muted); max-width: 62ch; margin: 4px 0 14px; }
+  .trace { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; overflow-x: auto; }
+  .trace table { border-collapse: collapse; width: 100%; font-size: .8rem; }
+  .trace th { text-align: left; font-weight: 600; color: var(--faint); font-size: .68rem;
+              text-transform: uppercase; letter-spacing: .08em; padding: 2px 18px 8px 0; }
+  .trace td { padding: 3px 18px 3px 0; vertical-align: top;
+              font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+              font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .trace td.k { color: var(--muted); font-family: system-ui, sans-serif; }
+  .was { color: var(--copper); text-decoration: line-through; text-decoration-thickness: 1px; }
+  .now { color: var(--green); font-weight: 600; }
+  .flag { color: var(--amber); }
+  .safe { color: var(--red); font-weight: 600; }
+  .note { color: var(--faint); font-size: .78rem; margin-top: 10px; max-width: 68ch; }
+
+  /* ---- outputs ---- */
+  .kpis { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 6px 18px; margin-top: 20px; overflow-x: auto; }
+  .kpis table { border-collapse: collapse; width: 100%; }
+  .kpis td { padding: 9px 14px 9px 0; border-bottom: 1px solid var(--line); font-size: .92rem; }
+  .kpis tr:last-child td { border-bottom: none; }
+  .kpis td.v { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-variant-numeric: tabular-nums;
+               text-align: right; font-weight: 600; white-space: nowrap; }
+  .kpis td.u { color: var(--faint); font-size: .78rem; }
+
+  .bars { margin-top: 20px; display: grid; gap: 9px; }
+  .bar-row { display: grid; grid-template-columns: 175px 1fr 70px; gap: 12px; align-items: center; font-size: .84rem; }
+  .bar-row .lab { color: var(--muted); text-align: right; }
+  .bar-track { height: 14px; }
+  .bar-fill { height: 100%; min-width: 3px; background: var(--copper); border-radius: 0 4px 4px 0; }
+  .bar-row.anom .bar-fill { background: var(--amber); }
+  .bar-row .val { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-variant-numeric: tabular-nums; font-weight: 600; }
+
+  .safety { background: var(--red-soft); border: 1px solid var(--red); border-radius: 6px;
+            padding: 14px 18px; margin-top: 20px; }
+  .safety strong { color: var(--red); }
+
+  .repro { margin-top: 16px; }
+  .prompt-box { background: var(--card); border: 1px dashed var(--copper); border-radius: 6px;
+                padding: 16px 18px; margin-top: 16px; }
+  .prompt-box p.mono { font-size: .84rem; color: var(--muted); line-height: 1.65; max-width: none; }
+
+  footer { margin-top: 84px; padding-top: 18px; border-top: 1px solid var(--line);
+           color: var(--faint); font-size: .78rem; }
+  a { color: var(--green); }
+</style>
+
+<div class="wrap">
+
+<header class="hero">
+  <p class="eyebrow">EV Charger Data Platform · Live pipeline demonstration</p>
+  <h1>Contractor chaos in.<br>A regulator-ready single source of truth out.</h1>
+  <p class="sub">Charger data arrives from external contractors late, incomplete, inconsistent, and unstructured — in three different formats. This is a real run of our AI-powered pipeline over <strong>22,228 real records</strong>: every number below comes from the actual output artifacts, and every fix is logged and auditable.</p>
+
+  <div class="tiles">
+    <div class="tile"><div class="n">22,228</div><div class="l">raw records, 3 formats in</div></div>
+    <div class="tile green"><div class="n">21,100</div><div class="l">golden records out</div></div>
+    <div class="tile"><div class="n">1,131</div><div class="l">duplicates auto-resolved</div></div>
+    <div class="tile"><div class="n">~40 s</div><div class="l">end-to-end, laptop, offline</div></div>
+  </div>
+</header>
+
+<section class="section">
+  <p class="eyebrow">Input</p>
+  <h2>What goes in — three sources, three formats, all messy</h2>
+  <p class="lede">Real North Carolina EV-charger data standing in for the Con Edison territory: municipal charging sessions, the federal station registry, and free-text contractor reports.</p>
+
+  <div class="sources">
+    <div class="source">
+      <h3>Charging sessions</h3>
+      <div class="meta">20,142 rows · semicolon CSV · Town of Cary open data</div>
+      <pre class="snippet"><span class="dim">start_date;station_name;charging_time…</span>
+2023-01-03T17:58:04+00:00;
+TOWN OF CARY / TOWN HALL-PWH;
+<span class="bad">00:54:50</span>;<span class="bad">"3.976"</span>;228 Ambassador Loop…</pre>
+    </div>
+    <div class="source">
+      <h3>Station registry</h3>
+      <div class="meta">2,062 stations · GeoJSON API dump · NREL AFDC via USDOT</div>
+      <pre class="snippet">"station_name": "Leith Nissan",
+"ev_connector_types":
+  <span class="bad">"[\"CHADEMO\",\"J1772\",\"J1772COMBO\"]"</span>,
+"open_date": <span class="bad">1327968000000</span></pre>
+    </div>
+    <div class="source">
+      <h3>Contractor reports</h3>
+      <div class="meta">Free text · emails, forms, fault digests</div>
+      <pre class="snippet">QUARTERLY INSPECTION FORM (rev 3b)
+insp.date : <span class="bad">27.11.2022</span>
+findings -&gt; connector latch broken
+severity code [<span class="alert">urgent-safety</span>]
+followup req'd: N</pre>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <p class="eyebrow">The pipeline</p>
+  <h2>Follow one record through</h2>
+  <p class="lede">The inspection report above — a contractor's free-text form with a broken latch and a made-up severity label — traced through all four stages of the real run.</p>
+
+  <div class="spine">
+
+    <div class="stage raw">
+      <span class="who">Stage 1 · Ingestion — Emlyn</span>
+      <h3>LLM/NLP parsing: unstructured text becomes a typed record</h3>
+      <p class="what">Format-detecting readers for CSV, GeoJSON, and free text. The extraction layer reads the contractor's prose and emits a structured maintenance event — values still verbatim, nothing silently altered.</p>
+      <div class="trace"><table>
+        <tr><th>field</th><th>extracted from free text</th></tr>
+        <tr><td class="k">event_id</td><td>maint-ceba84a5dc4e</td></tr>
+        <tr><td class="k">event_type</td><td><span class="now">INSPECTION</span> <span class="flag">← classified from prose</span></td></tr>
+        <tr><td class="k">severity</td><td><span class="was">"urgent-safety"</span> → <span class="safe">SAFETY</span></td></tr>
+        <tr><td class="k">event_date</td><td>"27.11.2022" <span class="flag">(kept raw — fixing is Stage 2's job)</span></td></tr>
+        <tr><td class="k">extraction confidence</td><td>0.95</td></tr>
+      </table></div>
+    </div>
+
+    <div class="stage">
+      <span class="who">Stage 2 · Validation &amp; cleaning — Sanja</span>
+      <h3>A declarative rule engine fixes what it can, flags what it can't</h3>
+      <p class="what">Dates to ISO, units repaired, enums normalized, territory checked. Every fix is logged in the record itself; nothing is ever silently dropped.</p>
+      <div class="trace"><table>
+        <tr><th>field</th><th>before → after</th></tr>
+        <tr><td class="k">event_date</td><td><span class="was">"27.11.2022"</span> → <span class="now">"2022-11-27"</span></td></tr>
+        <tr><td class="k">energy_kwh <span style="font-family:system-ui">(session)</span></td><td><span class="was">"3.976" (string)</span> → <span class="now">3.976 (number)</span></td></tr>
+        <tr><td class="k">fixes_applied</td><td>["date:event_date:'27.11.2022'→'2022-11-27'"]</td></tr>
+        <tr><td class="k">issues flagged</td><td><span class="flag">stale_report</span> — filed 1,300+ days after the event</td></tr>
+        <tr><td class="k">quality score</td><td>0.85 / 1.00</td></tr>
+      </table></div>
+    </div>
+
+    <div class="stage">
+      <span class="who">Stage 3 · Reconciliation — Yash</span>
+      <h3>Fuzzy matching across sources builds the single source of truth</h3>
+      <p class="what">Records describing the same physical charger are clustered across all three sources; field conflicts are resolved by explicit survivorship rules; duplicates and billing anomalies are detected statistically.</p>
+      <div class="trace"><table>
+        <tr><th>golden-record evidence (real output)</th><th></th></tr>
+        <tr><td class="k">merged_from</td><td>afdc feature:39017 <span class="now">+</span> afdc feature:42397 → one charger</td></tr>
+        <tr><td class="k">conflict resolved</td><td>address: <span class="now">"231 Fayetteville St"</span> chosen, <span class="was">"215 W Cabarrus St"</span> rejected</td></tr>
+        <tr><td class="k">golden_id</td><td><span class="now">mnt-f23eccf3398d51a88317</span> <span class="flag">← stable across re-runs</span></td></tr>
+        <tr><td class="k">anomalies found</td><td>375 duplicate-billing patterns · 247 energy outliers</td></tr>
+      </table></div>
+    </div>
+
+    <div class="stage">
+      <span class="who">Stage 4 · Reporting — Emily</span>
+      <h3>PSC compliance report with a full audit trail</h3>
+      <p class="what">Regulatory KPIs plus a data-lineage appendix — record counts in and out of every stage, per-contractor quality scores, quarantine summary — so “accurate and on time” is demonstrable, not asserted. The broken latch lands on the safety triage list.</p>
+    </div>
+
+  </div>
+  <p class="note">Wrapped around all four: the <strong>platform layer (Anastasia)</strong> — orchestration, retries, health monitoring, and a resumability manifest that detects late-arriving contractor files and re-runs exactly the affected stages. A 281-test contract harness caught and localized every integration bug at merge time.</p>
+</section>
+
+<section class="section">
+  <p class="eyebrow">Output</p>
+  <h2>What comes out</h2>
+
+  <div class="kpis"><table>
+    <tr><td>Golden chargers (deduplicated fleet)</td><td class="v">1,476</td><td class="u">from 2,062 registry rows + sessions</td></tr>
+    <tr><td>Golden charging sessions</td><td class="v">19,597</td><td class="u">545 duplicate billings removed</td></tr>
+    <tr><td>Energy delivered</td><td class="v">162,820 kWh</td><td class="u">summed from cleaned sessions</td></tr>
+    <tr><td>Structured maintenance events</td><td class="v">27</td><td class="u">parsed from free text</td></tr>
+    <tr><td>Data completeness score</td><td class="v">66.8%</td><td class="u">per-record quality, averaged</td></tr>
+    <tr><td>Per-contractor quality league</td><td class="v">0.90 / 0.83 / 0.65</td><td class="u">registry / contractor / sessions feed</td></tr>
+  </table></div>
+
+  <h3 style="margin-top:34px">Every problem found, counted, and attributed</h3>
+  <div class="bars">
+    <div class="bar-row"><span class="lab">stale reports (&gt;7 days)</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="val">20,169</span></div>
+    <div class="bar-row"><span class="lab">unparseable durations</span><div class="bar-track"><div class="bar-fill" style="width:99.9%"></div></div><span class="val">20,142</span></div>
+    <div class="bar-row"><span class="lab">invalid install dates</span><div class="bar-track"><div class="bar-fill" style="width:10.2%"></div></div><span class="val">2,048</span></div>
+    <div class="bar-row anom"><span class="lab">duplicate-billing patterns</span><div class="bar-track"><div class="bar-fill" style="width:1.9%"></div></div><span class="val">375</span></div>
+    <div class="bar-row anom"><span class="lab">energy outliers</span><div class="bar-track"><div class="bar-fill" style="width:1.2%"></div></div><span class="val">247</span></div>
+    <div class="bar-row anom"><span class="lab">outside service territory</span><div class="bar-track"><div class="bar-fill" style="width:.3%"></div></div><span class="val">1</span></div>
+  </div>
+  <p class="note">Copper bars: single-record issues flagged by the validation rule engine. Amber: cross-record anomalies from statistical detection. The one out-of-territory record is a coordinate the messiness injector deliberately planted — and the pipeline caught it.</p>
+
+  <div class="safety">
+    <strong>Safety triage:</strong> 10 SAFETY-severity events extracted from contractor free text and surfaced with location, date, and evidence — including the broken connector latch above, which the contractor had marked “followup req'd: N”.
+  </div>
+</section>
+
+<section class="section">
+  <p class="eyebrow">Scale &amp; rigor</p>
+  <h2>It holds at volume</h2>
+  <div class="tiles">
+    <div class="tile"><div class="n">123,873</div><div class="l">records in the scale run</div></div>
+    <div class="tile"><div class="n">4.2 min</div><div class="l">full pipeline at scale</div></div>
+    <div class="tile"><div class="n">281</div><div class="l">tests, all passing offline</div></div>
+    <div class="tile"><div class="n">5</div><div class="l">parallel builders, zero merge conflicts</div></div>
+  </div>
+  <p class="note" style="margin-top:18px">Built by five people simultaneously on five branches against a frozen data contract — merged in one afternoon with zero file conflicts. Reproduce the demo run from the repo root:</p>
+  <pre class="snippet repro">python -m src.platform.run --pipeline full --config src/platform/config.yaml --no-llm</pre>
+</section>
+
+<section class="section">
+  <p class="eyebrow">For the deck</p>
+  <h2>Image-generation prompt</h2>
+  <p class="lede">Paste into ChatGPT (DALL·E) or Gemini (Imagen) for a title-slide illustration:</p>
+  <div class="prompt-box">
+    <p class="mono">Clean isometric infographic illustration of a data refinery for electric-vehicle charging data. On the left, three chaotic input streams flow in: a torn spreadsheet, a tangled stack of paper maintenance reports, and a glitchy map pin — all rendered in tarnished copper tones. They feed into a sleek four-chamber pipeline machine labeled with small icons: a document scanner, a filter/sieve, a merging funnel, and a report printer. Out the right side flows a single, orderly stream of glowing emerald-green data cubes into a clipboard marked with a checkmark and a small shield icon. Muted sage-white background, subtle grid, soft studio lighting, minimal flat-shaded 3D style with copper-to-green color story, no text labels, wide 16:9 composition.</p>
+  </div>
+</section>
+
+<footer>
+  Real pipeline run of 2026-08-10 · genAIproj main branch · sources: Town of Cary open data, NREL AFDC (USDOT mirror), synthetic contractor reports · all figures from the run's output artifacts (validation_report.json, reconciliation_report.json, pipeline_health.json, psc_compliance_report.csv)
+</footer>
+
+</div>
