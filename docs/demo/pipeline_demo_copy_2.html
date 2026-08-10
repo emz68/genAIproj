@@ -267,8 +267,11 @@
   <!-- 2 · RESEARCH -->
   <section id="research" class="reveal">
     <div class="sec-head"><span class="num">2</span><h2>Background research</h2></div>
-    <p class="sec-sub">We studied how charger data actually behaves across the industry — registries, municipal logs, and contractor text.</p>
+    <p class="sec-sub">What the data itself told us — and the findings that shaped every design decision.</p>
     <div class="card">
+      <p>Before proposing a fix, we studied how the problem actually behaves in the wild: the formats, the
+      failure modes, and the patterns that keep showing up across datasets. The goal was to design for the
+      real world, not for a clean-room example.</p>
       <p>Across public datasets and industry material, one pattern dominates: <strong>the mess is in the data you already
       have</strong>, not in exotic formats. Unit swaps, date chaos, free-text enums, and late-arriving files are the norm.
       The fix therefore had to be a <strong>pipeline of small, testable stages</strong> — not one clever model.</p>
@@ -336,7 +339,7 @@
         <code>"3/4/24 2pm"</code> → ISO-8601 with timezone, <code>"chgpt LVL2 dual"</code> → CHAdeMO / L2 — derives missing values,
         and scores every record 0–1 with stable issue codes.</li>
         <li><strong>Reconciliation</strong> resolves the same physical charger across sources into <strong>golden records</strong>,
-        logs every conflict decision, and detects anomalies statistically (duplicate billing, energy outliers, silent chargers).</li>
+        logs every conflict decision, and detects anomalies statistically.</li>
         <li><strong>Reporting</strong> renders the <strong>PSC compliance report with a data-lineage appendix</strong> — so
         "accurate and on time" is demonstrable — plus an operations dashboard, safety triage, and customer-experience view.</li>
       </ul>
