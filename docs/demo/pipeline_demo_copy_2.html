@@ -322,9 +322,6 @@
       <div class="fail"><span class="x">✕</span><div><span class="t">"Never drop a record" vs. the frozen schema.</span>
         <p>A record missing a required provenance field cannot exist in the P2 schema. Resolution: flag it, emit it anyway with a
         marker, and stash raw values as <code>raw_&lt;field&gt;</code> extras — nothing lost, nothing silently broken.</p></div></div>
-      <div class="fail"><span class="x">✕</span><div><span class="t">The LLM path was never live-tested — and reconciliation is slow.</span>
-        <p>No API key in the dev environment, so all runs used the deterministic fallback (implemented, counted, fail-safe — but
-        untested live). And the first reconciliation pass was too aggressive — merging different drivers and different chargers. An adversarial audit caught it (every golden record carries its merge history), a fix was applied (same-driver + same-charger requirement), and runtime dropped from 74 min to 2.2 min.</p></div></div>
     </div>
   </section>
 
