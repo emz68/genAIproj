@@ -1,0 +1,2 @@
+{"record_type": "charger", "charger_id": "chg-ok", "provenance": {"source": "s", "source_file": "f", "ingested_at": "2026-08-01T00:00:00+00:00"}, "quality": {"score": 1.0, "issues": [], "fixes_applied": []}}
+this line is not JSON at all {{{

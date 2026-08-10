@@ -1,0 +1,12 @@
+{
+  "records_in": 3,
+  "golden_records_out": 3,
+  "duplicates_removed": 0,
+  "clusters": 1,
+  "conflicts_resolved": 1,
+  "anomalies": {"unresolved_safety_maintenance": 1},
+  "per_source_lag_days": {
+    "sessions_csv": {"p50": 2.0, "p95": 11.0},
+    "contractor_reports": {"p50": 6.0, "p95": 14.0}
+  }
+}

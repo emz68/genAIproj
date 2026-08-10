@@ -1,0 +1,8 @@
+QUARTERLY INSPECTION FORM (rev 3b)
+insp.date : 3/4/23
+site/station.... TOWN OF CARY / TOWN HALL-PWH
+technician: J. Alvarez
+charger rating   6600 W
+findings -> connector latch broken; cosmetic scratches
+severity code [MAJOR]
+followup req'd: y - parts ordered

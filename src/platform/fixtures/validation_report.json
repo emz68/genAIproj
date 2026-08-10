@@ -1,0 +1,11 @@
+{
+  "records_in": 3,
+  "records_out": 3,
+  "quarantined": 0,
+  "per_source": {
+    "station_registry": {"records": 1, "avg_score": 0.95, "issues": {}},
+    "sessions_csv": {"records": 1, "avg_score": 0.9, "issues": {"missing_peak_kw": 1}},
+    "contractor_reports": {"records": 1, "avg_score": 0.85, "issues": {}}
+  },
+  "per_issue": {"missing_peak_kw": 1}
+}

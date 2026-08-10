@@ -1,0 +1,7 @@
+From: R. Singh - ChargeRight LLC <field-ops@contractor-mail.example>
+Sent: 01.02.2023
+Subj: RE: RE: site visit DT DECK P2
+
+Hey team - swung by today. GFCI wont reset. rated L2 dual but pulling less.
+severity: urgent-safety   will file proper ticket later
+- sent from my phone
