@@ -644,22 +644,25 @@
 
       <div class="after-card">
         <span class="card-badge">✓ AFTER — Golden record output</span>
-        <p style="font-size:.84rem; color:var(--muted); margin-bottom:8px;">Same data, same record. After 4 automated stages. Every fix logged, every decision attributable.</p>
+        <p style="font-size:.84rem; color:var(--muted); margin-bottom:8px;">Same record, same data. After 4 automated stages. Every fix logged, every decision attributable.</p>
+        <div class="code-block"><span class="cmt">←──  one golden record, fully traced, every fix auditable  ──→</span>
 
-        <span class="stage-tag s1">Stage 1 · Ingest</span>
-        <div class="fix-row"><span class="was">free-text prose</span><span class="arr">→</span><span class="now">typed maintenance record: COMPLAINT, SAFETY, box EVB-P2042308</span></div>
+<span class="kw">Source A · Session</span>  <span class="str">"2025-08-21T19:10:54-04:00"</span>,
+  <span class="str">"0.7203"</span>, <span class="str">"41.369"</span>, <span class="str">"PAID"</span>
+  <span class="cmt">← ISO-8601 date, kW unit, NULL → flagged</span>
 
-        <span class="stage-tag s2">Stage 2 · Validate</span>
-        <div class="fix-row"><span class="was">"08/21/2025 19:10:54.0000000"</span><span class="arr">→</span><span class="now">2025-08-21T19:10:54-04:00</span></div>
-        <div class="fix-row"><span class="was">"720.3" (W)</span><span class="arr">→</span><span class="now">0.7203 kW</span></div>
-        <div class="fix-row"><span class="was">"NULL"</span><span class="arr">→</span><span class="now">flagged · not dropped</span></div>
-        <div class="fix-row"><span class="was">urgent-safety</span><span class="arr">→</span><span class="now">SAFETY  ← normalized</span></div>
+<span class="kw">Source B · Charger</span>  <span class="str">"NISSAN FAST CHR RIVERHEAD"</span>
+  ev_connector_types: <span class="str">"J1772, CHAdeMO"</span>
+  open_date: <span class="str">"2012-01-31"</span>
+  <span class="cmt">← flattened, Unix timestamp → date, 4 entries → 1 golden</span>
 
-        <span class="stage-tag s3">Stage 3 · Reconcile</span>
-        <div class="fix-row"><span class="was">4 AFDC entries for same charger</span><span class="arr">→</span><span class="now">1 golden charger record · merged_from audit trail preserved</span></div>
+<span class="kw">Source C · Maintenance</span>  <span class="str">COMPLAINT</span> · severity: <span class="str">SAFETY</span>
+  charge_box: <span class="str">EVB-P2042308</span>
+  location: <span class="str">"JON - Jerome 190th St Municipal Parking"</span>
+  <span class="cmt">← typed record, LLM-extracted, severity normalized</span>
 
-        <span class="stage-tag s4">Stage 4 · Report</span>
-        <div class="fix-row"><span class="was">no regulator-ready output</span><span class="arr">→</span><span class="now">PSC compliance report + safety triage + lineage appendix</span></div>
+<span class="cmt">merged_from audit trail preserved · 2,731 conflicts resolved
+4,105 duplicates resolved · 2.9 min total runtime</span></div>
       </div>
     </div>
 
