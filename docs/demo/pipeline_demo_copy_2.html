@@ -143,6 +143,103 @@
   .fail p { margin: 3px 0 0; font-size: .93rem; }
   .fail code { background: rgba(227,24,55,.08); padding: 1px 5px; border-radius: 4px; font-size: .85em; }
 
+  /* ── Section 5: Solution — example-driven data journey ── */
+  .journey { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 24px 0 10px; }
+  @media (max-width: 800px) { .journey { grid-template-columns: 1fr; } }
+
+  .journey .before-card, .journey .after-card {
+    border-radius: 14px; padding: 22px 24px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+  }
+  .journey .before-card {
+    background: #FFF8F6; border: 2px solid #F3C9D1;
+    animation: slideInLeft .7s ease both;
+  }
+  .journey .after-card {
+    background: #F3F9F6; border: 2px solid #BFE0CD;
+    animation: slideInRight .7s ease both; animation-delay: .2s;
+  }
+  @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+
+  .journey .card-badge {
+    display: inline-flex; align-items: center; gap: 6px; font-size: .68rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: .1em; margin-bottom: 14px; padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .before-card .card-badge { background: var(--red-soft); color: var(--red); }
+  .after-card .card-badge  { background: var(--ok-soft); color: var(--ok); }
+
+  .journey .code-block {
+    background: #1A1E2B; color: #C8D6E5; border-radius: 10px; padding: 14px 16px;
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, Consolas, monospace;
+    font-size: .72rem; line-height: 1.55; overflow-x: auto; margin: 10px 0 0;
+    white-space: pre;
+  }
+  .journey .code-block .kw  { color: #FF6B6B; }
+  .journey .code-block .str { color: #55C990; }
+  .journey .code-block .num { color: #FECA57; }
+  .journey .code-block .cmt { color: #7E9186; font-style: italic; }
+  .journey .code-block .fix { color: #54A0FF; }
+
+  .journey .fix-row {
+    display: flex; align-items: flex-start; gap: 8px; margin: 6px 0; font-size: .82rem;
+  }
+  .journey .fix-row .was { color: var(--red); text-decoration: line-through; text-decoration-thickness: 1px; font-family: monospace; font-size: .78rem; }
+  .journey .fix-row .arr { color: var(--muted); font-weight: 700; flex: 0 0 auto; }
+  .journey .fix-row .now { color: var(--ok); font-weight: 700; font-family: monospace; font-size: .78rem; }
+
+  .journey .stage-tag {
+    display: inline-block; font-size: .64rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 6px; margin-right: 6px; margin-bottom: 4px;
+  }
+  .stage-tag.s1 { background: var(--navy-100); color: var(--navy-700); }
+  .stage-tag.s2 { background: #FFF3CD; color: #856404; }
+  .stage-tag.s3 { background: #D4EDDA; color: #155724; }
+  .stage-tag.s4 { background: var(--red-soft); color: var(--red); }
+
+  /* ── Section 6: Testing — cleaner cards ── */
+  .test-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0 10px; }
+  @media (max-width: 800px) { .test-cards { grid-template-columns: 1fr; } }
+
+  .test-card {
+    background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    padding: 24px 26px; box-shadow: var(--shadow-sm);
+    animation: fadeInUp .6s ease both;
+  }
+  .test-card:nth-child(2) { animation-delay: .15s; }
+
+  .test-card .test-badge {
+    display: inline-block; font-size: .64rem; font-weight: 800; letter-spacing: .12em;
+    text-transform: uppercase; padding: 4px 12px; border-radius: 8px; margin-bottom: 14px;
+  }
+  .test-card:nth-child(1) .test-badge { background: var(--navy-100); color: var(--navy-700); }
+  .test-card:nth-child(2) .test-badge { background: var(--red-soft); color: var(--red); }
+
+  .test-card h4 { color: var(--navy-900); font-size: 1.05rem; margin-bottom: 4px; }
+  .test-card .test-sub { color: var(--muted); font-size: .84rem; margin-bottom: 14px; }
+
+  .test-card .metric-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  }
+  .test-card .mini-metric {
+    background: var(--navy-050); border-radius: 10px; padding: 12px 14px; text-align: center;
+  }
+  .test-card .mini-metric .val {
+    font-size: 1.3rem; font-weight: 800; color: var(--navy-800); letter-spacing: -.02em;
+  }
+  .test-card .mini-metric .lab {
+    font-size: .7rem; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: .04em;
+  }
+  .test-card .mini-metric.red .val { color: var(--red); }
+
+  .test-card .prove-banner {
+    margin-top: 16px; padding: 12px 16px; border-radius: 10px;
+    font-size: .82rem; font-weight: 600;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .test-card:nth-child(1) .prove-banner { background: #E3EDF7; color: var(--navy-800); }
+  .test-card:nth-child(2) .prove-banner { background: #E4F2EA; color: var(--ok); }
+  .test-card .prove-banner .ic { font-size: 1.1rem; flex: 0 0 auto; }
+
   /* table */
   .tbl-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin: 22px 0; }
   table { width: 100%; border-collapse: collapse; font-size: .93rem; background: #fff; min-width: 640px; }
@@ -325,44 +422,95 @@
     </div>
   </section>
 
-  <!-- 5 · SOLUTION -->
+  <!-- 5 · SOLUTION — example-driven data journey -->
   <section id="solution" class="reveal">
-    <div class="sec-head"><span class="num">5</span><h2>What worked — the solution</h2></div>
-    <p class="sec-sub">One command, four stages, a full audit trail — and every decision attributable.</p>
-    <div class="card">
-      <ul style="margin-left:22px;">
-        <li><strong>Ingestion</strong> turns unstructured contractor text into typed records (LLM extraction with a deterministic fallback) and normalizes all sources to one canonical JSONL.</li>
-        <li><strong>Validation &amp; cleaning</strong> repairs what's repairable — <code>W→kW</code>, <code>Wh→kWh</code>,
-        <code>"3/4/24 2pm"</code> → ISO-8601 with timezone, <code>"chgpt LVL2 dual"</code> → CHAdeMO / L2 — derives missing values,
-        and scores every record 0–1 with stable issue codes.</li>
-        <li><strong>Reconciliation</strong> resolves the same physical charger across sources into <strong>golden records</strong>,
-        logs every conflict decision, and detects anomalies statistically.</li>
-        <li><strong>Reporting</strong> renders the <strong>PSC compliance report with a data-lineage appendix</strong> — so
-        "accurate and on time" is demonstrable — plus an operations dashboard, safety triage, and customer-experience view.</li>
-      </ul>
-      <div class="callout">
-        <span class="h">The shape of the answer</span>
-        Don't replace the analysts. Remove the manual scramble: automated cleansing and reconciliation compress days of
-        spreadsheet work into a 2.9-minute offline run with a paper trail regulators can audit.
+    <div class="sec-head"><span class="num">5</span><h2>What the pipeline does — follow one real record</h2></div>
+    <p class="sec-sub">A 311 complaint from Jerome Avenue, exactly as it arrived — and what the pipeline turned it into.</p>
+
+    <!-- BEFORE / AFTER -->
+    <div class="journey">
+      <div class="before-card">
+        <span class="card-badge">⚠ BEFORE — Raw contractor input</span>
+        <p style="font-size:.84rem; color:var(--muted); margin-bottom:8px;">This is what lands in Con Edison's inbox today. Free text. Vague location. A made-up severity.</p>
+        <div class="code-block"><span class="cmt">←──  three sources, three formats, all messy  ──→</span>
+
+<span class="kw">Source A · CSV sessions</span>  <span class="str">"08/21/2025"</span>,<span class="str">"19:10:54.0000000"</span>,
+  <span class="str">"720.3"</span>,<span class="str">"41.369"</span>,<span class="str">"NULL"</span>
+  <span class="cmt">← crosses midnight, W not kW, NULL fields</span>
+
+<span class="kw">Source B · AFDC registry</span>  <span class="str">"NISSAN FAST CHR RIVERHEAD"</span>
+  ev_connector_types: <span class="str">"[\"CHADEMO\",\"J1772COMBO\"]"</span>
+  open_date: <span class="num">1327968000000</span>
+  <span class="cmt">← JSON inside JSON, Unix ms timestamps</span>
+
+<span class="kw">Source C · Contractor report</span>  customer complaint via 311, logged 2025-06-24
+  location given: <span class="str">"JON - Jerome 190th
+    Street Municipal Parking"</span>
+  charge box EVB-P2042308: screen dead
+  routed to: J. Alvarez
+  priority: <span class="str">urgent-safety</span>
+  <span class="cmt">← free text, ambiguous severity</span></div>
       </div>
+
+      <div class="after-card">
+        <span class="card-badge">✓ AFTER — Golden record output</span>
+        <p style="font-size:.84rem; color:var(--muted); margin-bottom:8px;">Same data, same record. After 4 automated stages. Every fix logged, every decision attributable.</p>
+
+        <span class="stage-tag s1">Stage 1 · Ingest</span>
+        <div class="fix-row"><span class="was">free-text prose</span><span class="arr">→</span><span class="now">typed maintenance record: COMPLAINT, SAFETY, box EVB-P2042308</span></div>
+
+        <span class="stage-tag s2">Stage 2 · Validate</span>
+        <div class="fix-row"><span class="was">"08/21/2025 19:10:54.0000000"</span><span class="arr">→</span><span class="now">2025-08-21T19:10:54-04:00</span></div>
+        <div class="fix-row"><span class="was">"720.3" (W)</span><span class="arr">→</span><span class="now">0.7203 kW</span></div>
+        <div class="fix-row"><span class="was">"NULL"</span><span class="arr">→</span><span class="now">flagged · not dropped</span></div>
+        <div class="fix-row"><span class="was">urgent-safety</span><span class="arr">→</span><span class="now">SAFETY  ← normalized</span></div>
+
+        <span class="stage-tag s3">Stage 3 · Reconcile</span>
+        <div class="fix-row"><span class="was">4 AFDC entries for same charger</span><span class="arr">→</span><span class="now">1 golden charger record · merged_from audit trail preserved</span></div>
+
+        <span class="stage-tag s4">Stage 4 · Report</span>
+        <div class="fix-row"><span class="was">no regulator-ready output</span><span class="arr">→</span><span class="now">PSC compliance report + safety triage + lineage appendix</span></div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="h">The shape of the answer</span>
+      Don't replace the analysts. Remove the manual scramble: <strong>258,343 records → 254,414 audited golden records in 2.9 minutes</strong>, with a paper trail regulators can audit. One command: <code>python -m src.platform.run --pipeline full --no-llm</code>.
     </div>
   </section>
 
-  <!-- 6 · TESTING -->
+  <!-- 6 · TESTING — cleaner cards -->
   <section id="testing" class="reveal">
-    <div class="sec-head"><span class="num">6</span><h2>Testing — baseline, then the hard case</h2></div>
-    <p class="sec-sub">First a baseline case we fully understood; then a harder case at real-world scale.</p>
-    <div class="tbl-wrap">
-      <table>
-        <tr><th></th><th>Baseline — seed dataset</th><th>Harder case — official NYC DOT dataset</th></tr>
-        <tr><td class="b">Input</td><td>Cary, NC seed: 20k+ sessions, 2k stations, 24 contractor reports + deterministic synthetic messiness</td>
-            <td>258,343 records: NYC municipal garages + NY AFDC registry + contractor reports — real, uncurated, in Con Edison's own territory</td></tr>
-        <tr><td class="b">Performance</td><td>76 offline unit tests + fixture runs: every planted problem caught — bad dates, W/kW swaps, missing fields, stale reports, duplicates</td>
-            <td>Validation: <strong>26.9 s</strong> for all 258,343 records · 4,105 duplicates resolved · 2,731 conflicts resolved into 4,219 clusters · 2,222 duplicate-billing + 2,100 energy outliers + 3 unresolved SAFETY events detected · 0 quarantined</td></tr>
-        <tr><td class="b">What it proved</td><td>Correctness: fixes the fixable, flags the rest, never drops a record</td>
-            <td>Scale: flat-memory streaming, deterministic re-runs, outputs valid against the frozen schema at ¼ million records</td></tr>
-      </table>
+    <div class="sec-head"><span class="num">6</span><h2>Proven at two scales</h2></div>
+    <p class="sec-sub">First a controlled seed dataset where we planted every known problem. Then the official NYC DOT dataset — real, uncurated, in Con Edison's own territory.</p>
+
+    <div class="test-cards">
+      <div class="test-card">
+        <span class="test-badge">Phase 1 · Seed Dataset</span>
+        <h4>Cary, NC · 20k+ records</h4>
+        <p class="test-sub">Synthetic messiness planted deliberately to stress every rule.</p>
+        <div class="metric-grid">
+          <div class="mini-metric"><div class="val">76</div><div class="lab">fixture tests</div></div>
+          <div class="mini-metric"><div class="val">100%</div><div class="lab">problems caught</div></div>
+        </div>
+        <div class="prove-banner"><span class="ic">✓</span> <span>Every planted defect detected: bad dates, W/kW swaps, missing fields, stale reports, duplicate sessions. <strong>Never silently dropped a record.</strong></span></div>
+      </div>
+
+      <div class="test-card">
+        <span class="test-badge">Phase 2 · NYC DOT Official Data</span>
+        <h4>Con Edison territory · 258k records</h4>
+        <p class="test-sub">Real municipal garage data + NY AFDC registry + contractor reports.</p>
+        <div class="metric-grid">
+          <div class="mini-metric"><div class="val">26.9s</div><div class="lab">validation</div></div>
+          <div class="mini-metric"><div class="val">2.2 min</div><div class="lab">reconciliation</div></div>
+          <div class="mini-metric"><div class="val">4,105</div><div class="lab">duplicates resolved</div></div>
+          <div class="mini-metric red"><div class="val">3</div><div class="lab">safety events found</div></div>
+        </div>
+        <div class="prove-banner"><span class="ic">✓</span> <span>Flat-memory streaming, deterministic re-runs, outputs valid against the frozen schema at <strong>¼ million records</strong>. 298 tests pass offline.</span></div>
+      </div>
     </div>
+
+    <!-- outcome counters -->
     <div class="counters">
       <div class="counter"><div class="v"><span class="count" data-to="298">0</span></div><div class="l">offline unit tests, all phases</div></div>
       <div class="counter"><div class="v"><span class="count" data-to="27">0</span>s</div><div class="l">to validate 258k records</div></div>
