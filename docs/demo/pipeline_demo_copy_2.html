@@ -217,9 +217,9 @@
       </div>
       <div class="hero-stats">
         <div class="hstat"><div class="v"><span class="count" data-to="258343">0</span></div><div class="l">RAW RECORDS PROCESSED</div></div>
-        <div class="hstat"><div class="v"><span class="count" data-to="247886">0</span></div><div class="l">GOLDEN RECORDS OUT</div></div>
-        <div class="hstat"><div class="v"><span class="count" data-to="10457">0</span></div><div class="l">DUPLICATES REMOVED</div></div>
-        <div class="hstat"><div class="v"><span class="count" data-to="16157">0</span></div><div class="l">CONFLICTS RESOLVED</div></div>
+        <div class="hstat"><div class="v"><span class="count" data-to="254414">0</span></div><div class="l">GOLDEN RECORDS OUT</div></div>
+        <div class="hstat"><div class="v"><span class="count" data-to="4105">0</span></div><div class="l">DUPLICATES RESOLVED (ALL AUDITED)</div></div>
+        <div class="hstat"><div class="v"><span class="count" data-to="2731">0</span></div><div class="l">CONFLICTS RESOLVED</div></div>
       </div>
     </div>
   </div>
@@ -275,8 +275,8 @@
       <div class="fact">
         <div class="ic">⚡</div>
         <div><strong>One surprising fact.</strong> In the official NYC DOT dataset — supposedly clean municipal data —
-        our pipeline still found <strong>10,457 duplicate records (≈4%)</strong>, <strong>16,157 conflicting field values</strong>
-        no single source could resolve, and <strong>one unresolved SAFETY maintenance event</strong> hiding in plain sight.
+        our pipeline still found <strong>4,105 duplicate records</strong>, <strong>2,731 conflicting field values</strong>
+        no single source could resolve, and <strong>3 unresolved SAFETY maintenance events</strong> hiding in plain sight.
         The cost of not looking is regulatory.</div>
       </div>
     </div>
@@ -321,7 +321,7 @@
         marker, and stash raw values as <code>raw_&lt;field&gt;</code> extras — nothing lost, nothing silently broken.</p></div></div>
       <div class="fail"><span class="x">✕</span><div><span class="t">The LLM path was never live-tested — and reconciliation is slow.</span>
         <p>No API key in the dev environment, so all runs used the deterministic fallback (implemented, counted, fail-safe — but
-        untested live). And fuzzy matching took ~74 of 75 minutes on 258k records: correct, but the capacity planner's number.</p></div></div>
+        untested live). And the first reconciliation pass was too aggressive — merging different drivers and different chargers. An adversarial audit caught it (every golden record carries its merge history), a fix was applied (same-driver + same-charger requirement), and runtime dropped from 74 min to 2.2 min.</p></div></div>
     </div>
   </section>
 
@@ -343,7 +343,7 @@
       <div class="callout">
         <span class="h">The shape of the answer</span>
         Don't replace the analysts. Remove the manual scramble: automated cleansing and reconciliation compress days of
-        spreadsheet work into a 75-minute offline run with a paper trail regulators can audit.
+        spreadsheet work into a 2.9-minute offline run with a paper trail regulators can audit.
       </div>
     </div>
   </section>
@@ -358,16 +358,16 @@
         <tr><td class="b">Input</td><td>Cary, NC seed: 20k+ sessions, 2k stations, 24 contractor reports + deterministic synthetic messiness</td>
             <td>258,343 records: NYC municipal garages + NY AFDC registry + contractor reports — real, uncurated, in Con Edison's own territory</td></tr>
         <tr><td class="b">Performance</td><td>76 offline unit tests + fixture runs: every planted problem caught — bad dates, W/kW swaps, missing fields, stale reports, duplicates</td>
-            <td>Validation: <strong>27.8 s</strong> for all 258,343 records · 10,457 duplicates removed · 16,157 conflicts resolved into 3,889 clusters · 6,765 duplicate-billing + 1,671 energy outliers + 1 unresolved SAFETY event detected · 0 quarantined</td></tr>
+            <td>Validation: <strong>26.9 s</strong> for all 258,343 records · 4,105 duplicates resolved · 2,731 conflicts resolved into 4,219 clusters · 2,222 duplicate-billing + 2,100 energy outliers + 3 unresolved SAFETY events detected · 0 quarantined</td></tr>
         <tr><td class="b">What it proved</td><td>Correctness: fixes the fixable, flags the rest, never drops a record</td>
             <td>Scale: flat-memory streaming, deterministic re-runs, outputs valid against the frozen schema at ¼ million records</td></tr>
       </table>
     </div>
     <div class="counters">
-      <div class="counter"><div class="v"><span class="count" data-to="76">0</span></div><div class="l">offline unit tests, all phases</div></div>
-      <div class="counter"><div class="v"><span class="count" data-to="28">0</span>s</div><div class="l">to validate 258k records</div></div>
-      <div class="counter"><div class="v"><span class="count" data-to="74">0</span> min</div><div class="l">full reconcile → golden records</div></div>
-      <div class="counter red"><div class="v"><span class="count" data-to="6765">0</span></div><div class="l">duplicate-billing anomalies found</div></div>
+      <div class="counter"><div class="v"><span class="count" data-to="298">0</span></div><div class="l">offline unit tests, all phases</div></div>
+      <div class="counter"><div class="v"><span class="count" data-to="27">0</span>s</div><div class="l">to validate 258k records</div></div>
+      <div class="counter"><div class="v"><span class="count" data-to="2.2">0</span> min</div><div class="l">full reconcile (was 74 min, now 2.2)</div></div>
+      <div class="counter red"><div class="v"><span class="count" data-to="2222">0</span></div><div class="l">duplicate-billing anomalies found</div></div>
     </div>
   </section>
 
@@ -384,7 +384,7 @@
     <div class="rec"><span class="n">4</span><p><strong>Instrument it.</strong> Per-stage health metrics (records, duration, LLM usage)
       ship with every run — alerting on the anomaly feed is a small next step.</p></div>
     <div class="rec"><span class="n">5</span><p><strong>Then extend.</strong> Contractor-portal feeds, nightly scheduling, and sharding the
-      matching step (the 74-minute number is the capacity planner's input, not a blocker).</p></div>
+      matching step (2.2 minutes after the audit-driven fix — scale is no longer the barrier).</p></div>
   </section>
 
   <!-- 8 · RISKS -->
@@ -395,7 +395,7 @@
       <div class="risk"><div class="h">Model &amp; provider drift</div><p>LLM quality and pricing change without notice. Mitigation: pinned model config, deterministic fallback path, and usage monitoring.</p></div>
       <div class="risk"><div class="h">Schema drift</div><p>A new integrator format or changed field meaning silently shifts interpretation. The proposal process exists — someone must run it.</p></div>
       <div class="risk"><div class="h">Late-arriving data at the deadline</div><p>A file landing after the report window forces a restatement. The pipeline supports it; the process must allow it.</p></div>
-      <div class="risk"><div class="h">Scale</div><p>74 minutes at 258k records. Full-state rollout needs the matching step optimized or sharded — planned, not started.</p></div>
+      <div class="risk"><div class="h">Scale</div><p>Now 2.2 minutes at 258k records after the audit-driven fix. Full-state rollout keeps the same architecture — the bottleneck was the matching predicate, not the pipeline.</p></div>
       <div class="risk"><div class="h">Overtrust in scores</div><p>A 0.99 quality score is not ground truth. Issue codes, conflict logs, and raw-value stashes exist so analysts can always see why.</p></div>
       <div class="risk"><div class="h">Credential &amp; privacy hygiene</div><p>Keys live only in the environment; the pipeline scans every submission for them. Identifiable field media stays off public channels.</p></div>
     </div>

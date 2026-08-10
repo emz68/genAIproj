@@ -1,3 +1,4 @@
+<meta charset="UTF-8">
 <title>EV Charger Data Pipeline — Live Demo</title>
 <style>
   :root {
@@ -157,8 +158,8 @@
 
   <div class="tiles">
     <div class="tile"><div class="n">258,343</div><div class="l">raw records, 3 formats in</div></div>
-    <div class="tile green"><div class="n">254,414</div><div class="l">golden records out</div></div>
-    <div class="tile"><div class="n">4,105</div><div class="l">duplicates &amp; stale listings resolved — every one audited</div></div>
+    <div class="tile"><div class="n">258,519</div><div class="l">pre-reconciliation (+176 municipal charge boxes)</div></div>
+    <div class="tile green"><div class="n">254,414</div><div class="l">golden records out (4,105 duplicates resolved)</div></div>
     <div class="tile"><div class="n">5.7 GWh</div><div class="l">energy accounted &amp; auditable</div></div>
   </div>
 </header>
@@ -265,7 +266,7 @@ routed to: J. Alvarez  priority: <span class="alert">urgent-safety</span></pre>
     <tr><td>Golden chargers (deduplicated fleet)</td><td class="v">4,219</td><td class="u">incl. all 176 municipal charge boxes</td></tr>
     <tr><td>Golden charging sessions</td><td class="v">250,181</td><td class="u">100% traceable to their charger</td></tr>
     <tr><td>Energy delivered</td><td class="v">5,694,019 kWh</td><td class="u">summed from cleaned sessions</td></tr>
-    <tr><td>Estimated fleet uptime</td><td class="v">82.1%</td><td class="u">per-box, from session gaps + maintenance</td></tr>
+    <tr><td>Estimated municipal fleet uptime</td><td class="v">82.1%</td><td class="u">per-box, from session gaps + maintenance (176 active charge boxes of 4,219 total chargers)</td></tr>
     <tr><td>Structured maintenance events</td><td class="v">14</td><td class="u">parsed from free text, 14/14 linked to a charger</td></tr>
     <tr><td>Data completeness score</td><td class="v">89.4%</td><td class="u">per-record quality, averaged</td></tr>
     <tr><td>Per-feed quality league</td><td class="v">0.90 / 0.82 / 0.72</td><td class="u">NYC sessions / contractor / registry feed</td></tr>
@@ -273,7 +274,7 @@ routed to: J. Alvarez  priority: <span class="alert">urgent-safety</span></pre>
 
   <h3 style="margin-top:34px">Every problem found, counted, and attributed</h3>
   <div class="bars">
-    <div class="bar-row"><span class="lab">stale reports (&gt;7 days)</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="val">251,701</span></div>
+    <div class="bar-row"><span class="lab">stale reports (&gt;7 days)</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="val">251,773</span></div>
     <div class="bar-row"><span class="lab">invalid install dates</span><div class="bar-track"><div class="bar-fill" style="width:2.3%"></div></div><span class="val">5,721</span></div>
     <div class="bar-row"><span class="lab">outside Con Ed territory</span><div class="bar-track"><div class="bar-fill" style="width:1.7%"></div></div><span class="val">4,175</span></div>
     <div class="bar-row"><span class="lab">unparseable durations</span><div class="bar-track"><div class="bar-fill" style="width:1.6%"></div></div><span class="val">3,955</span></div>
