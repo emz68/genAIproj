@@ -553,10 +553,59 @@
     </div>
   </section>
 
-  <!-- 5 · SOLUTION — interactive pipeline stepper -->
+  <!-- 5 · SOLUTION — before/after + interactive stepper -->
   <section id="solution" class="reveal">
     <div class="sec-head"><span class="num">5</span><h2>What worked — the solution</h2></div>
-    <p class="sec-sub">Click through each stage to watch the three datasets transform. Every number is from the real pipeline run.</p>
+    <p class="sec-sub">One command, four stages, a full audit trail — and every decision attributable.</p>
+
+    <!-- BEFORE / AFTER comparison -->
+    <div class="journey">
+      <div class="before-card">
+        <span class="card-badge">⚠ BEFORE — Raw contractor input</span>
+        <p style="font-size:.84rem; color:var(--muted); margin-bottom:8px;">This is what lands in Con Edison's inbox today. Free text. Vague location. A made-up severity.</p>
+        <div class="code-block"><span class="cmt">←──  three sources, three formats, all messy  ──→</span>
+
+<span class="kw">Source A · CSV sessions</span>  <span class="str">"08/21/2025"</span>,<span class="str">"19:10:54.0000000"</span>,
+  <span class="str">"720.3"</span>,<span class="str">"41.369"</span>,<span class="str">"NULL"</span>
+  <span class="cmt">← crosses midnight, W not kW, NULL fields</span>
+
+<span class="kw">Source B · AFDC registry</span>  <span class="str">"NISSAN FAST CHR RIVERHEAD"</span>
+  ev_connector_types: <span class="str">"[\"CHADEMO\",\"J1772COMBO\"]"</span>
+  open_date: <span class="cn">1327968000000</span>
+  <span class="cmt">← JSON inside JSON, Unix ms timestamps</span>
+
+<span class="kw">Source C · Contractor report</span>  customer complaint via 311, logged 2025-06-24
+  location given: <span class="str">"JON - Jerome 190th
+    Street Municipal Parking"</span>
+  charge box EVB-P2042308: screen dead
+  routed to: J. Alvarez
+  priority: <span class="str">urgent-safety</span>
+  <span class="cmt">← free text, ambiguous severity</span></div>
+      </div>
+
+      <div class="after-card">
+        <span class="card-badge">✓ AFTER — Golden record output</span>
+        <p style="font-size:.84rem; color:var(--muted); margin-bottom:8px;">Same data, same record. After 4 automated stages. Every fix logged, every decision attributable.</p>
+
+        <span class="stage-tag s1">Stage 1 · Ingest</span>
+        <div class="fix-row"><span class="was">free-text prose</span><span class="arr">→</span><span class="now">typed maintenance record: COMPLAINT, SAFETY, box EVB-P2042308</span></div>
+
+        <span class="stage-tag s2">Stage 2 · Validate</span>
+        <div class="fix-row"><span class="was">"08/21/2025 19:10:54.0000000"</span><span class="arr">→</span><span class="now">2025-08-21T19:10:54-04:00</span></div>
+        <div class="fix-row"><span class="was">"720.3" (W)</span><span class="arr">→</span><span class="now">0.7203 kW</span></div>
+        <div class="fix-row"><span class="was">"NULL"</span><span class="arr">→</span><span class="now">flagged · not dropped</span></div>
+        <div class="fix-row"><span class="was">urgent-safety</span><span class="arr">→</span><span class="now">SAFETY  ← normalized</span></div>
+
+        <span class="stage-tag s3">Stage 3 · Reconcile</span>
+        <div class="fix-row"><span class="was">4 AFDC entries for same charger</span><span class="arr">→</span><span class="now">1 golden charger record · merged_from audit trail preserved</span></div>
+
+        <span class="stage-tag s4">Stage 4 · Report</span>
+        <div class="fix-row"><span class="was">no regulator-ready output</span><span class="arr">→</span><span class="now">PSC compliance report + safety triage + lineage appendix</span></div>
+      </div>
+    </div>
+
+    <!-- bridge to stepper -->
+    <p style="text-align:center; margin:28px 0 6px; font-weight:700; color:var(--navy-800); font-size:.95rem;">↓ Click through to see exactly how it works at each stage ↓</p>
 
     <div class="stepper" id="stepper">
 
@@ -592,7 +641,7 @@
         </div>
       </div>
 
-      <!-- detail panel — content panels swap in/out -->
+      <!-- detail panel -->
       <div class="stepper-detail" id="stepperDetail">
 
         <!-- PANEL 1: Ingestion -->
@@ -681,9 +730,8 @@
 
       </div>
 
-      <!-- controls -->
+      <!-- controls — manual only -->
       <div class="stepper-controls">
-        <button class="stepper-btn auto" id="btnAuto" onclick="autoPlay()">▶ Auto-play</button>
         <button class="stepper-btn prev" id="btnPrev" onclick="prevStage()" disabled>← Previous</button>
         <span class="stepper-stage-indicator" id="stageLabel">Stage 1 of 4</span>
         <button class="stepper-btn next" id="btnNext" onclick="nextStage()">Next →</button>
