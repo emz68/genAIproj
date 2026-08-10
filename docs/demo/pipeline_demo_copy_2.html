@@ -334,7 +334,8 @@
     <p class="sec-sub">One command, four stages, a full audit trail — and every decision attributable.</p>
     <div class="card">
       <ul style="margin-left:22px;">
-        <li><strong>Ingestion</strong> turns unstructured contractor text into typed records (LLM extraction with a deterministic fallback) and normalizes all sources to one canonical JSONL.</li>
+        <li><strong>Ingestion</strong> turns unstructured contractor text into typed records through LLM extraction
+        with a deterministic fallback, and normalizes all sources to one canonical JSONL.</li>
         <li><strong>Validation &amp; cleaning</strong> repairs what's repairable — <code>W→kW</code>, <code>Wh→kWh</code>,
         <code>"3/4/24 2pm"</code> → ISO-8601 with timezone, <code>"chgpt LVL2 dual"</code> → CHAdeMO / L2 — derives missing values,
         and scores every record 0–1 with stable issue codes.</li>
@@ -369,7 +370,7 @@
     <div class="counters">
       <div class="counter"><div class="v"><span class="count" data-to="298">0</span></div><div class="l">offline unit tests, all phases</div></div>
       <div class="counter"><div class="v"><span class="count" data-to="27">0</span>s</div><div class="l">to validate 258k records</div></div>
-      <div class="counter"><div class="v"><span class="count" data-to="2.2">0</span> min</div><div class="l">full reconcile (was 74 min, now 2.2)</div></div>
+      <div class="counter"><div class="v"><span class="count" data-to="2.2">0</span> min</div><div class="l">full reconcile</div></div>
       <div class="counter red"><div class="v"><span class="count" data-to="2222">0</span></div><div class="l">duplicate-billing anomalies found</div></div>
     </div>
   </section>
