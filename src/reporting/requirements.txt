@@ -1,0 +1,6 @@
+# P4 reporting module dependencies (unioned into root requirements.txt at
+# merge time by the Integration Manager — PRODUCT_DEVELOPMENT_MANAGER.md §8 step 3).
+# pydantic is imported directly; anthropic is lazy-imported only on the LLM
+# summary path (--no-llm and all tests run without it).
+pydantic
+anthropic

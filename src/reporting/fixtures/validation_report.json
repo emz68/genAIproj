@@ -1,0 +1,21 @@
+{
+  "records_in": 100,
+  "records_out": 98,
+  "quarantined": 2,
+  "per_source": {
+    "cary_sessions": {
+      "records": 60,
+      "avg_score": 0.93,
+      "issues": {"missing_energy_kwh": 5, "stale_report": 2}
+    },
+    "afdc_stations": {
+      "records": 40,
+      "avg_score": 0.97,
+      "issues": {}
+    }
+  },
+  "per_issue": {
+    "missing_energy_kwh": 5,
+    "stale_report": 2
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "records_in": 98,
+  "golden_records_out": 18,
+  "duplicates_removed": 6,
+  "clusters": 12,
+  "conflicts_resolved": 4,
+  "anomalies": {
+    "duplicate_billing": 2,
+    "energy_outlier": 3,
+    "suspected_outage": 2,
+    "safety_event": 1
+  },
+  "per_source_lag_days": {
+    "cary_sessions": {"p50": 2.5, "p95": 8.0},
+    "afdc_stations": {"p50": 1.0, "p95": 4.0}
+  }
+}

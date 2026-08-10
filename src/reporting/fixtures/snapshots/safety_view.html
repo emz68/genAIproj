@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Safety &amp; Infrastructure-Health View</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+         margin: 0; background: #f4f6f8; color: #1c2733; }
+  header { background: #0d2b45; color: #fff; padding: 18px 28px; }
+  header h1 { margin: 0 0 4px; font-size: 22px; }
+  header p { margin: 0; color: #bcd0e0; font-size: 13px; }
+  main { padding: 22px 28px; max-width: 1200px; margin: 0 auto; }
+  section { background: #fff; border: 1px solid #dde3e9; border-radius: 8px;
+             padding: 16px 18px; margin-bottom: 20px; }
+  h2 { font-size: 17px; margin: 0 0 12px; color: #0d2b45;
+        border-bottom: 2px solid #e8eef3; padding-bottom: 8px; }
+  h3 { font-size: 14px; margin: 14px 0 8px; color: #2c4a63; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid #edf1f5; }
+  th { background: #f0f4f8; color: #33506b; font-weight: 600; }
+  tr:hover td { background: #fafcfe; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+               gap: 12px; }
+  .kpi { border: 1px solid #dde3e9; border-radius: 8px; padding: 12px 14px;
+          background: #fbfcfe; }
+  .kpi .label { font-size: 12px; color: #5a6b7c; text-transform: uppercase;
+                 letter-spacing: .04em; }
+  .kpi .value { font-size: 24px; font-weight: 700; color: #0d2b45; margin-top: 4px; }
+  .kpi .note { font-size: 11px; color: #7a8b9c; margin-top: 4px; }
+  .banner { border: 2px solid #c62828; background: #fdecec; color: #7f1d1d;
+             border-radius: 8px; padding: 10px 14px; font-weight: 600; margin-bottom: 16px; }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 999px;
+            font-size: 11px; font-weight: 700; color: #fff; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+                gap: 12px; }
+  .card { border: 1px solid #dde3e9; border-left: 5px solid #9e9e9e;
+           border-radius: 8px; padding: 10px 12px; background: #fff; }
+  .card .cid { font-weight: 700; font-size: 13px; }
+  .card .meta { font-size: 12px; color: #5a6b7c; margin-top: 4px; }
+  .anomaly { border-left: 5px solid #9e9e9e; padding: 8px 12px; margin-bottom: 8px;
+              background: #fbfcfe; border-radius: 6px; }
+  .muted { color: #7a8b9c; font-size: 12px; }
+  footer { text-align: center; color: #8a9baa; font-size: 12px; padding: 14px; }
+  .pill { font-size: 11px; color: #33506b; background: #eef3f8; border-radius: 999px;
+          padding: 2px 8px; margin-right: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Safety &amp; Infrastructure-Health View</h1>
+  <p>Triage by health state, SAFETY/CRITICAL anomalies, and maintenance evidence &middot; generated 2026-08-06T00:00:00</p>
+</header>
+<main>
+
+<section>
+  <h2>Infrastructure triage (by health state)</h2>
+  <p class="muted">Health states computed by P3 (Y4) — rendered verbatim; SAFETY_REVIEW first.</p>
+  <div class="card-grid"><div class="card" style="border-left-color:#c62828"><div class="cid">C004 <span class="badge" style="background:#c62828">SAFETY_REVIEW</span></div><div class="meta">Durham · since 2026-07-28 · status INACTIVE</div><div class="meta muted">evidence: M001</div></div><div class="card" style="border-left-color:#ef6c00"><div class="cid">C003 <span class="badge" style="background:#ef6c00">SUSPECT_OUTAGE</span></div><div class="meta">Cary · since 2026-07-10 · status MAINTENANCE</div><div class="meta muted">evidence: g-s005</div></div><div class="card" style="border-left-color:#f9a825"><div class="cid">C002 <span class="badge" style="background:#f9a825">DEGRADED</span></div><div class="meta">Cary · since 2026-06-18 · status ACTIVE</div><div class="meta muted">evidence: g-s003, g-s004</div></div><div class="card" style="border-left-color:#f9a825"><div class="cid">C006 <span class="badge" style="background:#f9a825">DEGRADED</span></div><div class="meta">Apex · since 2026-06-02 · status ACTIVE</div><div class="meta muted">evidence: g-s008</div></div><div class="card" style="border-left-color:#2e7d32"><div class="cid">C001 <span class="badge" style="background:#2e7d32">HEALTHY</span></div><div class="meta">Raleigh · since 2026-05-01 · status ACTIVE</div><div class="meta muted">evidence: g-s001, g-s002, g-s007</div></div><div class="card" style="border-left-color:#2e7d32"><div class="cid">C005 <span class="badge" style="background:#2e7d32">HEALTHY</span></div><div class="meta">Raleigh · since 2026-04-20 · status ACTIVE</div><div class="meta muted">evidence: —</div></div></div>
+</section>
+<section>
+  <h2>SAFETY &amp; CRITICAL anomalies</h2>
+  <div class="anomaly" style="border-left-color:#c62828"><span class="badge" style="background:#c62828">SAFETY</span> <strong>safety_event</strong> — Unresolved SAFETY maintenance event: connector overheating <span class="muted">· charger g-c004</span><br><span class="muted">evidence: M001</span></div><div class="anomaly" style="border-left-color:#d84315"><span class="badge" style="background:#d84315">CRITICAL</span> <strong>suspected_outage</strong> — No successful sessions for 14 days; utilization cliff <span class="muted">· charger g-c003</span><br><span class="muted">evidence: g-s005</span></div>
+</section>
+<section>
+  <h2>Maintenance evidence (pass-through)</h2>
+  <table><thead><tr><th>Event ID</th><th>Date</th><th>Type</th><th>Severity</th><th>Charger</th><th>Description</th><th>Golden ID</th></tr></thead><tbody><tr><td>M001</td><td>2026-07-28</td><td>FAULT</td><td><span class="badge" style="background:#c62828">SAFETY</span></td><td>C004</td><td>Connector overheating reported; unit taken offline pending inspection</td><td>g-m001</td></tr><tr><td>M002</td><td>2026-07-10</td><td>REPAIR</td><td><span class="badge" style="background:#9e9e9e">MAJOR</span></td><td>C003</td><td>Power module replacement scheduled; charger offline during work</td><td>g-m002</td></tr><tr><td>M003</td><td>2026-06-18</td><td>INSPECTION</td><td><span class="badge" style="background:#9e9e9e">MINOR</span></td><td>C002</td><td>Routine inspection; fault code P0301 logged for follow-up</td><td>g-m003</td></tr><tr><td>M004</td><td>2026-05-01</td><td>INSTALL</td><td><span class="badge" style="background:#1565c0">INFO</span></td><td>C001</td><td>Firmware upgrade applied; no customer impact</td><td>g-m004</td></tr></tbody></table>
+</section>
+
+</main>
+<footer>EV Charger Data Platform &middot; P4 Reporting (renders only; all metrics computed by earlier stages)</footer>
+</body>
+</html>

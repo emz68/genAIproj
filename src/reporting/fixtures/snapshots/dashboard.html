@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Operational Awareness Dashboard</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+         margin: 0; background: #f4f6f8; color: #1c2733; }
+  header { background: #0d2b45; color: #fff; padding: 18px 28px; }
+  header h1 { margin: 0 0 4px; font-size: 22px; }
+  header p { margin: 0; color: #bcd0e0; font-size: 13px; }
+  main { padding: 22px 28px; max-width: 1200px; margin: 0 auto; }
+  section { background: #fff; border: 1px solid #dde3e9; border-radius: 8px;
+             padding: 16px 18px; margin-bottom: 20px; }
+  h2 { font-size: 17px; margin: 0 0 12px; color: #0d2b45;
+        border-bottom: 2px solid #e8eef3; padding-bottom: 8px; }
+  h3 { font-size: 14px; margin: 14px 0 8px; color: #2c4a63; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid #edf1f5; }
+  th { background: #f0f4f8; color: #33506b; font-weight: 600; }
+  tr:hover td { background: #fafcfe; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+               gap: 12px; }
+  .kpi { border: 1px solid #dde3e9; border-radius: 8px; padding: 12px 14px;
+          background: #fbfcfe; }
+  .kpi .label { font-size: 12px; color: #5a6b7c; text-transform: uppercase;
+                 letter-spacing: .04em; }
+  .kpi .value { font-size: 24px; font-weight: 700; color: #0d2b45; margin-top: 4px; }
+  .kpi .note { font-size: 11px; color: #7a8b9c; margin-top: 4px; }
+  .banner { border: 2px solid #c62828; background: #fdecec; color: #7f1d1d;
+             border-radius: 8px; padding: 10px 14px; font-weight: 600; margin-bottom: 16px; }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 999px;
+            font-size: 11px; font-weight: 700; color: #fff; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+                gap: 12px; }
+  .card { border: 1px solid #dde3e9; border-left: 5px solid #9e9e9e;
+           border-radius: 8px; padding: 10px 12px; background: #fff; }
+  .card .cid { font-weight: 700; font-size: 13px; }
+  .card .meta { font-size: 12px; color: #5a6b7c; margin-top: 4px; }
+  .anomaly { border-left: 5px solid #9e9e9e; padding: 8px 12px; margin-bottom: 8px;
+              background: #fbfcfe; border-radius: 6px; }
+  .muted { color: #7a8b9c; font-size: 12px; }
+  footer { text-align: center; color: #8a9baa; font-size: 12px; padding: 14px; }
+  .pill { font-size: 11px; color: #33506b; background: #eef3f8; border-radius: 999px;
+          padding: 2px 8px; margin-right: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Operational Awareness Dashboard</h1>
+  <p>Fleet status, anomalies, contractor quality and reporting latency &middot; generated 2026-08-06T00:00:00</p>
+</header>
+<main>
+
+<section>
+  <h2>At a glance</h2>
+  <div class="kpi-grid"><div class="kpi"><div class="label">Chargers</div><div class="value">6 (4 active)</div><div class="note">deployed (active)</div></div><div class="kpi"><div class="label">Sessions</div><div class="value">8</div><div class="note">golden sessions</div></div><div class="kpi"><div class="label">Energy</div><div class="value">100.0 kWh</div><div class="note">delivered</div></div><div class="kpi"><div class="label">Fleet uptime</div><div class="value">83.7%</div><div class="note">mean est. uptime</div></div><div class="kpi"><div class="label">Anomalies</div><div class="value">7</div><div class="note">all severities</div></div><div class="kpi"><div class="label">Chronic-failure sites</div><div class="value">1</div><div class="note">fault recurrence ≥ 3</div></div></div>
+</section>
+<section>
+  <h2>Fleet status grid</h2>
+  <div class="card-grid"><div class="card" style="border-left-color:#2e7d32"><div class="cid">C001 <span class="badge" style="background:#2e7d32">HEALTHY</span></div><div class="meta">Raleigh · uptime 98.0% · status ACTIVE</div></div><div class="card" style="border-left-color:#f9a825"><div class="cid">C002 <span class="badge" style="background:#f9a825">DEGRADED</span></div><div class="meta">Cary · uptime 87.0% · status ACTIVE</div></div><div class="card" style="border-left-color:#ef6c00"><div class="cid">C003 <span class="badge" style="background:#ef6c00">SUSPECT_OUTAGE</span></div><div class="meta">Cary · uptime 55.0% · status MAINTENANCE</div></div><div class="card" style="border-left-color:#c62828"><div class="cid">C004 <span class="badge" style="background:#c62828">SAFETY_REVIEW</span></div><div class="meta">Durham · uptime 72.0% · status INACTIVE</div></div><div class="card" style="border-left-color:#2e7d32"><div class="cid">C005 <span class="badge" style="background:#2e7d32">HEALTHY</span></div><div class="meta">Raleigh · uptime 99.0% · status ACTIVE</div></div><div class="card" style="border-left-color:#f9a825"><div class="cid">C006 <span class="badge" style="background:#f9a825">DEGRADED</span></div><div class="meta">Apex · uptime 91.0% · status ACTIVE</div></div></div>
+  <h3>Fleet map</h3><svg viewBox="0 0 860 560" role="img" aria-label="Fleet map by health state" style="width:100%;height:auto;background:#eef3f8;border-radius:8px;"><circle cx="727.3" cy="386.8" r="7" fill="#2e7d32" stroke="#fff" stroke-width="1.5"><title>C001 — HEALTHY</title></circle><circle cx="405.3" cy="443.4" r="7" fill="#f9a825" stroke="#fff" stroke-width="1.5"><title>C002 — DEGRADED</title></circle><circle cx="398.3" cy="403.8" r="7" fill="#ef6c00" stroke="#fff" stroke-width="1.5"><title>C003 — SUSPECT_OUTAGE</title></circle><circle cx="132.7" cy="88.7" r="7" fill="#c62828" stroke="#fff" stroke-width="1.5"><title>C004 — SAFETY_REVIEW</title></circle><circle cx="707.1" cy="375.7" r="7" fill="#2e7d32" stroke="#fff" stroke-width="1.5"><title>C005 — HEALTHY</title></circle><circle cx="249.4" cy="451.3" r="7" fill="#f9a825" stroke="#fff" stroke-width="1.5"><title>C006 — DEGRADED</title></circle></svg><p class="muted">Legend: <span class="pill" style="color:#fff;background:#2e7d32">HEALTHY</span><span class="pill" style="color:#fff;background:#f9a825">DEGRADED</span><span class="pill" style="color:#fff;background:#ef6c00">SUSPECT_OUTAGE</span><span class="pill" style="color:#fff;background:#c62828">SAFETY_REVIEW</span></p>
+</section>
+<section>
+  <h2>Anomaly feed by severity</h2>
+  <div class="anomaly" style="border-left-color:#c62828"><span class="badge" style="background:#c62828">SAFETY</span> <strong>safety_event</strong> — Unresolved SAFETY maintenance event: connector overheating <span class="muted">· charger g-c004</span><br><span class="muted">evidence: M001</span></div><div class="anomaly" style="border-left-color:#d84315"><span class="badge" style="background:#d84315">CRITICAL</span> <strong>suspected_outage</strong> — No successful sessions for 14 days; utilization cliff <span class="muted">· charger g-c003</span><br><span class="muted">evidence: g-s005</span></div><div class="anomaly" style="border-left-color:#f9a825"><span class="badge" style="background:#f9a825">WARN</span> <strong>fault_recurrence</strong> — Repeated fault code P0301 <span class="muted">· charger g-c002</span><br><span class="muted">evidence: M003</span></div><div class="anomaly" style="border-left-color:#f9a825"><span class="badge" style="background:#f9a825">WARN</span> <strong>energy_outlier</strong> — Session energy far below port rating <span class="muted">· charger g-c003</span><br><span class="muted">evidence: g-s005</span></div><div class="anomaly" style="border-left-color:#f9a825"><span class="badge" style="background:#f9a825">WARN</span> <strong>energy_outlier</strong> — Session energy below expected range <span class="muted">· charger g-c006</span><br><span class="muted">evidence: g-s008</span></div><div class="anomaly" style="border-left-color:#1565c0"><span class="badge" style="background:#1565c0">INFO</span> <strong>reporting_lag</strong> — Source reporting lag within tolerance <span class="muted">· charger g-c001</span><br><span class="muted">evidence: g-s001</span></div><div class="anomaly" style="border-left-color:#1565c0"><span class="badge" style="background:#1565c0">INFO</span> <strong>reporting_lag</strong> — Source reporting lag within tolerance <span class="muted">· charger g-c005</span><br><span class="muted">evidence: —</span></div>
+</section>
+<section>
+  <h2>Per-contractor data-quality league table</h2>
+  <table><thead><tr><th>Source / contractor</th><th>Records</th><th>Avg quality score</th><th>Top issues</th></tr></thead><tbody><tr><td>afdc_stations</td><td>40</td><td>0.970</td><td>—</td></tr><tr><td>cary_sessions</td><td>60</td><td>0.930</td><td>missing_energy_kwh:5, stale_report:2</td></tr></tbody></table>
+</section>
+<section>
+  <h2>Reporting-latency tracker</h2>
+  <p class="muted">Renders Yash's per-source lag figures (P3) only — never recomputed.</p>
+  <table><thead><tr><th>Source</th><th>Reporting lag p50 (days)</th><th>Reporting lag p95 (days)</th></tr></thead><tbody><tr><td>afdc_stations</td><td>1.0</td><td>4.0</td></tr><tr><td>cary_sessions</td><td>2.5</td><td>8.0</td></tr></tbody></table>
+</section>
+
+</main>
+<footer>EV Charger Data Platform &middot; P4 Reporting (renders only; all metrics computed by earlier stages)</footer>
+</body>
+</html>

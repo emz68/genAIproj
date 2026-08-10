@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSC Compliance Report</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+         margin: 0; background: #f4f6f8; color: #1c2733; }
+  header { background: #0d2b45; color: #fff; padding: 18px 28px; }
+  header h1 { margin: 0 0 4px; font-size: 22px; }
+  header p { margin: 0; color: #bcd0e0; font-size: 13px; }
+  main { padding: 22px 28px; max-width: 1200px; margin: 0 auto; }
+  section { background: #fff; border: 1px solid #dde3e9; border-radius: 8px;
+             padding: 16px 18px; margin-bottom: 20px; }
+  h2 { font-size: 17px; margin: 0 0 12px; color: #0d2b45;
+        border-bottom: 2px solid #e8eef3; padding-bottom: 8px; }
+  h3 { font-size: 14px; margin: 14px 0 8px; color: #2c4a63; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid #edf1f5; }
+  th { background: #f0f4f8; color: #33506b; font-weight: 600; }
+  tr:hover td { background: #fafcfe; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+               gap: 12px; }
+  .kpi { border: 1px solid #dde3e9; border-radius: 8px; padding: 12px 14px;
+          background: #fbfcfe; }
+  .kpi .label { font-size: 12px; color: #5a6b7c; text-transform: uppercase;
+                 letter-spacing: .04em; }
+  .kpi .value { font-size: 24px; font-weight: 700; color: #0d2b45; margin-top: 4px; }
+  .kpi .note { font-size: 11px; color: #7a8b9c; margin-top: 4px; }
+  .banner { border: 2px solid #c62828; background: #fdecec; color: #7f1d1d;
+             border-radius: 8px; padding: 10px 14px; font-weight: 600; margin-bottom: 16px; }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 999px;
+            font-size: 11px; font-weight: 700; color: #fff; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+                gap: 12px; }
+  .card { border: 1px solid #dde3e9; border-left: 5px solid #9e9e9e;
+           border-radius: 8px; padding: 10px 12px; background: #fff; }
+  .card .cid { font-weight: 700; font-size: 13px; }
+  .card .meta { font-size: 12px; color: #5a6b7c; margin-top: 4px; }
+  .anomaly { border-left: 5px solid #9e9e9e; padding: 8px 12px; margin-bottom: 8px;
+              background: #fbfcfe; border-radius: 6px; }
+  .muted { color: #7a8b9c; font-size: 12px; }
+  footer { text-align: center; color: #8a9baa; font-size: 12px; padding: 14px; }
+  .pill { font-size: 11px; color: #33506b; background: #eef3f8; border-radius: 999px;
+          padding: 2px 8px; margin-right: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>PSC Compliance Report</h1>
+  <p>Program KPIs with data lineage — rendered from golden records and stage reports &middot; generated 2026-08-06</p>
+</header>
+<main>
+
+<section>
+  <h2>Program KPIs</h2>
+  <div class="kpi-grid"><div class="kpi"><div class="label">Chargers deployed</div><div class="value">6</div><div class="note">golden charger records</div></div><div class="kpi"><div class="label">Chargers active</div><div class="value">4</div><div class="note">status = ACTIVE</div></div><div class="kpi"><div class="label">Energy delivered</div><div class="value">100.00</div><div class="note">sum over sessions</div></div><div class="kpi"><div class="label">Sessions</div><div class="value">8</div><div class="note">golden session records</div></div><div class="kpi"><div class="label">Est. fleet uptime</div><div class="value">83.7%</div><div class="note">fleet mean of per-charger est_uptime_pct (P3 metrics)</div></div><div class="kpi"><div class="label">Data completeness</div><div class="value">91.0%</div><div class="note">mean of P2 quality.score over charger+session records</div></div></div>
+</section>
+
+<section>
+  <h2>Data lineage appendix</h2>
+  <p class="muted">Per-stage record counts and quality figures rendered from the §5.5 stage
+  reports — demonstrates that reporting is accurate and on time.</p>
+  <table><thead><tr><th>Stage</th><th>Metric</th><th>Value</th></tr></thead><tbody><tr><td>Validation</td><td>records in</td><td>100</td></tr><tr><td>Validation</td><td>records out</td><td>98</td></tr><tr><td>Validation</td><td>quarantined</td><td>2</td></tr><tr><td>Validation per-source</td><td>afdc_stations — avg quality score</td><td>0.97</td></tr><tr><td>Validation per-source</td><td>cary_sessions — avg quality score</td><td>0.93</td></tr><tr><td>Validation per-issue</td><td>missing_energy_kwh</td><td>5</td></tr><tr><td>Validation per-issue</td><td>stale_report</td><td>2</td></tr><tr><td>Reconciliation</td><td>records in</td><td>98</td></tr><tr><td>Reconciliation</td><td>golden records out</td><td>18</td></tr><tr><td>Reconciliation</td><td>duplicates removed</td><td>6</td></tr><tr><td>Reconciliation</td><td>clusters</td><td>12</td></tr><tr><td>Reconciliation</td><td>conflicts resolved</td><td>4</td></tr><tr><td>Reconciliation lag</td><td>afdc_stations — p50 / p95 (days)</td><td>1.0 / 4.0</td></tr><tr><td>Reconciliation lag</td><td>cary_sessions — p50 / p95 (days)</td><td>2.5 / 8.0</td></tr><tr><td>Pipeline</td><td>ingestion — records</td><td>124 → 121</td></tr><tr><td>Pipeline</td><td>ingestion — duration / LLM calls</td><td>3.20s / 24</td></tr><tr><td>Pipeline</td><td>reconciliation — records</td><td>98 → 18</td></tr><tr><td>Pipeline</td><td>reconciliation — duration / LLM calls</td><td>0.90s / 0</td></tr><tr><td>Pipeline</td><td>reporting — records</td><td>18 → 18</td></tr><tr><td>Pipeline</td><td>reporting — duration / LLM calls</td><td>0.40s / 0</td></tr><tr><td>Pipeline</td><td>validation — records</td><td>121 → 98</td></tr><tr><td>Pipeline</td><td>validation — duration / LLM calls</td><td>1.10s / 0</td></tr></tbody></table>
+</section>
+
+</main>
+<footer>EV Charger Data Platform &middot; P4 Reporting (renders only; all metrics computed by earlier stages)</footer>
+</body>
+</html>

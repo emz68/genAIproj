@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customer-Experience View</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+         margin: 0; background: #f4f6f8; color: #1c2733; }
+  header { background: #0d2b45; color: #fff; padding: 18px 28px; }
+  header h1 { margin: 0 0 4px; font-size: 22px; }
+  header p { margin: 0; color: #bcd0e0; font-size: 13px; }
+  main { padding: 22px 28px; max-width: 1200px; margin: 0 auto; }
+  section { background: #fff; border: 1px solid #dde3e9; border-radius: 8px;
+             padding: 16px 18px; margin-bottom: 20px; }
+  h2 { font-size: 17px; margin: 0 0 12px; color: #0d2b45;
+        border-bottom: 2px solid #e8eef3; padding-bottom: 8px; }
+  h3 { font-size: 14px; margin: 14px 0 8px; color: #2c4a63; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid #edf1f5; }
+  th { background: #f0f4f8; color: #33506b; font-weight: 600; }
+  tr:hover td { background: #fafcfe; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+               gap: 12px; }
+  .kpi { border: 1px solid #dde3e9; border-radius: 8px; padding: 12px 14px;
+          background: #fbfcfe; }
+  .kpi .label { font-size: 12px; color: #5a6b7c; text-transform: uppercase;
+                 letter-spacing: .04em; }
+  .kpi .value { font-size: 24px; font-weight: 700; color: #0d2b45; margin-top: 4px; }
+  .kpi .note { font-size: 11px; color: #7a8b9c; margin-top: 4px; }
+  .banner { border: 2px solid #c62828; background: #fdecec; color: #7f1d1d;
+             border-radius: 8px; padding: 10px 14px; font-weight: 600; margin-bottom: 16px; }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 999px;
+            font-size: 11px; font-weight: 700; color: #fff; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+                gap: 12px; }
+  .card { border: 1px solid #dde3e9; border-left: 5px solid #9e9e9e;
+           border-radius: 8px; padding: 10px 12px; background: #fff; }
+  .card .cid { font-weight: 700; font-size: 13px; }
+  .card .meta { font-size: 12px; color: #5a6b7c; margin-top: 4px; }
+  .anomaly { border-left: 5px solid #9e9e9e; padding: 8px 12px; margin-bottom: 8px;
+              background: #fbfcfe; border-radius: 6px; }
+  .muted { color: #7a8b9c; font-size: 12px; }
+  footer { text-align: center; color: #8a9baa; font-size: 12px; padding: 14px; }
+  .pill { font-size: 11px; color: #33506b; background: #eef3f8; border-radius: 999px;
+          padding: 2px 8px; margin-right: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Customer-Experience View</h1>
+  <p>Availability by location, chronic-failure sites, plain-language summaries &middot; generated 2026-08-06T00:00:00</p>
+</header>
+<main>
+
+<section>
+  <h2>Availability &amp; reliability by location</h2>
+  <table><thead><tr><th>Location</th><th>Chargers</th><th>Avg availability (est. uptime)</th><th>Sessions</th><th>Energy (kWh)</th></tr></thead><tbody><tr><td>Raleigh</td><td>2</td><td>98.5%</td><td>3</td><td>31.5</td></tr><tr><td>Cary</td><td>2</td><td>71.0%</td><td>3</td><td>43.0</td></tr><tr><td>Durham</td><td>1</td><td>72.0%</td><td>1</td><td>7.5</td></tr><tr><td>Apex</td><td>1</td><td>91.0%</td><td>1</td><td>18.0</td></tr></tbody></table>
+</section>
+<section>
+  <h2>Chronic-failure sites</h2>
+  <p class="muted">Fault recurrence count (P3 metrics) ≥ 3.</p>
+  <table><thead><tr><th>Charger</th><th>Location</th><th>Fault recurrence count</th><th>Health state</th></tr></thead><tbody><tr><td>C004</td><td>Durham</td><td>3</td><td>SAFETY_REVIEW</td></tr></tbody></table>
+</section>
+<section>
+  <h2>Plain-language summaries</h2>
+  <div class="anomaly"><h3 style="margin:0 0 6px">Fleet summary <span class="badge" style="background:#9e9e9e">template</span></h3><p style="margin:0">The fleet has 6 chargers (4 active) across 4 health states. Estimated fleet uptime is 83.7%; 8 sessions delivered 100.0 kWh. Data completeness (mean quality score) is 91.0%.</p></div><div class="anomaly"><h3 style="margin:0 0 6px">Safety summary <span class="badge" style="background:#9e9e9e">template</span></h3><p style="margin:0">7 anomalies were flagged, of which 1 are SAFETY-level. 1 site(s) show chronic failure (fault recurrence ≥ 3).</p></div><div class="anomaly"><h3 style="margin:0 0 6px">Reliability summary <span class="badge" style="background:#9e9e9e">template</span></h3><p style="margin:0">2 chargers are healthy, 2 degraded, 1 suspected of outage, and 1 under safety review.</p></div>
+</section>
+
+</main>
+<footer>EV Charger Data Platform &middot; P4 Reporting (renders only; all metrics computed by earlier stages)</footer>
+</body>
+</html>
