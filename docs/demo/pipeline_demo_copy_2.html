@@ -334,8 +334,7 @@
     <p class="sec-sub">One command, four stages, a full audit trail — and every decision attributable.</p>
     <div class="card">
       <ul style="margin-left:22px;">
-        <li><strong>Ingestion</strong> turns unstructured contractor text into typed records through LLM extraction
-        with a deterministic fallback, and normalizes all sources to one canonical JSONL.</li>
+        <li><strong>Ingestion</strong> turns unstructured contractor text into typed records (LLM extraction with a deterministic fallback) and normalizes all sources to one canonical JSONL.</li>
         <li><strong>Validation &amp; cleaning</strong> repairs what's repairable — <code>W→kW</code>, <code>Wh→kWh</code>,
         <code>"3/4/24 2pm"</code> → ISO-8601 with timezone, <code>"chgpt LVL2 dual"</code> → CHAdeMO / L2 — derives missing values,
         and scores every record 0–1 with stable issue codes.</li>
@@ -388,7 +387,7 @@
     <div class="rec"><span class="n">4</span><p><strong>Instrument it.</strong> Per-stage health metrics (records, duration, LLM usage)
       ship with every run — alerting on the anomaly feed is a small next step.</p></div>
     <div class="rec"><span class="n">5</span><p><strong>Then extend.</strong> Contractor-portal feeds, nightly scheduling, and sharding the
-      matching step (2.2 minutes after the audit-driven fix — scale is no longer the barrier).</p></div>
+      matching step.</p></div>
   </section>
 
   <!-- 8 · RISKS -->
