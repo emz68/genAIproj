@@ -518,9 +518,9 @@
     <div class="sec-head"><span class="num">3</span><h2>Ideation process</h2></div>
     <p class="sec-sub">Five phases, designed to run in parallel without ever blocking each other — then merged into one pipeline.</p>
     <div class="flow">
-      <div class="step"><span class="tag">P1 · Ingestion</span><h4>Parse everything</h4><p>Readers for every format; LLM extraction from contractor text; deterministic messiness injector.</p></div>
+      <div class="step"><span class="tag">P1 · Ingestion</span><h4>Parse everything</h4><p>Parsing every format and extracting structure from contractor text with an LLM.</p></div>
       <div class="step"><span class="tag">P2 · Validation</span><h4>Fix what's fixable</h4><p>Declarative YAML rule engine; standardizers; missing-data derivation; per-record quality scores.</p></div>
-      <div class="step"><span class="tag">P3 · Reconciliation</span><h4>One source of truth</h4><p>Entity resolution across sources; conflict resolution into golden records; anomaly &amp; safety detection.</p></div>
+      <div class="step"><span class="tag">P3 · Reconciliation</span><h4>One source of truth</h4><p>Merging records from different sources that describe the same charger, into one trusted answer.</p></div>
       <div class="step"><span class="tag r">P4 · Reporting</span><h4>Regulatory output</h4><p>PSC report with lineage appendix; operations dashboard; safety triage; customer-experience view.</p></div>
     </div>
     <div class="callout">
