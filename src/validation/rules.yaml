@@ -1,0 +1,166 @@
+# Declarative validation rule catalog — Phase P2 (Sanja).
+#
+# Owned by Sanja (src/validation/).  Rules are data (S1): edit this file to
+# change behavior — the territory bounding box, thresholds, synonym tables,
+# issue severities, scoring weights — without touching code.
+#
+# Rule `check` types are implemented in rules.py:
+#   required          required fields per record_type (PDM §5.1–5.3 non-null)
+#   numeric           field must coerce to float
+#   range             min/max bounds on a numeric field
+#   enum              field must be a member of the §5 target enum
+#   date              field must be an ISO-8601 date (YYYY-MM-DD)
+#   datetime          field must be ISO-8601 with timezone
+#   order             earlier < later (cross-field, same record)
+#   duration_matches  duration_min ≈ end_time − start_time (tolerance)
+#   bbox              lat/lon inside the territory bounding box
+#   stale             provenance.ingested_at − event/session date > max_days
+#
+# Every rule yields one stable snake_case issue code (the rule `id`), except
+# `required` which yields `missing_<field>` per missing field, and `range`
+# which yields `<field>_out_of_range` for max-violations and
+# `negative_<field>` for min=0 violations (e.g. `impossible_duration`,
+# `impossible_energy_kwh`).
+
+version: 1
+
+# --- Territory (S1): bounding box lives here, shipped defaulted to North
+#     Carolina (covers the data/seed/ dataset); swap by config alone if an
+#     official Con Ed dataset lands. ---
+territory:
+  name: north_carolina_default
+  bbox:
+    min_lat: 33.7
+    max_lat: 36.6
+    min_lon: -84.4
+    max_lon: -75.4
+
+# --- Target enums (PDM §5.1–5.3) ---
+enums:
+  connector_type: [J1772, CCS, CHAdeMO, NACS, OTHER]
+  level: [L1, L2, DCFC]
+  status: [ACTIVE, INACTIVE, MAINTENANCE, UNKNOWN]
+  event_type: [INSPECTION, REPAIR, FAULT, INSTALL, COMPLAINT, OTHER]
+  severity: [INFO, MINOR, MAJOR, SAFETY]
+
+# --- Per-record staleness (S4): fixed 7-day threshold.  Charger records
+#     have no event/session/report date and are never flagged stale. ---
+stale:
+  max_days: 7
+
+# --- Unit repair (S2): magnitude heuristics.  A value above
+#     `watts_if_above` / `wh_if_above` is treated as the smaller unit (W / Wh)
+#     and divided by 1000; above `max_plausible` it is left for the range
+#     rules to flag. ---
+unit_repair:
+  power_kw: {watts_if_above: 400, max_plausible: 400000}
+  peak_kw: {watts_if_above: 400, max_plausible: 400000}
+  energy_kwh: {wh_if_above: 1000, max_plausible: 1000000}
+
+# --- Conservative derivation / imputation (S3) ---
+derive:
+  level_from_power_kw: {L1_max_kw: 1.9, L2_max_kw: 19.2}
+  duration_tolerance_min: 5
+
+# --- Standardization defaults (S2) ---
+standardize:
+  default_timezone: America/New_York
+
+# --- Synonym tables for the deterministic --no-llm fallback (S5).  Lookup is
+#     case-insensitive, tokenized on non-alphanumerics.  The first match wins
+#     in table order.  Unresolvable values map to OTHER / UNKNOWN. ---
+synonyms:
+  connector_type:
+    J1772: [j1772, j-1772, j 1772, sae, sae j1772, type 1, type1]
+    CCS: [ccs, ccs1, ccs2, combo, sae combo, combined]
+    CHAdeMO: [chademo, chg, chgpt, chg pt]
+    NACS: [nacs, tesla, tp]
+  level:
+    L1: [l1, lv1, lvl1, level 1, level-1, 120v, 120 v, 110v, 110 v]
+    L2: [l2, lv2, lvl2, level 2, level-2, 240v, 240 v, 208v, 208 v]
+    DCFC: [dcfc, dc fast, dc-fast, level 3, level-3, l3, lvl3, fast, dc]
+  status:
+    ACTIVE: [active, available, online, in service, operational, open, working]
+    INACTIVE: [inactive, offline, out of service, removed, unavailable, not available, closed]
+    MAINTENANCE: [maintenance, under maintenance, in maintenance, repair, servicing]
+    UNKNOWN: [unknown, n/a, na, tbd, unspecified, none]
+  event_type:
+    INSPECTION: [inspection, inspected, site visit, visit, check]
+    REPAIR: [repair, repaired, fix, fixed, replaced, replacement]
+    FAULT: [fault, failure, failed, error, malfunction, breaker, trip, alarm]
+    INSTALL: [install, installed, installation, commissioning]
+    COMPLAINT: [complaint, complain, customer, ticket]
+    OTHER: []
+  severity:
+    SAFETY: [safety, urgent-safety, critical, dangerous, hazard, unsafe]
+    MAJOR: [major, high, serious, urgent]
+    MINOR: [minor, low, slight, cosmetic]
+    INFO: [info, informational, fyi, note, notice]
+
+# --- Required fields per record_type (S1).  Dotted paths address nested
+#     blocks (e.g. provenance.source).  Nullable fields (§5 "string|null")
+#     are deliberately absent from these lists. ---
+required_fields:
+  charger: [provenance.source, provenance.source_file, provenance.ingested_at]
+  session: [provenance.source, provenance.source_file, provenance.ingested_at]
+  maintenance: [event_id, description, provenance.source, provenance.source_file, provenance.ingested_at]
+
+# --- Rule catalog (S1, S4).  `record_type` omitted => applies to every type
+#     when the field is present.  A `range` rule carries exactly one bound so
+#     each violation maps to one stable code. ---
+rules:
+  - {id: required, check: required, severity: MAJOR}
+
+  # Numeric coercion (S2): unparseable numeric fields are dropped and stashed
+  # as raw_<field>; the code is recorded as an issue.
+  - {id: invalid_energy_kwh, check: numeric, record_type: session, field: energy_kwh, severity: MAJOR}
+  - {id: invalid_peak_kw, check: numeric, record_type: session, field: peak_kw, severity: MAJOR}
+  - {id: invalid_duration_min, check: numeric, record_type: session, field: duration_min, severity: MAJOR}
+  - {id: invalid_power_kw, check: numeric, record_type: charger, field: power_kw, severity: MAJOR}
+  - {id: invalid_latitude, check: numeric, record_type: charger, field: lat, severity: MAJOR}
+  - {id: invalid_longitude, check: numeric, record_type: charger, field: lon, severity: MAJOR}
+
+  # Range / impossible-value checks (S1, S4).
+  - {id: impossible_energy_kwh, check: range, record_type: session, field: energy_kwh, min: 0, severity: MAJOR}
+  - {id: impossible_peak_kw, check: range, record_type: session, field: peak_kw, min: 0, severity: MAJOR}
+  - {id: impossible_duration, check: range, record_type: session, field: duration_min, min: 0, severity: MAJOR}
+  - {id: impossible_power_kw, check: range, record_type: charger, field: power_kw, min: 0, severity: MAJOR}
+  - {id: power_kw_out_of_range, check: range, record_type: charger, field: power_kw, max: 400, severity: MAJOR}
+  - {id: coordinate_out_of_range, check: range, record_type: charger, field: lat, min: -90, max: 90, severity: MAJOR}
+  - {id: coordinate_out_of_range, check: range, record_type: charger, field: lon, min: -180, max: 180, severity: MAJOR}
+
+  # Territory (S1): bounding box from the YAML config above.
+  - {id: outside_territory, check: bbox, record_type: charger, severity: MAJOR}
+
+  # Cross-field checks (S1): same-record only, never cross-record.
+  - {id: end_before_start, check: order, record_type: session, earlier: start_time, later: end_time, severity: MAJOR}
+  - {id: duration_mismatch, check: duration_matches, record_type: session, tolerance_min: 5, severity: MINOR}
+
+  # Per-record staleness (S4): fixed 7-day rule.
+  - {id: stale_report, check: stale, severity: MINOR}
+
+  # Enum membership after normalization (S1).  Backstop: standardizers map
+  # known synonyms and fall back to OTHER / UNKNOWN, so these fire only for
+  # values that survived standardization unexpectedly.
+  - {id: invalid_connector_type, check: enum, record_type: charger, field: connector_type, severity: MINOR}
+  - {id: invalid_level, check: enum, record_type: charger, field: level, severity: MINOR}
+  - {id: invalid_status, check: enum, record_type: charger, field: status, severity: MINOR}
+  - {id: invalid_event_type, check: enum, record_type: maintenance, field: event_type, severity: MINOR}
+  - {id: invalid_severity, check: enum, record_type: maintenance, field: severity, severity: MINOR}
+
+  # ISO format checks (S2): fired when a date/datetime could not be parsed
+  # and normalized; the raw value is then stashed as raw_<field>.
+  - {id: invalid_install_date, check: date, record_type: charger, field: install_date, severity: MINOR}
+  - {id: invalid_start_time, check: datetime, record_type: session, field: start_time, severity: MINOR}
+  - {id: invalid_end_time, check: datetime, record_type: session, field: end_time, severity: MINOR}
+  - {id: invalid_event_date, check: date, record_type: maintenance, field: event_date, severity: MINOR}
+  - {id: invalid_ingested_at, check: datetime, field: provenance.ingested_at, severity: MINOR}
+
+# --- Quality scoring (S6, PDM §5.0): score = extraction_confidence −
+#     Σ(issue weights), clamped to [0.0, 1.0].  Records scoring below
+#     quarantine_below are quarantined in the report but still emitted. ---
+scoring:
+  weights: {SAFETY: 0.5, MAJOR: 0.25, MINOR: 0.1, INFO: 0.02}
+  default_weight: 0.1
+  quarantine_below: 0.4
+  round_digits: 4

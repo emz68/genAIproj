@@ -1,0 +1,9 @@
+# Minimal rules override used by the tests to prove the territory bounding
+# box is swapped by config alone (PDM S1).  Deep-merged onto rules.yaml.
+territory:
+  name: coned_new_york
+  bbox:
+    min_lat: 40.4
+    max_lat: 41.2
+    min_lon: -74.3
+    max_lon: -73.5
