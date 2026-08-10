@@ -321,10 +321,11 @@ def run(
         "llm_calls": stats["llm_calls"],
         "llm_tokens": stats["llm_tokens"],
     }
-    if log_json:
-        print(json.dumps({"metrics": metrics}), file=sys.stderr)
-    else:
+    if not log_json:
         print(f"[ingestion] done: {records_in} in, {records_out} out", file=sys.stderr)
+    # §6: the metrics object is the final stderr line unconditionally —
+    # only intermediate log lines are gated by --log-json.
+    print(json.dumps({"metrics": metrics}), file=sys.stderr)
     return metrics
 
 
@@ -366,15 +367,15 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 0
     except Exception as exc:  # noqa: BLE001 - §6 error protocol boundary
         detail: Dict[str, Any] = {"type": type(exc).__name__}
-        if args.log_json:
-            print(
-                json.dumps(
-                    {"error": True, "stage": STAGE, "message": str(exc), "detail": detail}
-                ),
-                file=sys.stderr,
-            )
-        else:
+        if not args.log_json:
             print(f"[ingestion] ERROR: {exc}", file=sys.stderr)
+        # §6: the error object is the final stderr line unconditionally.
+        print(
+            json.dumps(
+                {"error": True, "stage": STAGE, "message": str(exc), "detail": detail}
+            ),
+            file=sys.stderr,
+        )
         return 1
 
 
