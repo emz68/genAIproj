@@ -178,7 +178,7 @@
   .journey .code-block .str { color: #55C990; }
   .journey .code-block .num { color: #FECA57; }
   .journey .code-block .cmt { color: #7E9186; font-style: italic; }
-  .journey .code-block .fix { color: #54A0FF; }
+  .journey .code-block .cn { color: #FECA57; }
 
   .journey .fix-row {
     display: flex; align-items: flex-start; gap: 8px; margin: 6px 0; font-size: .82rem;
@@ -424,7 +424,7 @@
 
   <!-- 5 · SOLUTION — example-driven data journey -->
   <section id="solution" class="reveal">
-    <div class="sec-head"><span class="num">5</span><h2>What the pipeline does — follow one real record</h2></div>
+    <div class="sec-head"><span class="num">5</span><h2>What worked — the solution</h2></div>
     <p class="sec-sub">A 311 complaint from Jerome Avenue, exactly as it arrived — and what the pipeline turned it into.</p>
 
     <!-- BEFORE / AFTER -->
@@ -440,7 +440,7 @@
 
 <span class="kw">Source B · AFDC registry</span>  <span class="str">"NISSAN FAST CHR RIVERHEAD"</span>
   ev_connector_types: <span class="str">"[\"CHADEMO\",\"J1772COMBO\"]"</span>
-  open_date: <span class="num">1327968000000</span>
+  open_date: <span class="cn">1327968000000</span>
   <span class="cmt">← JSON inside JSON, Unix ms timestamps</span>
 
 <span class="kw">Source C · Contractor report</span>  customer complaint via 311, logged 2025-06-24
@@ -481,7 +481,7 @@
 
   <!-- 6 · TESTING — cleaner cards -->
   <section id="testing" class="reveal">
-    <div class="sec-head"><span class="num">6</span><h2>Proven at two scales</h2></div>
+    <div class="sec-head"><span class="num">6</span><h2>Testing — baseline, then the hard case</h2></div>
     <p class="sec-sub">First a controlled seed dataset where we planted every known problem. Then the official NYC DOT dataset — real, uncurated, in Con Edison's own territory.</p>
 
     <div class="test-cards">
