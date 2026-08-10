@@ -240,6 +240,137 @@
   .test-card:nth-child(2) .prove-banner { background: #E4F2EA; color: var(--ok); }
   .test-card .prove-banner .ic { font-size: 1.1rem; flex: 0 0 auto; }
 
+  /* ── Interactive Pipeline Stepper ── */
+  .stepper { margin: 24px 0 10px; }
+  
+  /* 3 input dataset cards */
+  .stepper-inputs { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+  .stepper-inputs .src-chip {
+    background: #fff; border: 2px solid var(--line); border-radius: 10px;
+    padding: 10px 14px; text-align: center; min-width: 130px; font-size: .76rem;
+    transition: all .3s ease;
+  }
+  .stepper-inputs .src-chip .ic { font-size: 1.2rem; display: block; margin-bottom: 2px; }
+  .stepper-inputs .src-chip .lbl { font-weight: 700; color: var(--navy-900); text-transform: uppercase; letter-spacing: .05em; font-size: .68rem; }
+  .stepper-inputs .src-chip .cnt { color: var(--muted); font-size: .72rem; margin-top: 1px; }
+  .stepper-inputs .src-chip:nth-child(1) { border-top: 3px solid #E31837; }
+  .stepper-inputs .src-chip:nth-child(2) { border-top: 3px solid var(--navy-500); }
+  .stepper-inputs .src-chip:nth-child(3) { border-top: 3px solid var(--navy-600); }
+
+  /* pipeline track */
+  .stepper-track {
+    display: flex; align-items: center; justify-content: center; gap: 0;
+    margin: 0 0 16px; position: relative; padding: 8px 0;
+  }
+  .stepper-track::before {
+    content: ""; position: absolute; top: 50%; left: 8%; right: 8%; height: 3px;
+    background: var(--line); border-radius: 2px; z-index: 0;
+  }
+  .stepper-track .prog-fill {
+    position: absolute; top: 50%; left: 8%; height: 3px;
+    background: linear-gradient(90deg, var(--navy-600), var(--red));
+    border-radius: 2px; z-index: 1; transition: width .5s ease;
+  }
+
+  .stepper-node {
+    position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;
+    cursor: pointer; padding: 0 12px; transition: transform .2s ease;
+  }
+  .stepper-node:hover { transform: translateY(-3px); }
+  .stepper-node .dot {
+    width: 44px; height: 44px; border-radius: 50%; background: #fff;
+    border: 3px solid var(--line); display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: .85rem; color: var(--muted); transition: all .35s ease;
+  }
+  .stepper-node.active .dot {
+    background: var(--navy-800); border-color: var(--navy-800); color: #fff;
+    box-shadow: 0 0 0 6px rgba(0,47,108,.12);
+  }
+  .stepper-node.done .dot {
+    background: var(--ok); border-color: var(--ok); color: #fff;
+  }
+  .stepper-node .node-label {
+    font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+    color: var(--muted); margin-top: 6px; text-align: center; transition: color .3s;
+  }
+  .stepper-node.active .node-label { color: var(--navy-900); }
+  .stepper-node.done .node-label { color: var(--ok); }
+  .stepper-node .node-metric {
+    font-size: .66rem; color: var(--faint); margin-top: 1px;
+    font-family: ui-monospace, 'SF Mono', monospace;
+  }
+  .stepper-node.active .node-metric { color: var(--navy-700); }
+
+  /* detail panel */
+  .stepper-detail {
+    background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    padding: 26px 28px; box-shadow: var(--shadow-sm); min-height: 180px;
+    transition: opacity .3s ease;
+  }
+  .stepper-detail .detail-head {
+    font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em;
+    margin-bottom: 14px; display: flex; align-items: center; gap: 10px;
+  }
+  .stepper-detail .detail-head .dh-num {
+    width: 28px; height: 28px; border-radius: 8px; display: inline-flex; align-items: center;
+    justify-content: center; font-size: .8rem; color: #fff;
+  }
+  .stepper-detail .detail-title {
+    font-size: 1.1rem; font-weight: 800; color: var(--navy-900); margin-bottom: 4px;
+  }
+  .stepper-detail .detail-sub {
+    font-size: .84rem; color: var(--muted); margin-bottom: 14px; max-width: 60ch;
+  }
+
+  .stepper-detail .before-after {
+    display: grid; grid-template-columns: 1fr 40px 1fr; gap: 0; align-items: start;
+    margin-top: 14px;
+  }
+  @media (max-width: 700px) { .stepper-detail .before-after { grid-template-columns: 1fr; gap: 8px; } }
+  .stepper-detail .ba-col {
+    border-radius: 10px; padding: 14px; font-size: .76rem; line-height: 1.5;
+  }
+  .stepper-detail .ba-col.before { background: #FFF8F6; border: 1px solid #F3C9D1; }
+  .stepper-detail .ba-col.after  { background: #F3F9F6; border: 1px solid #BFE0CD; }
+  .stepper-detail .ba-col .ba-label {
+    font-size: .62rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 8px;
+  }
+  .ba-col.before .ba-label { color: var(--red); }
+  .ba-col.after  .ba-label { color: var(--ok); }
+  .stepper-detail .ba-col code {
+    font-family: 'SF Mono', SFMono-Regular, monospace; font-size: .7rem;
+    background: rgba(0,0,0,.04); padding: 2px 5px; border-radius: 4px;
+  }
+  .stepper-detail .ba-arrow {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; color: var(--navy-500); font-weight: 800;
+  }
+  @media (max-width: 700px) { .stepper-detail .ba-arrow { transform: rotate(90deg); } }
+
+  /* controls */
+  .stepper-controls {
+    display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 18px;
+  }
+  .stepper-btn {
+    padding: 10px 24px; border-radius: 999px; border: none; cursor: pointer;
+    font-weight: 700; font-size: .85rem; transition: all .2s ease;
+    font-family: inherit;
+  }
+  .stepper-btn.prev { background: var(--navy-100); color: var(--navy-700); }
+  .stepper-btn.prev:hover { background: var(--navy-200); }
+  .stepper-btn.next { background: var(--red); color: #fff; box-shadow: 0 6px 18px rgba(227,24,55,.25); }
+  .stepper-btn.next:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(227,24,55,.35); }
+  .stepper-btn:disabled { opacity: .35; cursor: not-allowed; transform: none !important; }
+  .stepper-btn.auto { background: var(--navy-800); color: #fff; font-size: .78rem; }
+  .stepper-stage-indicator {
+    font-size: .78rem; color: var(--muted); font-weight: 600; min-width: 60px; text-align: center;
+  }
+
+  /* detail content panels — hidden by default, shown when active */
+  .stepper-panel { display: none; }
+  .stepper-panel.active { display: block; animation: fadeIn .35s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
   /* table */
   .tbl-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin: 22px 0; }
   table { width: 100%; border-collapse: collapse; font-size: .93rem; background: #fff; min-width: 640px; }
@@ -422,60 +553,142 @@
     </div>
   </section>
 
-  <!-- 5 · SOLUTION — example-driven data journey -->
+  <!-- 5 · SOLUTION — interactive pipeline stepper -->
   <section id="solution" class="reveal">
     <div class="sec-head"><span class="num">5</span><h2>What worked — the solution</h2></div>
-    <p class="sec-sub">A 311 complaint from Jerome Avenue, exactly as it arrived — and what the pipeline turned it into.</p>
+    <p class="sec-sub">Click through each stage to watch the three datasets transform. Every number is from the real pipeline run.</p>
 
-    <!-- BEFORE / AFTER -->
-    <div class="journey">
-      <div class="before-card">
-        <span class="card-badge">⚠ BEFORE — Raw contractor input</span>
-        <p style="font-size:.84rem; color:var(--muted); margin-bottom:8px;">This is what lands in Con Edison's inbox today. Free text. Vague location. A made-up severity.</p>
-        <div class="code-block"><span class="cmt">←──  three sources, three formats, all messy  ──→</span>
+    <div class="stepper" id="stepper">
 
-<span class="kw">Source A · CSV sessions</span>  <span class="str">"08/21/2025"</span>,<span class="str">"19:10:54.0000000"</span>,
-  <span class="str">"720.3"</span>,<span class="str">"41.369"</span>,<span class="str">"NULL"</span>
-  <span class="cmt">← crosses midnight, W not kW, NULL fields</span>
-
-<span class="kw">Source B · AFDC registry</span>  <span class="str">"NISSAN FAST CHR RIVERHEAD"</span>
-  ev_connector_types: <span class="str">"[\"CHADEMO\",\"J1772COMBO\"]"</span>
-  open_date: <span class="cn">1327968000000</span>
-  <span class="cmt">← JSON inside JSON, Unix ms timestamps</span>
-
-<span class="kw">Source C · Contractor report</span>  customer complaint via 311, logged 2025-06-24
-  location given: <span class="str">"JON - Jerome 190th
-    Street Municipal Parking"</span>
-  charge box EVB-P2042308: screen dead
-  routed to: J. Alvarez
-  priority: <span class="str">urgent-safety</span>
-  <span class="cmt">← free text, ambiguous severity</span></div>
+      <!-- 3 input datasets (always visible) -->
+      <div class="stepper-inputs">
+        <div class="src-chip"><span class="ic">⚡</span><span class="lbl">Charging Sessions</span><span class="cnt">252,589 rows · CSV</span></div>
+        <div class="src-chip"><span class="ic">🗺️</span><span class="lbl">Station Registry</span><span class="cnt">5,740 stations · GeoJSON</span></div>
+        <div class="src-chip"><span class="ic">📄</span><span class="lbl">Contractor Reports</span><span class="cnt">14 reports · Free text</span></div>
       </div>
 
-      <div class="after-card">
-        <span class="card-badge">✓ AFTER — Golden record output</span>
-        <p style="font-size:.84rem; color:var(--muted); margin-bottom:8px;">Same data, same record. After 4 automated stages. Every fix logged, every decision attributable.</p>
-
-        <span class="stage-tag s1">Stage 1 · Ingest</span>
-        <div class="fix-row"><span class="was">free-text prose</span><span class="arr">→</span><span class="now">typed maintenance record: COMPLAINT, SAFETY, box EVB-P2042308</span></div>
-
-        <span class="stage-tag s2">Stage 2 · Validate</span>
-        <div class="fix-row"><span class="was">"08/21/2025 19:10:54.0000000"</span><span class="arr">→</span><span class="now">2025-08-21T19:10:54-04:00</span></div>
-        <div class="fix-row"><span class="was">"720.3" (W)</span><span class="arr">→</span><span class="now">0.7203 kW</span></div>
-        <div class="fix-row"><span class="was">"NULL"</span><span class="arr">→</span><span class="now">flagged · not dropped</span></div>
-        <div class="fix-row"><span class="was">urgent-safety</span><span class="arr">→</span><span class="now">SAFETY  ← normalized</span></div>
-
-        <span class="stage-tag s3">Stage 3 · Reconcile</span>
-        <div class="fix-row"><span class="was">4 AFDC entries for same charger</span><span class="arr">→</span><span class="now">1 golden charger record · merged_from audit trail preserved</span></div>
-
-        <span class="stage-tag s4">Stage 4 · Report</span>
-        <div class="fix-row"><span class="was">no regulator-ready output</span><span class="arr">→</span><span class="now">PSC compliance report + safety triage + lineage appendix</span></div>
+      <!-- pipeline track with 4 stage nodes -->
+      <div class="stepper-track">
+        <div class="prog-fill" id="progFill" style="width:0%"></div>
+        <div class="stepper-node" data-stage="1" onclick="goStage(1)">
+          <div class="dot">1</div>
+          <div class="node-label">Ingest</div>
+          <div class="node-metric">258k in</div>
+        </div>
+        <div class="stepper-node" data-stage="2" onclick="goStage(2)">
+          <div class="dot">2</div>
+          <div class="node-label">Validate</div>
+          <div class="node-metric">26.9s</div>
+        </div>
+        <div class="stepper-node" data-stage="3" onclick="goStage(3)">
+          <div class="dot">3</div>
+          <div class="node-label">Reconcile</div>
+          <div class="node-metric">2.2 min</div>
+        </div>
+        <div class="stepper-node" data-stage="4" onclick="goStage(4)">
+          <div class="dot">4</div>
+          <div class="node-label">Report</div>
+          <div class="node-metric">254k out</div>
+        </div>
       </div>
-    </div>
 
-    <div class="callout">
-      <span class="h">The shape of the answer</span>
-      Don't replace the analysts. Remove the manual scramble: <strong>258,343 records → 254,414 audited golden records in 2.9 minutes</strong>, with a paper trail regulators can audit. One command: <code>python -m src.platform.run --pipeline full --no-llm</code>.
+      <!-- detail panel — content panels swap in/out -->
+      <div class="stepper-detail" id="stepperDetail">
+
+        <!-- PANEL 1: Ingestion -->
+        <div class="stepper-panel" id="panel1">
+          <div class="detail-head"><span class="dh-num" style="background:var(--navy-700);">1</span> INGESTION — Parse everything into one format</div>
+          <div class="detail-title">Three format-specific readers normalize all sources into canonical JSONL</div>
+          <div class="detail-sub">CSV parser handles quoted fields and midnight-crossing timestamps. GeoJSON reader unwraps nested JSON-in-JSON. LLM extraction pulls structured events from contractor free text. <strong>+176 municipal charge box records created</strong> to ensure every session has a charger to link to.</div>
+          <div class="before-after">
+            <div class="ba-col before"><span class="ba-label">⚠ BEFORE</span>
+              <code>"08/21/2025","19:10:54.0000000","720.3","NULL"</code><br>
+              <code>ev_connector_types: "[\"CHADEMO\",\"J1772COMBO\"]"</code><br>
+              <code>"JON - Jerome 190th Street Municipal Parking"</code> (free text)
+            </div>
+            <div class="ba-arrow">→</div>
+            <div class="ba-col after"><span class="ba-label">✓ AFTER</span>
+              Structured <code>record_type: session | charger | maintenance</code> records.<br>
+              All in one <code>canonical.jsonl</code> format.<br>
+              <strong>258,343 → 258,519 records</strong> (176 charge boxes added)
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL 2: Validation -->
+        <div class="stepper-panel" id="panel2">
+          <div class="detail-head"><span class="dh-num" style="background:#856404;">2</span> VALIDATION — Fix what's fixable, flag what isn't</div>
+          <div class="detail-title">Declarative rule engine cleans every record. Nothing is ever silently dropped.</div>
+          <div class="detail-sub">Dates normalized to ISO-8601 with timezone. Units repaired (W→kW, Wh→kWh). Enums standardized ("urgent-safety" → SAFETY). Missing values flagged, never deleted. Per-record quality scores 0–1 with stable issue codes. <strong>0 records quarantined — 251,773 issues flagged in-place.</strong></div>
+          <div class="before-after">
+            <div class="ba-col before"><span class="ba-label">⚠ BEFORE</span>
+              <code>"08/21/2025 19:10:54.0000000"</code> — ambiguous date<br>
+              <code>"720.3"</code> — watts, not kilowatts<br>
+              <code>priority: "urgent-safety"</code> — free-text severity<br>
+              <code>"NULL"</code> — missing field
+            </div>
+            <div class="ba-arrow">→</div>
+            <div class="ba-col after"><span class="ba-label">✓ AFTER</span>
+              <code>2025-08-21T19:10:54-04:00</code> — ISO-8601 with NY offset<br>
+              <code>0.7203 kW</code> — correct unit<br>
+              <code>severity: SAFETY</code> — normalized enum<br>
+              <code>flagged · not dropped</code> — issue logged in record
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL 3: Reconciliation -->
+        <div class="stepper-panel" id="panel3">
+          <div class="detail-head"><span class="dh-num" style="background:#155724;">3</span> RECONCILIATION — One source of truth</div>
+          <div class="detail-title">Duplicate detection, charger clustering, and conflict resolution into golden records</div>
+          <div class="detail-sub">Session dedup requires <strong>same driver + same charger + same time window</strong> — prevents wrongful billing merges. Charger clustering uses GPS proximity with 200m cap. Every merge is reversible via the <code>merged_from</code> audit trail. Anomalies detected statistically. <strong>Audited: 96.5% of 4,105 merges are legitimate.</strong></div>
+          <div class="before-after">
+            <div class="ba-col before"><span class="ba-label">⚠ BEFORE</span>
+              5,740 AFDC registry entries — many describing the <strong>same physical charger</strong> (one per network listing, one per refresh).<br><br>
+              252,589 sessions with potential duplicates (midnight splits, re-plugs).
+            </div>
+            <div class="ba-arrow">→</div>
+            <div class="ba-col after"><span class="ba-label">✓ AFTER</span>
+              <strong>4,219 golden chargers</strong> (1,697 AFDC duplicates merged).<br>
+              <strong>250,181 sessions</strong> (2,408 duplicates merged — all same driver+charger).<br>
+              <strong>2,731 conflicts resolved</strong> by survivorship rules.<br>
+              <strong>2,222 duplicate-billing · 2,100 energy outliers · 3 SAFETY events</strong> detected.
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL 4: Reporting -->
+        <div class="stepper-panel" id="panel4">
+          <div class="detail-head"><span class="dh-num" style="background:var(--red);">4</span> REPORTING — Regulator-ready output</div>
+          <div class="detail-title">PSC compliance report with full data-lineage appendix. One command.</div>
+          <div class="detail-sub">Every record's journey is traceable: input → fixes applied → golden record → report. The lineage appendix proves "accurate and on time" to a regulator. Operations dashboard, safety triage, and customer-experience views ship alongside.</div>
+          <div class="before-after">
+            <div class="ba-col before"><span class="ba-label">⚠ BEFORE</span>
+              Days of manual spreadsheet reconciliation.<br>
+              No audit trail — "trust me" reporting.<br>
+              Safety events buried in free text.
+            </div>
+            <div class="ba-arrow">→</div>
+            <div class="ba-col after"><span class="ba-label">✓ AFTER</span>
+              <strong>254,414 golden records</strong> in 2.9 min total.<br>
+              <strong>5,694,019 kWh</strong> accounted & auditable.<br>
+              <strong>82.1% municipal fleet uptime</strong> (176 boxes).<br>
+              <strong>3 SAFETY events</strong> surfaced with charger linkage.<br>
+              <code>python -m src.platform.run --pipeline full --no-llm</code>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- controls -->
+      <div class="stepper-controls">
+        <button class="stepper-btn auto" id="btnAuto" onclick="autoPlay()">▶ Auto-play</button>
+        <button class="stepper-btn prev" id="btnPrev" onclick="prevStage()" disabled>← Previous</button>
+        <span class="stepper-stage-indicator" id="stageLabel">Stage 1 of 4</span>
+        <button class="stepper-btn next" id="btnNext" onclick="nextStage()">Next →</button>
+      </div>
+
     </div>
   </section>
 
@@ -589,6 +802,60 @@
     }
   }, { threshold: 0.4 });
   document.querySelectorAll(".count").forEach((el) => cio.observe(el));
+
+  // ── Pipeline Stepper ──
+  let currentStage = 1;
+  const totalStages = 4;
+  let autoTimer = null;
+
+  function goStage(n) {
+    currentStage = Math.max(1, Math.min(totalStages, n));
+    updateStepper();
+  }
+  function nextStage() { goStage(currentStage + 1); }
+  function prevStage() { goStage(currentStage - 1); }
+
+  function updateStepper() {
+    // update nodes
+    document.querySelectorAll('.stepper-node').forEach(node => {
+      const s = +node.dataset.stage;
+      node.classList.remove('active', 'done');
+      if (s === currentStage) node.classList.add('active');
+      if (s < currentStage) node.classList.add('done');
+    });
+
+    // update progress bar
+    const pct = ((currentStage - 1) / (totalStages - 1)) * 84; // 84% of track width
+    document.getElementById('progFill').style.width = pct + '%';
+
+    // swap panels
+    document.querySelectorAll('.stepper-panel').forEach(p => p.classList.remove('active'));
+    const panel = document.getElementById('panel' + currentStage);
+    if (panel) panel.classList.add('active');
+
+    // update controls
+    document.getElementById('stageLabel').textContent = 'Stage ' + currentStage + ' of ' + totalStages;
+    document.getElementById('btnPrev').disabled = currentStage === 1;
+    document.getElementById('btnNext').disabled = currentStage === totalStages;
+  }
+
+  function autoPlay() {
+    const btn = document.getElementById('btnAuto');
+    if (autoTimer) {
+      clearInterval(autoTimer); autoTimer = null;
+      btn.textContent = '▶ Auto-play';
+      return;
+    }
+    btn.textContent = '⏸ Stop';
+    goStage(1);
+    autoTimer = setInterval(() => {
+      if (currentStage >= totalStages) { clearInterval(autoTimer); autoTimer = null; btn.textContent = '▶ Auto-play'; return; }
+      nextStage();
+    }, 3000);
+  }
+
+  // init
+  goStage(1);
 </script>
 
 </body>
