@@ -1,0 +1,53 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-78.64347, 35.77842]},
+      "properties": {
+        "id": 1,
+        "station_name": "Fixture Station One",
+        "street_address": "100 Fixture Way",
+        "city": "Cary",
+        "state": "NC",
+        "zip": "27513",
+        "status_code": "E",
+        "open_date": 1287100800000,
+        "ev_network": "ChargePoint Network",
+        "ev_charging_units": "[{\"network\": \"ChargePoint Network\", \"connectors\": {\"J1772\": {\"power_kw\": 6.5, \"port_count\": 1}, \"CHADEMO\": {\"power_kw\": null, \"port_count\": 0}}, \"port_count\": 1, \"charging_level\": \"2\"}]"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-78.75, 35.8]},
+      "properties": {
+        "id": 2,
+        "station_name": "Fixture Station Two",
+        "street_address": "200 Fixture Way",
+        "city": "Cary",
+        "state": "NC",
+        "zip": "27511",
+        "status_code": "T",
+        "open_date": 1297728000000,
+        "ev_network": "Tesla",
+        "ev_charging_units": "[{\"network\": \"Tesla\", \"connectors\": {\"TESLA\": {\"power_kw\": 250.0, \"port_count\": 2}}, \"port_count\": 2, \"charging_level\": \"dc_fast\"}]"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-78.9, 35.9]},
+      "properties": {
+        "id": 3,
+        "station_name": "Fixture Station Three",
+        "street_address": "300 Fixture Way",
+        "city": "Raleigh",
+        "state": "NC",
+        "zip": "27601",
+        "status_code": "E",
+        "open_date": 1300147200000,
+        "ev_network": "Non-Networked",
+        "ev_connector_types": "[\"J1772\"]"
+      }
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+﻿start_date;station_name;charging_time_hh_mm_ss;energy_kwh;address_1;address_2;city;state_province;zip_postal_code
+2023-01-03T17:58:04+00:00;TOWN OF CARY / TOWN HALL-PWH;00:54:50;3.976;228 Ambassador Loop;Page-Walker Hotel;Cary;North Carolina;27513
+2023-01-03T17:29:44+00:00;TOWN OF CARY / DT DECK P2 (2);01:22:28;8.463;113 Walnut St;;Cary;North Carolina;27511
+2022-11-30T10:02:11+00:00;TOWN OF CARY / OPS CENTER;00:20:05;;; ;Cary;North Carolina;27513

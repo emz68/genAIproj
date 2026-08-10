@@ -1,0 +1,7 @@
+# P1 ingestion dependencies (PRODUCT_DEVELOPMENT_MANAGER.md §2.3).
+# The Integration Manager unions this into the frozen root requirements.txt
+# at merge time (§8 step 3).
+pydantic
+anthropic
+ijson
+pytest
