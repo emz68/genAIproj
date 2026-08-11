@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stage 1 — Ingestion</title>
+<style>
+:root{--navy-950:#081C33;--navy-900:#0E2A47;--navy-800:#002F6C;--navy-700:#003E7E;--navy-600:#0057A8;--navy-500:#2E7FC4;--navy-200:#C4D9EF;--navy-100:#E3EDF7;--navy-050:#F1F6FB;--red:#E31837;--red-soft:#FBE9EC;--ink:#12263C;--muted:#5B6B7C;--paper:#F4F6F8;--card:#FFFFFF;--line:#DCE4EC;--ok:#1B7F4D;--ok-soft:#E4F2EA;--shadow-sm:0 1px 2px rgba(14,42,71,.05),0 4px 14px rgba(14,42,71,.06)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--paper);color:var(--ink);font-size:18px;line-height:1.6;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:60px 80px}
+.slide{max-width:1000px;width:100%}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;letter-spacing:.24em;text-transform:uppercase;font-size:.8rem;font-weight:700;color:var(--navy-500);margin-bottom:18px}
+.eyebrow::before{content:"";width:34px;height:3px;background:var(--red);border-radius:2px}
+h1{font-size:2rem;color:var(--navy-900);font-weight:800;margin-bottom:8px}
+.sub{color:var(--muted);font-size:1rem;margin-bottom:24px;max-width:60ch}
+.big-counter{text-align:center;padding:14px 0;margin-bottom:20px}
+.big-counter .bc-val{font-size:2.4rem;font-weight:800;color:var(--navy-800);font-family:Georgia,serif}
+.big-counter .bc-arrow{color:var(--navy-500);font-size:1.6rem;margin:0 8px}
+.big-counter .bc-label{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+.before-after{display:grid;grid-template-columns:1fr 50px 1fr;gap:0;align-items:start}
+.ba-col{border-radius:12px;padding:20px 24px;font-size:.85rem;line-height:1.55}
+.ba-col.before{background:#FFF8F6;border:2px solid #F3C9D1}
+.ba-col.after{background:#F3F9F6;border:2px solid #BFE0CD}
+.ba-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+.before .ba-label{color:var(--red)}
+.after .ba-label{color:var(--ok)}
+.ba-arrow{display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:var(--navy-500);font-weight:800}
+.json-block{background:#1A1E2B;color:#C8D6E5;border-radius:10px;padding:16px 18px;font-family:'SF Mono',SFMono-Regular,monospace;font-size:.75rem;line-height:1.55;overflow-x:auto;white-space:pre}
+.json-block .jkey{color:#54A0FF}
+.json-block .jstr{color:#55C990}
+.json-block .jnum{color:#FECA57}
+.json-block .jbad{color:#FF6B6B;text-decoration:line-through}
+.json-block .jcmt{color:#7E9186;font-style:italic}
+</style></head>
+<body>
+<div class="slide">
+<div class="eyebrow">Stage 1 of 4</div>
+<h1>Ingestion — Three formats in, one canonical format out</h1>
+<p class="sub">Tracing a real 311 complaint from Jerome Avenue. The ingestion stage uses <strong>NLP and LLM extraction</strong> to pull structured events from contractor free text, alongside CSV and GeoJSON readers. Two paths: a deterministic regex engine (default, offline, zero API cost) and a Claude LLM path with automatic regex fallback.</p>
+<div class="big-counter"><span class="bc-val">258,343</span><span class="bc-arrow">→</span><span class="bc-val">258,519</span><div class="bc-label">records in → records out (+176 municipal charge boxes created)</div></div>
+<div class="before-after">
+<div class="ba-col before"><div class="ba-label">⚠ RAW INPUT</div>
+<div class="json-block"><span class="jcmt">// Source C — Contractor free-text report</span>
+<span class="jbad">customer complaint via 311, logged 2025-06-24
+location given: "JON - Jerome 190th Street
+  Municipal Parking"
+charge box EVB-P2042308: screen dead
+routed to: J. Alvarez
+priority: urgent-safety</span></div></div>
+<div class="ba-arrow">→</div>
+<div class="ba-col after"><div class="ba-label">✓ PARSED RECORD</div>
+<div class="json-block"><span class="jcmt">// canonical.jsonl</span>
+{ <span class="jkey">"record_type"</span>: <span class="jstr">"maintenance"</span>,
+  <span class="jkey">"event_type"</span>: <span class="jstr">"COMPLAINT"</span>,
+  <span class="jkey">"severity"</span>: <span class="jstr">"SAFETY"</span>,
+  <span class="jkey">"charge_box"</span>: <span class="jstr">"EVB-P2042308"</span>,
+  <span class="jkey">"location"</span>: <span class="jstr">"JON - Jerome 190th St"</span>,
+  <span class="jkey">"date"</span>: <span class="jstr">"2025-06-24"</span>,
+  <span class="jkey">"provenance"</span>: { <span class="jkey">"source"</span>: <span class="jstr">"contractor"</span> } }</div></div>
+</div></div>
+</body></html>

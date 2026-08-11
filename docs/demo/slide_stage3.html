@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stage 3 — Reconciliation</title>
+<style>:root{--navy-950:#081C33;--navy-900:#0E2A47;--navy-800:#002F6C;--navy-700:#003E7E;--navy-500:#2E7FC4;--navy-100:#E3EDF7;--red:#E31837;--red-soft:#FBE9EC;--ink:#12263C;--muted:#5B6B7C;--paper:#F4F6F8;--line:#DCE4EC;--ok:#1B7F4D;--ok-soft:#E4F2EA}*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--paper);color:var(--ink);font-size:18px;line-height:1.6;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:60px 80px}.slide{max-width:960px;width:100%}.eyebrow{display:inline-flex;align-items:center;gap:10px;letter-spacing:.24em;text-transform:uppercase;font-size:.8rem;font-weight:700;color:var(--navy-500);margin-bottom:18px}.eyebrow::before{content:"";width:34px;height:3px;background:var(--red);border-radius:2px}h1{font-size:2rem;color:var(--navy-900);font-weight:800;margin-bottom:8px}.sub{color:var(--muted);font-size:1rem;margin-bottom:24px;max-width:60ch}.big-counter{text-align:center;padding:14px 0;margin-bottom:20px}.big-counter .bc-val{font-size:2.4rem;font-weight:800;color:var(--navy-800);font-family:Georgia,serif}.big-counter .bc-arrow{color:var(--navy-500);font-size:1.6rem;margin:0 8px}.big-counter .bc-label{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}.before-after{display:grid;grid-template-columns:1fr 50px 1fr;gap:0;align-items:start}.ba-col{border-radius:12px;padding:20px 24px;font-size:.85rem;line-height:1.55}.ba-col.before{background:#FFF8F6;border:2px solid #F3C9D1}.ba-col.after{background:#F3F9F6;border:2px solid #BFE0CD}.ba-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}.before .ba-label{color:var(--red)}.after .ba-label{color:var(--ok)}.ba-arrow{display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:var(--navy-500);font-weight:800}.mono{font-family:'SF Mono',SFMono-Regular,monospace;font-size:.78rem;line-height:1.55}</style></head><body>
+<div class="slide"><div class="eyebrow">Stage 3 of 4</div>
+<h1>Reconciliation — Duplicates merged into one source of truth</h1>
+<p class="sub">4 AFDC registry entries for the same charger → 1 golden record. Session dedup requires <strong>same driver + same charger + same time window</strong>. Every merge reversible via <code>merged_from</code>. <strong>Audited: 96.5% legitimate.</strong></p>
+<div class="big-counter"><span class="bc-val">258,519</span><span class="bc-arrow">→</span><span class="bc-val" style="color:var(--ok)">254,414</span><div class="bc-label">pre-reconciliation → golden records (4,105 merged)</div></div>
+<div class="before-after">
+<div class="ba-col before"><div class="ba-label">⚠ 4 SOURCE RECORDS</div>
+<div class="mono" style="color:var(--red)">
+station_id: 35272 — "NISSAN FAST CHR RIVERHEAD" (J1772)<br>
+station_id: 351402 — "NISSAN FAST CHR RIVERHEAD" (CHAdeMO)<br>
+station_id: 351403 — "NISSAN FAST CHR RIVERHEAD" (refresh)<br>
+station_id: 351404 — "NISSAN FAST CHR RIVERHEAD" (refresh)<br>
+<span style="color:var(--muted)">All at 1800 Old Country Rd, Riverhead, NY</span></div></div>
+<div class="ba-arrow">→</div>
+<div class="ba-col after"><div class="ba-label">✓ 1 GOLDEN RECORD</div>
+<div class="mono" style="color:var(--ok)">
+golden_id: chg-f2053989...<br>
+station_name: "NISSAN FAST CHR RIVERHEAD"<br>
+connectors: J1772, CHAdeMO<br>
+<strong>merged_from: [35272, 351402, 351403, 351404]</strong><br>
+<span style="color:var(--muted)">← full audit trail preserved</span></div></div>
+</div></div></body></html>

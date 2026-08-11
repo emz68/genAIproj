@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stage 4 — Reporting</title>
+<style>:root{--navy-950:#081C33;--navy-900:#0E2A47;--navy-800:#002F6C;--navy-700:#003E7E;--navy-500:#2E7FC4;--navy-100:#E3EDF7;--red:#E31837;--red-soft:#FBE9EC;--ink:#12263C;--muted:#5B6B7C;--paper:#F4F6F8;--line:#DCE4EC;--ok:#1B7F4D;--ok-soft:#E4F2EA;--shadow-sm:0 1px 2px rgba(14,42,71,.05)}*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--paper);color:var(--ink);font-size:18px;line-height:1.6;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:60px 80px}.slide{max-width:960px;width:100%}.eyebrow{display:inline-flex;align-items:center;gap:10px;letter-spacing:.24em;text-transform:uppercase;font-size:.8rem;font-weight:700;color:var(--navy-500);margin-bottom:18px}.eyebrow::before{content:"";width:34px;height:3px;background:var(--red);border-radius:2px}h1{font-size:2rem;color:var(--navy-900);font-weight:800;margin-bottom:8px}.sub{color:var(--muted);font-size:1rem;margin-bottom:24px;max-width:60ch}.report-preview{background:#fff;border:2px solid var(--ok);border-radius:14px;padding:28px 32px;margin-top:10px;box-shadow:var(--shadow-sm)}.rp-head{display:flex;align-items:center;gap:10px;font-weight:800;font-size:.9rem;color:var(--navy-900);margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--line)}.rp-head .icon{font-size:1.4rem}.rp-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.rp-kpi{text-align:center;padding:10px}.rp-kpi .kpi-val{font-size:1.5rem;font-weight:800;color:var(--navy-800)}.rp-kpi .kpi-lab{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}.rp-kpi.red .kpi-val{color:var(--red)}.rp-kpi.green .kpi-val{color:var(--ok)}.footer-note{margin-top:18px;font-size:.75rem;color:var(--muted);text-align:center}.footer-note code{background:rgba(0,0,0,.05);padding:2px 6px;border-radius:4px;font-size:.85em}</style></head><body>
+<div class="slide"><div class="eyebrow">Stage 4 of 4</div>
+<h1>Reporting — Regulator-ready output, one command</h1>
+<p class="sub">PSC compliance report with full data-lineage appendix. Every record traceable. 2.9 min end-to-end.</p>
+<div class="report-preview">
+<div class="rp-head"><span class="icon">📋</span>PSC COMPLIANCE REPORT — Con Edison EV Charger Data</div>
+<div class="rp-grid">
+<div class="rp-kpi"><div class="kpi-val">4,219</div><div class="kpi-lab">chargers deployed</div></div>
+<div class="rp-kpi"><div class="kpi-val">250,181</div><div class="kpi-lab">charging sessions</div></div>
+<div class="rp-kpi"><div class="kpi-val">5.69 GWh</div><div class="kpi-lab">energy delivered</div></div>
+<div class="rp-kpi"><div class="kpi-val">82.1%</div><div class="kpi-lab">municipal uptime</div></div>
+<div class="rp-kpi"><div class="kpi-val">89.4%</div><div class="kpi-lab">data completeness</div></div>
+<div class="rp-kpi red"><div class="kpi-val">3</div><div class="kpi-lab">safety events</div></div>
+</div>
+<div class="footer-note">Lineage appendix traces every record back to its source · <code>python -m src.platform.run --pipeline full --no-llm</code></div>
+</div></div></body></html>
