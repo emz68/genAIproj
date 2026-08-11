@@ -531,6 +531,7 @@
     <a href="#testing">Testing</a>
     <a href="#recommendation">Recommendation</a>
     <a href="#risks">Risks</a>
+    <a href="#questions">Questions</a>
   </div>
 </nav>
 
@@ -878,6 +879,18 @@ priority: urgent-safety</span></div>
       <div class="risk"><div class="h">Scale</div><p>Now 2.2 minutes at 258k records after the audit-driven fix. Full-state rollout keeps the same architecture — the bottleneck was the matching predicate, not the pipeline.</p></div>
       <div class="risk"><div class="h">Overtrust in scores</div><p>A 0.99 quality score is not ground truth. Issue codes, conflict logs, and raw-value stashes exist so analysts can always see why.</p></div>
       <div class="risk"><div class="h">Credential &amp; privacy hygiene</div><p>Keys live only in the environment; the pipeline scans every submission for them. Identifiable field media stays off public channels.</p></div>
+    </div>
+  </section>
+
+  <!-- 9 · QUESTIONS FOR CON EDISON -->
+  <section id="questions" class="reveal">
+    <div class="sec-head"><span class="num">9</span><h2>Questions for Con Edison</h2></div>
+    <p class="sec-sub">We built this for you — now help us understand how it fits into your reality.</p>
+    <div class="card">
+      <div class="rec"><span class="n">1</span><p><strong>Do you already use AI or NLP in your data workflows today?</strong> If so, where — and what's working versus what isn't? We want to slot into your stack, not replace something that's already delivering.</p></div>
+      <div class="rec"><span class="n">2</span><p><strong>How much of the current data process is human versus automated?</strong> Spreadsheet reconciliation? Manual report assembly? Knowing the split helps us quantify the time this pipeline actually saves you.</p></div>
+      <div class="rec"><span class="n">3</span><p><strong>How many datasets do you typically merge into one report?</strong> We demonstrated with three — sessions, registry, contractor reports — but your reality likely involves more sources, different formats, or different cadences. Tell us what the real integration surface looks like.</p></div>
+      <div class="rec"><span class="n">4</span><p><strong>What would it take to roll out a system like this?</strong> Who needs to approve it? What does the procurement or pilot process look like? What's the right first dataset to prove value on — a single contractor feed, a single garage, a single reporting cycle?</p></div>
     </div>
   </section>
 
